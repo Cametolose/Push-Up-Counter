@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "93321571757",
+    "firebase_url": "https://counter-liegestutz-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "counter-liegestutz",
+    "storage_bucket": "counter-liegestutz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93321571757:android:309d010b98de7e0f620524",
+        "android_client_info": {
+          "package_name": "liege.counter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "93321571757-3kv3l4tvj6k8sknqishqmdgn5jbaehp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOC10PJ0kj9P0hts8svEFs-8ixzjMihZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "93321571757-3kv3l4tvj6k8sknqishqmdgn5jbaehp3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
