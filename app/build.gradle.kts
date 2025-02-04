@@ -3,11 +3,14 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "liege.counter"
     compileSdk = 34
 
     defaultConfig {
+        val apiBaseUrl = project.findProperty("API_BASE_URL") as String? ?: "https://fallback-url.com/"
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
         applicationId = "liege.counter"
         minSdk = 24
         targetSdk = 34
@@ -15,6 +18,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

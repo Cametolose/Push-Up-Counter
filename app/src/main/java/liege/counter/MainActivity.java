@@ -572,7 +572,7 @@ public class MainActivity extends AppCompatActivity {
             // Initialize Retrofit if not already done
             if (leaderboardAPI == null) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://6782e78bc51d092c3dd124b8.mockapi.io/")
+                        .baseUrl(AppConfig.BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 leaderboardAPI = retrofit.create(LeaderboardAPI.class);
