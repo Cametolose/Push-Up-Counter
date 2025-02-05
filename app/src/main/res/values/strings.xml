@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Liegestütz Counter</string>
+    <string name="default_web_client_id">93321571757-3kv3l4tvj6k8sknqishqmdgn5jbaehp3.apps.googleusercontent.com</string>
+    <string name="base_url">https://6782e78bc51d092c3dd124b8.mockapi.io/</string>
+</resources>

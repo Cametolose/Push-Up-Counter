@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#121212"
+    tools:context=".MainActivity">
+
+    <!-- Leaderboard reload button -->
+
+    <!-- Counter text -->
+
+    <ImageButton
+        android:id="@+id/reloadLeaderboardButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/leaderboardListView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="1dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Reload Leaderboard"
+        android:src="@drawable/ic_reload" />
+
+    <!-- Level text -->
+    <TextView
+        android:id="@+id/counterTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="1dp"
+        android:text="Push-ups: 0"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/levelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/counterTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Level: 1"
+        android:textSize="20sp"
+        android:textColor="#00E676" />
+
+    <!-- XP ProgressBar -->
+    <ProgressBar
+        android:id="@+id/xpProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/levelTextView"
+        android:layout_marginTop="15dp"
+        android:progress="50"
+        android:max="100"
+        android:progressTint="#00E676"
+        android:backgroundTint="#424242" />
+
+
+    <!-- Quests section -->
+
+    <!-- Bonus XP button -->
+
+    <!-- Leaderboard section -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/xpProgressBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/incrementButton1"
+            style="@style/DarkButtonStyle"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/buttonshape"
+            android:backgroundTint="#000000"
+            android:elevation="6dp"
+            android:shadowColor="#7A7A7A"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="+1"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/incrementButton5"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#000000"
+            android:elevation="6dp"
+            android:text="+5"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/incrementButton10"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#000000"
+            android:elevation="6dp"
+            android:text="+10"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/questsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="30dp"
+        android:text="Daily Quests"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="313dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/questButton1"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7043"
+            android:text="Quest 1"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/questButton2"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7043"
+            android:text="Quest 2"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/questButton3"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7043"
+            android:text="Quest 3"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bonusButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="438dp"
+        android:layout_marginEnd="100dp"
+        android:backgroundTint="#FFD600"
+        android:text="Collect Bonus XP"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <ListView
+        android:id="@+id/leaderboardListView"
+        android:layout_width="wrap_content"
+        android:layout_height="422dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="490dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="1dp"
+        android:background="#212121" />
+
+    <Button
+        android:id="@+id/changeNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:backgroundTint="#000000"
+        android:drawableTint="#000000"
+        android:foregroundTint="#000000"
+        android:text="Button"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000"
+        app:iconTint="#000000"
+        app:rippleColor="#000000"
+        app:strokeColor="#000000" />
+
+</RelativeLayout>

@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.LiegestützCounter" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">#000000</item>
+    </style>
+
+    <style name="DarkButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/buttonshape</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:backgroundTint">#000000</item>
+    </style>
+
+    <style name="Theme.LiegestützCounter" parent="Base.Theme.LiegestützCounter" />
+</resources>
