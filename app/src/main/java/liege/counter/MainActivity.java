@@ -2,8 +2,8 @@ package liege.counter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
-import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -16,29 +16,21 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.reflect.TypeToken;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,54 +40,57 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * MainActivity — Push-up counter with XP/leveling system, daily quests, and an online leaderboard.
+ * Uses a BottomNavigationView with Fragments for each section.
  *
  * Language note: UI strings shown to the user are in German; code identifiers are in English.
  */
 public class MainActivity extends AppCompatActivity {
 
     // --- SharedPreferences Keys ---
-    private static final String PREFS_NAME        = "AppPrefs";
-    private static final String KEY_COUNTER       = "counter";
-    private static final String KEY_XP            = "xp";
-    private static final String KEY_LEVEL         = "level";
-    private static final String KEY_QUESTS        = "questsCompleted";  // boolean[3] encoded as "000"
-    private static final String KEY_QUEST_COUNTS  = "questCompletions"; // int[3] encoded as "0,0,0"
-    private static final String KEY_BONUS         = "bonusCollected";
-    private static final String KEY_BONUS_COUNT   = "bonusXpCollected";
-    private static final String KEY_LAST_DAY      = "lastKnownDay";
-    private static final String KEY_USERNAME      = "username";
-    private static final String KEY_DAILY_LOG     = "dailyPushupLog";
+    private static final String PREFS_NAME       = "AppPrefs";
+    private static final String KEY_COUNTER      = "counter";
+    private static final String KEY_XP           = "xp";
+    private static final String KEY_LEVEL        = "level";
+    private static final String KEY_QUESTS       = "questsCompleted";
+    private static final String KEY_QUEST_COUNTS = "questCompletions";
+    private static final String KEY_BONUS        = "bonusCollected";
+    private static final String KEY_BONUS_COUNT  = "bonusXpCollected";
+    private static final String KEY_LAST_DAY     = "lastKnownDay";
+    private static final String KEY_USERNAME     = "username";
+    private static final String KEY_DAILY_LOG    = "dailyPushupLog";
 
-    // JobScheduler ID — must be unique within the app
-    private static final int JOB_ID = 1;
+    // Quest targets (shared with QuestsFragment)
+    public static final int[] QUEST_TARGETS = {20, 50, 100};
 
-    // Leaderboard update broadcast action
-    private static final String ACTION_UPDATE_LEADERBOARD = "UPDATE_LEADERBOARD";
-    private static final String EXTRA_LEADERBOARD_DATA    = "leaderboardData";
+    private static final int    JOB_ID                     = 1;
+    private static final String ACTION_UPDATE_LEADERBOARD  = "UPDATE_LEADERBOARD";
 
     // --- App State ---
-    private int counter;
-    private int xp;
-    private int level;
-    private boolean[] questsCompleted = new boolean[3];
-    private int[]     questCompletions = new int[3]; // lifetime per-quest completions
+    private int       counter;
+    private int       xp;
+    private int       level;
+    private boolean[] questsCompleted  = new boolean[3];
+    private int[]     questCompletions = new int[3];
     private boolean   bonusCollected;
-    private int       bonusXpCollected; // lifetime bonus count
+    private int       bonusXpCollected;
 
-    // Daily push-up log: day-name → count.
-    // NOTE: Monthly/yearly stats are approximated from this map (see known limitations below).
     private final HashMap<String, Integer> dailyPushupLog = new HashMap<>();
-
-    // --- UI ---
-    private TextView    counterTextView;
-    private TextView    levelTextView;
-    private ProgressBar xpProgressBar;
-    private Button[]    questButtons = new Button[3];
-    private Animation   spinAnimation;
 
     // --- Networking ---
     private SharedPreferences sharedPreferences;
-    private LeaderboardAPI    leaderboardAPI;
+    private LeaderboardAPI leaderboardAPI;
+
+    // --- Fragment state listeners ---
+    private final CopyOnWriteArrayList<OnStateChangedListener> stateListeners =
+            new CopyOnWriteArrayList<>();
+
+    /** Implement in Fragments to receive state-change notifications. */
+    public interface OnStateChangedListener {
+        void onStateChanged();
+    }
+
+    public void addStateChangedListener(OnStateChangedListener l)    { stateListeners.add(l); }
+    public void removeStateChangedListener(OnStateChangedListener l) { stateListeners.remove(l); }
 
     // =========================================================================
     // Lifecycle
@@ -110,13 +105,11 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         initRetrofit();
-        initUI();
-
         loadState();
         resetQuestsIfNewDay();
-        updateUI();
 
-        loadOnlineLeaderboard();
+        setupBottomNavigation();
+
         scheduleLeaderboardJob();
         registerLeaderboardReceiver();
     }
@@ -146,45 +139,34 @@ public class MainActivity extends AppCompatActivity {
         leaderboardAPI = retrofit.create(LeaderboardAPI.class);
     }
 
-    private void initUI() {
-        spinAnimation   = AnimationUtils.loadAnimation(this, R.anim.spin);
-        counterTextView = findViewById(R.id.counterTextView);
-        levelTextView   = findViewById(R.id.levelTextView);
-        xpProgressBar   = findViewById(R.id.xpProgressBar);
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
-        // Increment buttons
-        setupIncrementButton(R.id.incrementButton1,  1);
-        setupIncrementButton(R.id.incrementButton5,  5);
-        setupIncrementButton(R.id.incrementButton10, 10);
-
-        // Reload leaderboard button
-        ImageButton reloadButton = findViewById(R.id.reloadLeaderboardButton);
-        reloadButton.setOnClickListener(v -> {
-            v.startAnimation(spinAnimation);
-            loadOnlineLeaderboard();
-        });
-
-        // Change name button
-        Button changeNameButton = findViewById(R.id.changeNameButton);
-        changeNameButton.setOnClickListener(v -> showChangeNameDialog());
-
-        // Quest buttons
-        for (int i = 0; i < 3; i++) {
-            int resId = getResources().getIdentifier("questButton" + (i + 1), "id", getPackageName());
-            questButtons[i] = findViewById(resId);
-            final int index = i;
-            questButtons[i].setOnClickListener(v -> completeQuest(index));
+        if (getSupportFragmentManager().findFragmentById(R.id.fragmentContainer) == null) {
+            loadFragment(new HomeFragment(), false);
         }
 
-        // Bonus button
-        Button bonusButton = findViewById(R.id.bonusButton);
-        bonusButton.setOnClickListener(v -> collectBonus());
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                loadFragment(new HomeFragment(), false);
+            } else if (id == R.id.nav_quests) {
+                loadFragment(new QuestsFragment(), false);
+            } else if (id == R.id.nav_leaderboard) {
+                loadFragment(new LeaderboardFragment(), false);
+            } else if (id == R.id.nav_settings) {
+                loadFragment(new SettingsFragment(), false);
+            }
+            return true;
+        });
     }
 
-    private void setupIncrementButton(int buttonId, int amount) {
-        Button button = findViewById(buttonId);
-        button.setBackgroundResource(R.drawable.buttonshape);
-        button.setOnClickListener(v -> incrementCounter(amount));
+    private void loadFragment(Fragment fragment, boolean addToBackStack) {
+        androidx.fragment.app.FragmentTransaction tx =
+                getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.fragmentContainer, fragment);
+        if (addToBackStack) tx.addToBackStack(null);
+        tx.commit();
     }
 
     // =========================================================================
@@ -218,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 .putInt(KEY_BONUS_COUNT, bonusXpCollected)
                 .putString(KEY_QUESTS, encodeBooleanArray(questsCompleted))
                 .putString(KEY_QUEST_COUNTS, encodeIntArray(questCompletions))
-                .putInt(KEY_LAST_DAY, Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) // DAY_OF_YEAR avoids same-weekday-next-week bug
+                .putInt(KEY_LAST_DAY, Calendar.getInstance().get(Calendar.DAY_OF_YEAR))
                 .putString(KEY_USERNAME, getUsername())
                 .putString(KEY_DAILY_LOG, new Gson().toJson(dailyPushupLog))
                 .apply();
@@ -228,10 +210,6 @@ public class MainActivity extends AppCompatActivity {
     // Daily Quest Reset
     // =========================================================================
 
-    /**
-     * Resets quests and bonus when a new calendar day is detected.
-     * Uses DAY_OF_YEAR so "Monday this week" ≠ "Monday last week".
-     */
     private void resetQuestsIfNewDay() {
         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
         int lastDay    = sharedPreferences.getInt(KEY_LAST_DAY, -1);
@@ -246,29 +224,40 @@ public class MainActivity extends AppCompatActivity {
     // Counter & XP Logic
     // =========================================================================
 
-    private void incrementCounter(int amount) {
+    /** Increments counter and returns XP gained (equals amount added). */
+    public int incrementCounter(int amount) {
         counter += amount;
         xp      += amount;
-        logDailyPushups(amount); // FIX: was never called before
+        logDailyPushups(amount);
         checkLevelUp();
+        checkQuestProgress();
         saveState();
-        updateUI();
-        // Leaderboard is updated on save, not on every tap — use the reload button or the scheduled job
-        // to avoid hammering the API. Call updateOnlineLeaderboard() here only if you want real-time sync.
+        notifyListeners();
+        return amount;
     }
 
-    private void completeQuest(int index) {
-        if (questsCompleted[index]) return;
+    /** Decrements counter (undo). Minimum 0. */
+    public void decrementCounter(int amount) {
+        counter = Math.max(0, counter - amount);
+        xp      = Math.max(0, xp - amount);
+        int today = dailyPushupLog.getOrDefault(todayKey(), 0);
+        dailyPushupLog.put(todayKey(), Math.max(0, today - amount));
+        saveState();
+        notifyListeners();
+    }
 
+    void completeQuest(int index) {
+        if (questsCompleted[index]) return;
         questsCompleted[index] = true;
         questCompletions[index]++;
         xp += 20;
         checkLevelUp();
         saveState();
-        updateUI();
+        notifyListeners();
+        Toast.makeText(this, "Quest abgeschlossen! +20 XP", Toast.LENGTH_SHORT).show();
     }
 
-    private void collectBonus() {
+    public void collectBonus() {
         for (boolean done : questsCompleted) {
             if (!done) {
                 Toast.makeText(this, "Schließe zuerst alle Quests ab!", Toast.LENGTH_SHORT).show();
@@ -282,7 +271,17 @@ public class MainActivity extends AppCompatActivity {
         bonusCollected = true;
         checkLevelUp();
         saveState();
-        updateUI();
+        notifyListeners();
+        Toast.makeText(this, "+50 Bonus XP gesammelt!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void checkQuestProgress() {
+        int daily = getDailyPushups();
+        for (int i = 0; i < 3; i++) {
+            if (!questsCompleted[i] && daily >= QUEST_TARGETS[i]) {
+                completeQuest(i);
+            }
+        }
     }
 
     private void checkLevelUp() {
@@ -291,7 +290,8 @@ public class MainActivity extends AppCompatActivity {
             xp -= xpNeeded;
             level++;
             xpNeeded = xpForNextLevel();
-            Toast.makeText(this, "Level Up! Du bist jetzt Level " + level, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Level Up! Du bist jetzt Level " + level,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -299,13 +299,11 @@ public class MainActivity extends AppCompatActivity {
     // XP Calculations
     // =========================================================================
 
-    /** XP required to advance from the current level to the next. */
-    private int xpForNextLevel() {
+    public int xpForNextLevel() {
         return (int) (10 * Math.pow(level, 1.5));
     }
 
-    /** Total XP accumulated across all previous levels (for leaderboard display). */
-    private int totalXpAcrossLevels() {
+    public int totalXpAcrossLevels() {
         int total = 0;
         for (int i = 1; i < level; i++) {
             total += (int) (10 * Math.pow(i, 1.5));
@@ -322,11 +320,11 @@ public class MainActivity extends AppCompatActivity {
         dailyPushupLog.put(today, dailyPushupLog.getOrDefault(today, 0) + amount);
     }
 
-    private int getDailyPushups() {
+    public int getDailyPushups() {
         return dailyPushupLog.getOrDefault(todayKey(), 0);
     }
 
-    private int getWeeklyPushups() {
+    public int getWeeklyPushups() {
         int total = 0;
         Calendar cal = Calendar.getInstance();
         for (int i = 0; i < 7; i++) {
@@ -336,16 +334,33 @@ public class MainActivity extends AppCompatActivity {
         return total;
     }
 
-    /**
-     * Returns total push-ups stored in the log.
-     * NOTE: The log only stores one entry per day-name (e.g. "Montag"), so entries older than
-     * 7 days overwrite earlier ones. For true monthly/yearly tracking, switch to date-keyed
-     * entries like "2025-03-05".
-     */
-    private int getLogTotal() {
+    public int getLogTotal() {
         int total = 0;
         for (int v : dailyPushupLog.values()) total += v;
         return total;
+    }
+
+    /**
+     * Returns the current consecutive-day streak.
+     * Counts how many consecutive days (going back from today) had at least 1 push-up.
+     */
+    public int getStreak() {
+        Calendar cal = Calendar.getInstance();
+        // If today has no pushups yet, start checking from yesterday
+        if (dailyPushupLog.getOrDefault(keyFor(cal), 0) == 0) {
+            return 0;
+        }
+        int streak = 0;
+        for (int i = 0; i < 365; i++) {
+            int count = dailyPushupLog.getOrDefault(keyFor(cal), 0);
+            if (count > 0) {
+                streak++;
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+            } else {
+                break;
+            }
+        }
+        return streak;
     }
 
     private String todayKey() {
@@ -357,55 +372,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // =========================================================================
-    // UI Updates
+    // Public Getters
     // =========================================================================
 
-    private void updateUI() {
-        counterTextView.setText("Liegestützen: " + counter);
-        levelTextView.setText("Level: " + level);
-
-        int xpNeeded = xpForNextLevel();
-        xpProgressBar.setProgress(xpNeeded > 0 ? (xp * 100) / xpNeeded : 0);
-
-        updateQuestButtons();
-    }
-
-    private void updateQuestButtons() {
-        // Quest labels are in German for the user
-        String[] labels = {"Quest 1", "Quest 2", "Quest 3"};
-        for (int i = 0; i < questButtons.length; i++) {
-            questButtons[i].setText(labels[i]);
-            questButtons[i].setEnabled(!questsCompleted[i]);
-        }
-    }
-
-    // =========================================================================
-    // Username Dialog
-    // =========================================================================
-
-    private void showChangeNameDialog() {
-        EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint("Dein Name");
-
-        new AlertDialog.Builder(this)
-                .setTitle("Neuen Namen eingeben")
-                .setView(input)
-                .setPositiveButton("Speichern", (dialog, which) -> {
-                    String name = input.getText().toString().trim();
-                    if (!name.isEmpty()) {
-                        sharedPreferences.edit().putString(KEY_USERNAME, name).apply();
-                        Toast.makeText(this, "Name geändert zu: " + name, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Name darf nicht leer sein!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Abbrechen", null)
-                .show();
-    }
-
-    private String getUsername() {
+    public int     getCounter()             { return counter; }
+    public int     getXp()                  { return xp; }
+    public int     getLevel()               { return level; }
+    public int     getXpForNextLevel()      { return xpForNextLevel(); }
+    public int     getTotalXpAcrossLevels() { return totalXpAcrossLevels(); }
+    public boolean isQuestCompleted(int i)  { return questsCompleted[i]; }
+    public boolean isBonusCollected()       { return bonusCollected; }
+    public String  getUsername()            {
         return sharedPreferences.getString(KEY_USERNAME, "Unbekannt");
+    }
+    public int getTotalQuestsCompleted() {
+        return questCompletions[0] + questCompletions[1] + questCompletions[2];
+    }
+
+    public void setUsername(String name) {
+        sharedPreferences.edit().putString(KEY_USERNAME, name).apply();
+    }
+
+    // =========================================================================
+    // Listener notification
+    // =========================================================================
+
+    private void notifyListeners() {
+        for (OnStateChangedListener l : stateListeners) {
+            l.onStateChanged();
+        }
     }
 
     // =========================================================================
@@ -447,41 +442,9 @@ public class MainActivity extends AppCompatActivity {
     // Networking — Leaderboard
     // =========================================================================
 
-    private void loadOnlineLeaderboard() {
-        leaderboardAPI.getLeaderboard().enqueue(new Callback<List<LeaderboardEntry>>() {
-            @Override
-            public void onResponse(Call<List<LeaderboardEntry>> call, Response<List<LeaderboardEntry>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<String> rows = new ArrayList<>();
-                    for (LeaderboardEntry e : response.body()) {
-                        rows.add(e.getName() + " — Liegestützen: " + e.getPushups() + ", Level: " + e.getLevel());
-                    }
-                    updateLeaderboardUI(rows);
-                } else {
-                    Log.w("Leaderboard", "Leaderboard response not successful");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<LeaderboardEntry>> call, Throwable t) {
-                Log.e("Leaderboard", "Fehler beim Laden des Leaderboards", t);
-            }
-        });
-    }
-
-    private void updateLeaderboardUI(List<String> rows) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, rows);
-        ListView listView = findViewById(R.id.leaderboardListView);
-        listView.setAdapter(adapter);
-    }
-
-    /**
-     * Pushes the current user's stats to the online leaderboard.
-     * Call this explicitly (e.g. on the reload button) rather than on every tap.
-     */
-    private void updateOnlineLeaderboard() {
+    /** Pushes the current user's stats to the online leaderboard. */
+    public void updateOnlineLeaderboard() {
         String username = getUsername();
-        // Use a sanitized username as the player ID
         String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
 
         LeaderboardEntry entry = new LeaderboardEntry();
@@ -491,20 +454,19 @@ public class MainActivity extends AppCompatActivity {
         entry.setCurrentXp(xp);
         entry.setTotalXp(totalXpAcrossLevels());
         entry.setXpForNextLevel(xpForNextLevel());
-
-        entry.setTotalQuestsCompleted(questCompletions[0] + questCompletions[1] + questCompletions[2]);
+        entry.setTotalQuestsCompleted(getTotalQuestsCompleted());
         entry.setQuest1Completions(questCompletions[0]);
         entry.setQuest2Completions(questCompletions[1]);
         entry.setQuest3Completions(questCompletions[2]);
         entry.setBonusXpCollected(bonusXpCollected);
 
-        int daily   = getDailyPushups();
-        int weekly  = getWeeklyPushups();
+        int daily  = getDailyPushups();
+        int weekly = getWeeklyPushups();
         int allTime = getLogTotal();
         entry.setDailyPushups(daily);
         entry.setWeeklyPushups(weekly);
-        entry.setMonthlyPushups(allTime);  // see NOTE in getLogTotal()
-        entry.setYearlyPushups(allTime);   // see NOTE in getLogTotal()
+        entry.setMonthlyPushups(allTime);
+        entry.setYearlyPushups(allTime);
         entry.setAvgPushupsPerDay(daily);
         entry.setAvgPushupsPerWeek((double) weekly / 7);
         entry.setAvgPushupsPerMonth((double) allTime / 30);
@@ -527,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // =========================================================================
-    // BroadcastReceiver — receives leaderboard updates from LeaderboardUpdateService
+    // BroadcastReceiver
     // =========================================================================
 
     private void registerLeaderboardReceiver() {
@@ -542,55 +504,40 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver leaderboardReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_LEADERBOARD_DATA);
-            if (data != null) updateLeaderboardUI(data);
+            // Leaderboard updates are handled by LeaderboardFragment's own receiver
+            Log.d("MainActivity", "Leaderboard broadcast received");
         }
     };
 
     // =========================================================================
-    // JobScheduler — periodic leaderboard background refresh
+    // JobScheduler
     // =========================================================================
 
-    /**
-     * Schedules LeaderboardUpdateService to run every 15 minutes when a network is available.
-     * LeaderboardUpdateService MUST be a top-level class (not an inner class) and declared
-     * in AndroidManifest.xml with android:permission="android.permission.BIND_JOB_SERVICE".
-     */
     private void scheduleLeaderboardJob() {
         JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (scheduler == null) return;
-
-        // Avoid rescheduling if the job is already pending
         if (scheduler.getPendingJob(JOB_ID) != null) return;
 
         ComponentName service = new ComponentName(this, LeaderboardUpdateService.class);
         JobInfo job = new JobInfo.Builder(JOB_ID, service)
-                .setPeriodic(15 * 60 * 1000L) // 15-minute minimum enforced by Android
+                .setPeriodic(15 * 60 * 1000L)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
 
         int result = scheduler.schedule(job);
         if (result != JobScheduler.RESULT_SUCCESS) {
-            Log.w("Leaderboard", "Automatische Aktualisierung konnte nicht geplant werden: " + result);
+            Log.w("Leaderboard", "Automatische Aktualisierung konnte nicht geplant werden: "
+                    + result);
         }
     }
 
     /**
      * LeaderboardUpdateService — background JobService that fetches the leaderboard
-     * and broadcasts the result to MainActivity via a local broadcast.
-     *
-     * IMPORTANT: This must be a top-level class (not an inner class of MainActivity)
-     * and must be declared in AndroidManifest.xml:
-     *
-     *   <service
-     *       android:name=".LeaderboardUpdateService"
-     *       android:permission="android.permission.BIND_JOB_SERVICE"
-     *       android:exported="false" />
+     * and broadcasts the result.
      */
     public static class LeaderboardUpdateService extends JobService {
 
         private static final String TAG = "LeaderboardService";
-
         private LeaderboardAPI leaderboardAPI;
 
         @Override
@@ -607,23 +554,28 @@ public class MainActivity extends AppCompatActivity {
         public boolean onStartJob(JobParameters params) {
             Log.d(TAG, "Leaderboard-Aktualisierungsauftrag gestartet");
             fetchAndBroadcast(params);
-            return true; // job is still running (async)
+            return true;
         }
 
         @Override
         public boolean onStopJob(JobParameters params) {
             Log.w(TAG, "Leaderboard-Aktualisierungsauftrag gestoppt");
-            return false; // do not retry
+            return false;
         }
 
         private void fetchAndBroadcast(JobParameters params) {
             leaderboardAPI.getLeaderboard().enqueue(new Callback<List<LeaderboardEntry>>() {
                 @Override
-                public void onResponse(Call<List<LeaderboardEntry>> call, Response<List<LeaderboardEntry>> response) {
+                public void onResponse(Call<List<LeaderboardEntry>> call,
+                                       Response<List<LeaderboardEntry>> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         ArrayList<String> rows = new ArrayList<>();
+                        int rank = 1;
                         for (LeaderboardEntry e : response.body()) {
-                            rows.add(e.getName() + " — Liegestützen: " + e.getPushups() + ", Level: " + e.getLevel());
+                            rows.add("#" + rank + "  " + e.getName()
+                                    + "   Liegestützen: " + e.getPushups()
+                                    + "   Level: " + e.getLevel());
+                            rank++;
                         }
                         Intent intent = new Intent("UPDATE_LEADERBOARD");
                         intent.putStringArrayListExtra("leaderboardData", rows);
