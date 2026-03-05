@@ -438,21 +438,6 @@ public class MainActivity extends AppCompatActivity {
     // Networking — Leaderboard
     // =========================================================================
 
-    void loadOnlineLeaderboard() {
-        leaderboardAPI.getLeaderboard().enqueue(new Callback<List<LeaderboardEntry>>() {
-            @Override
-            public void onResponse(Call<List<LeaderboardEntry>> call,
-                                   Response<List<LeaderboardEntry>> response) {
-                Log.d("Leaderboard", "Response received");
-            }
-
-            @Override
-            public void onFailure(Call<List<LeaderboardEntry>> call, Throwable t) {
-                Log.e("Leaderboard", "Fehler beim Laden des Leaderboards", t);
-            }
-        });
-    }
-
     /** Pushes the current user's stats to the online leaderboard. */
     public void updateOnlineLeaderboard() {
         String username = getUsername();
