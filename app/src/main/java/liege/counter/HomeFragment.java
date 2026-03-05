@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         btn1.setOnLongClickListener(v -> {
             v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mainActivity.decrementCounter(1);
-            Toast.makeText(getContext(), "−1 rückgängig gemacht", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "-1 rückgängig gemacht", Toast.LENGTH_SHORT).show();
             return true;
         });
     }

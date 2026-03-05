@@ -346,6 +346,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public int getStreak() {
         Calendar cal = Calendar.getInstance();
+        // If today has no pushups yet, start checking from yesterday
+        if (dailyPushupLog.getOrDefault(keyFor(cal), 0) == 0) {
+            return 0;
+        }
         int streak = 0;
         for (int i = 0; i < 365; i++) {
             int count = dailyPushupLog.getOrDefault(keyFor(cal), 0);
