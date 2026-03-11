@@ -1,6 +1,9 @@
 package liege.counter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +17,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class HomeFragment extends Fragment implements MainActivity.OnStateChangedListener {
+
+    private static final String JOKE_PREFS   = "JokePrefs";
+    private static final String KEY_JOKE     = "cachedJoke";
+    private static final String KEY_JOKE_DAY = "jokeDay";
 
     private TextView counterTextView;
     private TextView levelTextView;
@@ -24,6 +41,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     private TextView weeklyTextView;
     private TextView totalTextView;
     private TextView streakTextView;
+    private TextView jokeTextView;
 
     private MainActivity mainActivity;
 
@@ -47,9 +65,11 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         weeklyTextView     = view.findViewById(R.id.weeklyTextView);
         totalTextView      = view.findViewById(R.id.totalTextView);
         streakTextView     = view.findViewById(R.id.streakTextView);
+        jokeTextView       = view.findViewById(R.id.jokeTextView);
 
         setupButtons(view);
         updateDisplay();
+        loadDailyJoke();
     }
 
     private void setupButtons(View root) {
@@ -124,5 +144,71 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         } else {
             streakTextView.setVisibility(View.GONE);
         }
+    }
+
+    // =========================================================================
+    // Daily German joke (cached per calendar day)
+    // =========================================================================
+
+    private void loadDailyJoke() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences(JOKE_PREFS, Context.MODE_PRIVATE);
+
+        String cachedDay  = prefs.getString(KEY_JOKE_DAY, "");
+        String cachedJoke = prefs.getString(KEY_JOKE, "");
+
+        if (today.equals(cachedDay) && !cachedJoke.isEmpty()) {
+            jokeTextView.setText(cachedJoke);
+            return;
+        }
+
+        // Fetch a fresh joke for today
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://v2.jokeapi.dev/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        JokeApiService service = retrofit.create(JokeApiService.class);
+
+        service.getGermanJoke("de", "single", "nsfw,racist,sexist")
+                .enqueue(new Callback<JokeResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JokeResponse> call,
+                                           @NonNull Response<JokeResponse> response) {
+                        if (!isAdded()) return;
+                        JokeResponse body = response.body();
+                        if (response.isSuccessful() && body != null && !body.isError()) {
+                            String joke;
+                            if ("twopart".equals(body.getType())
+                                    && body.getSetup() != null && body.getDelivery() != null) {
+                                joke = body.getSetup() + "\n— " + body.getDelivery();
+                            } else {
+                                joke = body.getJoke();
+                            }
+                            if (joke == null || joke.isEmpty()) joke = buildFallbackJoke();
+                            showAndCacheJoke(joke, today, prefs);
+                        } else {
+                            showAndCacheJoke(buildFallbackJoke(), today, prefs);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JokeResponse> call,
+                                          @NonNull Throwable t) {
+                        if (!isAdded()) return;
+                        Log.w("HomeFragment", "Witz konnte nicht geladen werden", t);
+                        showAndCacheJoke(buildFallbackJoke(), today, prefs);
+                    }
+                });
+    }
+
+    private void showAndCacheJoke(String joke, String day, SharedPreferences prefs) {
+        if (jokeTextView != null) jokeTextView.setText(joke);
+        prefs.edit().putString(KEY_JOKE, joke).putString(KEY_JOKE_DAY, day).apply();
+    }
+
+    private String buildFallbackJoke() {
+        return "Warum machen Programmierer keine Liegestütze? " +
+               "Weil sie schon genug Push-Requests haben! 💪";
     }
 }

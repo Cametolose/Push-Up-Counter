@@ -38,6 +38,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import okhttp3.OkHttpClient;
+
 /**
  * MainActivity — Push-up counter with XP/leveling system, daily quests, and an online leaderboard.
  * Uses a BottomNavigationView with Fragments for each section.
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupStatusBar();
+        SupabaseConfig.validateConfig();
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         initRetrofit();
@@ -133,10 +136,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_url))
+                .baseUrl(SupabaseConfig.SUPABASE_URL)
+                .client(buildSupabaseClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         leaderboardAPI = retrofit.create(LeaderboardAPI.class);
+    }
+
+    /**
+     * Builds an OkHttpClient that injects the required Supabase auth headers
+     * on every request. Shared by MainActivity, LeaderboardFragment and
+     * LeaderboardUpdateService.
+     */
+    public static OkHttpClient buildSupabaseClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    okhttp3.Request request = chain.request().newBuilder()
+                            .header("apikey",        SupabaseConfig.SUPABASE_ANON_KEY)
+                            .header("Authorization", "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY)
+                            .header("Content-Type",  "application/json")
+                            .build();
+                    return chain.proceed(request);
+                })
+                .build();
     }
 
     private void setupBottomNavigation() {
@@ -445,6 +467,10 @@ public class MainActivity extends AppCompatActivity {
     /** Pushes the current user's stats to the online leaderboard. */
     public void updateOnlineLeaderboard() {
         String username = getUsername();
+        if (username.equals("Unbekannt") || username.trim().isEmpty()) {
+            Log.w("Leaderboard", "Kein Benutzername gesetzt — Leaderboard-Upload übersprungen");
+            return;
+        }
         String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
 
         LeaderboardEntry entry = new LeaderboardEntry();
@@ -471,7 +497,8 @@ public class MainActivity extends AppCompatActivity {
         entry.setAvgPushupsPerWeek((double) weekly / 7);
         entry.setAvgPushupsPerMonth((double) allTime / 30);
 
-        leaderboardAPI.updateEntry(playerId, entry).enqueue(new Callback<Void>() {
+        entry.setId(playerId);
+        leaderboardAPI.upsertEntry(entry).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -544,7 +571,8 @@ public class MainActivity extends AppCompatActivity {
         public void onCreate() {
             super.onCreate();
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(AppConfig.BASE_URL)
+                    .baseUrl(SupabaseConfig.SUPABASE_URL)
+                    .client(MainActivity.buildSupabaseClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             leaderboardAPI = retrofit.create(LeaderboardAPI.class);

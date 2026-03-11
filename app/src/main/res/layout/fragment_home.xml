@@ -146,6 +146,35 @@
                 android:elevation="4dp"/>
         </LinearLayout>
 
+        <!-- Daily German joke / fact card -->
+        <LinearLayout
+            android:id="@+id/jokeCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/quest_card_bg"
+            android:padding="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💡 Täglicher Witz"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/jokeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wird geladen…"
+                android:textColor="#FFFFFFFF"
+                android:textSize="14sp"
+                android:lineSpacingMultiplier="1.3"/>
+        </LinearLayout>
+
         <!-- Weekly stats row -->
         <LinearLayout
             android:layout_width="match_parent"
