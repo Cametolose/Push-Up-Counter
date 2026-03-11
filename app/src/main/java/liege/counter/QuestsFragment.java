@@ -26,40 +26,40 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
      * dayIndex: 0 = Sunday … 6 = Saturday  (Calendar.DAY_OF_WEEK - 1)
      */
     private static final String[][][] QUEST_DATA = {
-        { // Sonntag
-            {"Beispielaufgabe (So. 1)", "Starte entspannt — mache 20 Liegestütze"},
-            {"Beispielaufgabe (So. 2)", "Halte deinen Rhythmus — 50 Liegestütze"},
-            {"Beispielaufgabe (So. 3)", "Beende das Wochenende stark — 100 Liegestütze"}
+        { // Sonntag — Erholung & Stretching
+            {"Morgendehnung", "Dehne dich 10 Minuten und mache 20 breite Liegestütze (breiter Griff = mehr Brust)"},
+            {"Aktive Erholung", "30 normale + 20 Diamant-Liegestütze (Hände eng zusammen = Trizeps-Fokus)"},
+            {"Sonntags-Champion", "100 Liegestütze nach Wahl — mische verschiedene Varianten für maximalen Effekt"}
         },
-        { // Montag
-            {"Beispielaufgabe (Mo. 1)", "Starte motiviert in die Woche — 20 Liegestütze"},
-            {"Beispielaufgabe (Mo. 2)", "Zeig der Woche, was du drauf hast — 50 Liegestütze"},
-            {"Beispielaufgabe (Mo. 3)", "Setze gleich am Montag ein Zeichen — 100 Liegestütze"}
+        { // Montag — Wochenstart
+            {"Wochenstart-Power", "20 klassische Liegestütze als motivierter Tagesstart — saubere Technik!"},
+            {"Montags-Schub", "20 normale + 20 breite + 10 Diamant-Liegestütze (kurze Pausen erlaubt)"},
+            {"Montags-Held", "100 Liegestütze in Sets deiner Wahl — z.B. 10×10 oder 5×20"}
         },
-        { // Dienstag
-            {"Beispielaufgabe (Di. 1)", "Halte den Schwung vom Montag — 20 Liegestütze"},
-            {"Beispielaufgabe (Di. 2)", "Steigere dich Schritt für Schritt — 50 Liegestütze"},
-            {"Beispielaufgabe (Di. 3)", "Übertreffe dich selbst heute — 100 Liegestütze"}
+        { // Dienstag — Oberkörper
+            {"Schulter-Aktivierung", "20 Pike-Liegestütze: Gesäß hoch, Kopf zwischen die Arme — ideal für Schultern"},
+            {"Brust & Trizeps", "25 normale + 25 Diamant-Liegestütze für Brust und Trizeps"},
+            {"Dienstags-Krieger", "100 Liegestütze + je 3×30 Sek. Plank zwischen den Sets zur Core-Stärkung"}
         },
-        { // Mittwoch
-            {"Beispielaufgabe (Mi. 1)", "Du bist auf halbem Weg — 20 Liegestütze"},
-            {"Beispielaufgabe (Mi. 2)", "Kämpfe dich durch die Wochenmitte — 50 Liegestütze"},
-            {"Beispielaufgabe (Mi. 3)", "Maximale Kraft zur Wochenmitte — 100 Liegestütze"}
+        { // Mittwoch — Core & Stabilität
+            {"Slow-Push-up Challenge", "20 Liegestütze mit 3-Sek.-Halt unten — maximale Spannung, langsam & kontrolliert"},
+            {"Wochenmitte-Push", "20 normale + 20 breite + 10 Archer-Liegestütze (eine Seite strecken, abwechselnd)"},
+            {"Mittwochs-Meister", "100 Liegestütze gemischt + 10 Minuten Stretching danach (Schultern, Brust, Trizeps)"}
         },
-        { // Donnerstag
-            {"Beispielaufgabe (Do. 1)", "Das Wochenende rückt näher — 20 Liegestütze"},
-            {"Beispielaufgabe (Do. 2)", "Volle Kraft an diesem Donnerstag — 50 Liegestütze"},
-            {"Beispielaufgabe (Do. 3)", "Alles geben vor dem Wochenende — 100 Liegestütze"}
+        { // Donnerstag — Ausdauer
+            {"Ausdauer-Basis", "20 Liegestütze in langsamem Tempo — 2 Sek. runter, kurz halten, 2 Sek. hoch"},
+            {"Donnerstags-Kraft", "5 Sätze à 10 Liegestütze mit je 30 Sek. Pause — Fokus auf gleichmäßige Form"},
+            {"Donnerstags-Titan", "100 Liegestütze beliebig verteilt + 5 Min. Dehnübungen für Schultern & Brust"}
         },
-        { // Freitag
-            {"Beispielaufgabe (Fr. 1)", "Starte locker ins Wochenende — 20 Liegestütze"},
-            {"Beispielaufgabe (Fr. 2)", "Belohne dich mit einem starken Training — 50 Liegestütze"},
-            {"Beispielaufgabe (Fr. 3)", "Beende die Arbeitswoche mit Kraft — 100 Liegestütze"}
+        { // Freitag — Power & Explosivität
+            {"Feierabend-Starter", "20 Archer-Liegestütze — eine Seite strecken und abwechseln (Koordination & Kraft)"},
+            {"Freitags-Feuer", "50 explosive Liegestütze — drücke dich so schnell wie möglich hoch (Sprengkraft)"},
+            {"Wochenend-Countdown", "100 Liegestütze: breiter Griff → normaler Griff → Diamant (je ~33)"}
         },
-        { // Samstag
-            {"Beispielaufgabe (Sa. 1)", "Nutze das Wochenende für Training — 20 Liegestütze"},
-            {"Beispielaufgabe (Sa. 2)", "Zeig am Wochenende deine Stärke — 50 Liegestütze"},
-            {"Beispielaufgabe (Sa. 3)", "Setz einen neuen Wochenend-Rekord — 100 Liegestütze"}
+        { // Samstag — Wochenend-Warrior
+            {"Wochenend-Warmup", "5 Min. Ganzkörper-Dehnen, dann 20 Liegestütze nach Wahl — locker bleiben"},
+            {"Samstags-Booster", "25 normale + 15 Decline-Liegestütze (Füße erhöht = obere Brust) + 10 Pike"},
+            {"Wochenend-Warrior", "100 Liegestütze + Hampelmann 3×30 Sek. und 2×30 Sek. Plank zur Abkühlung"}
         }
     };
 
@@ -182,12 +182,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
                 questDescs[i].setText(todayQuests[i][1]);
                 questDescs[i].setTextColor(0xFFBBBBBB);
                 allDone = false;
-                // Show "Complete" button only when enough pushups have been done
-                if (daily >= target) {
-                    completeButtons[i].setVisibility(View.VISIBLE);
-                } else {
-                    completeButtons[i].setVisibility(View.GONE);
-                }
+                completeButtons[i].setVisibility(View.VISIBLE);
             }
         }
 
