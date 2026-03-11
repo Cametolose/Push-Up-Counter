@@ -15,9 +15,53 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Calendar;
+
 public class QuestsFragment extends Fragment implements MainActivity.OnStateChangedListener {
 
     private static final int[] QUEST_TARGETS = {20, 50, 100};
+
+    /**
+     * 21 example tasks: QUEST_DATA[dayIndex][questIndex] = {title, description}
+     * dayIndex: 0 = Sunday … 6 = Saturday  (Calendar.DAY_OF_WEEK - 1)
+     */
+    private static final String[][][] QUEST_DATA = {
+        { // Sonntag
+            {"Beispielaufgabe (So. 1)", "Starte entspannt — mache 20 Liegestütze"},
+            {"Beispielaufgabe (So. 2)", "Halte deinen Rhythmus — 50 Liegestütze"},
+            {"Beispielaufgabe (So. 3)", "Beende das Wochenende stark — 100 Liegestütze"}
+        },
+        { // Montag
+            {"Beispielaufgabe (Mo. 1)", "Starte motiviert in die Woche — 20 Liegestütze"},
+            {"Beispielaufgabe (Mo. 2)", "Zeig der Woche, was du drauf hast — 50 Liegestütze"},
+            {"Beispielaufgabe (Mo. 3)", "Setze gleich am Montag ein Zeichen — 100 Liegestütze"}
+        },
+        { // Dienstag
+            {"Beispielaufgabe (Di. 1)", "Halte den Schwung vom Montag — 20 Liegestütze"},
+            {"Beispielaufgabe (Di. 2)", "Steigere dich Schritt für Schritt — 50 Liegestütze"},
+            {"Beispielaufgabe (Di. 3)", "Übertreffe dich selbst heute — 100 Liegestütze"}
+        },
+        { // Mittwoch
+            {"Beispielaufgabe (Mi. 1)", "Du bist auf halbem Weg — 20 Liegestütze"},
+            {"Beispielaufgabe (Mi. 2)", "Kämpfe dich durch die Wochenmitte — 50 Liegestütze"},
+            {"Beispielaufgabe (Mi. 3)", "Maximale Kraft zur Wochenmitte — 100 Liegestütze"}
+        },
+        { // Donnerstag
+            {"Beispielaufgabe (Do. 1)", "Das Wochenende rückt näher — 20 Liegestütze"},
+            {"Beispielaufgabe (Do. 2)", "Volle Kraft an diesem Donnerstag — 50 Liegestütze"},
+            {"Beispielaufgabe (Do. 3)", "Alles geben vor dem Wochenende — 100 Liegestütze"}
+        },
+        { // Freitag
+            {"Beispielaufgabe (Fr. 1)", "Starte locker ins Wochenende — 20 Liegestütze"},
+            {"Beispielaufgabe (Fr. 2)", "Belohne dich mit einem starken Training — 50 Liegestütze"},
+            {"Beispielaufgabe (Fr. 3)", "Beende die Arbeitswoche mit Kraft — 100 Liegestütze"}
+        },
+        { // Samstag
+            {"Beispielaufgabe (Sa. 1)", "Nutze das Wochenende für Training — 20 Liegestütze"},
+            {"Beispielaufgabe (Sa. 2)", "Zeig am Wochenende deine Stärke — 50 Liegestütze"},
+            {"Beispielaufgabe (Sa. 3)", "Setz einen neuen Wochenend-Rekord — 100 Liegestütze"}
+        }
+    };
 
     private final LinearLayout[] questCards  = new LinearLayout[3];
     private final TextView[]     questTitles = new TextView[3];
@@ -91,22 +135,26 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         }
     }
 
+    /** Returns the 0-based day index (0 = Sunday … 6 = Saturday). */
+    private int todayDayIndex() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+    }
+
     private void updateDisplay() {
         if (mainActivity == null) return;
 
         int daily = mainActivity.getDailyPushups();
         boolean allDone = true;
 
-        String[] defaultDescs = {
-            "Mache 20 Liegestütze heute",
-            "Mache 50 Liegestütze heute",
-            "Mache 100 Liegestütze heute"
-        };
+        int dayIndex = todayDayIndex();
+        String[][] todayQuests = QUEST_DATA[dayIndex];
 
         for (int i = 0; i < 3; i++) {
             boolean completed = mainActivity.isQuestCompleted(i);
             int target   = QUEST_TARGETS[i];
             int progress = Math.min(daily, target);
+
+            questTitles[i].setText(todayQuests[i][0]);
 
             questBars[i].setMax(target);
             questBars[i].setProgress(progress);
@@ -124,7 +172,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
                 questChecks[i].setVisibility(View.GONE);
                 questTitles[i].setPaintFlags(
                         questTitles[i].getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                questDescs[i].setText(defaultDescs[i]);
+                questDescs[i].setText(todayQuests[i][1]);
                 questDescs[i].setTextColor(0xFFBBBBBB);
                 allDone = false;
             }

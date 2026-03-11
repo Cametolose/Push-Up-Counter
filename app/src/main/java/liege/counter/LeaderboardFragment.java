@@ -31,6 +31,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import okhttp3.OkHttpClient;
+
 public class LeaderboardFragment extends Fragment {
 
     private static final String ACTION_UPDATE_LEADERBOARD = "UPDATE_LEADERBOARD";
@@ -67,7 +69,8 @@ public class LeaderboardFragment extends Fragment {
         spinAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.spin);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(requireContext().getString(R.string.base_url))
+                .baseUrl(SupabaseConfig.SUPABASE_URL)
+                .client(MainActivity.buildSupabaseClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         leaderboardAPI = retrofit.create(LeaderboardAPI.class);

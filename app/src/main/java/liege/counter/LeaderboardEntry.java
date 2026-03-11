@@ -1,6 +1,8 @@
 package liege.counter;
 
 public class LeaderboardEntry {
+    private String id;
+
     private String name;
     private int pushups;
     private int level;
@@ -32,6 +34,14 @@ public class LeaderboardEntry {
 
 
     // Getters and Setters for all fields
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
