@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,12 +29,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import okhttp3.OkHttpClient;
-
 public class LeaderboardFragment extends Fragment {
 
     private static final String ACTION_UPDATE_LEADERBOARD = "UPDATE_LEADERBOARD";
-    private static final String EXTRA_LEADERBOARD_DATA    = "leaderboardData";
 
     private ListView    listView;
     private ProgressBar loadingBar;
@@ -44,11 +39,11 @@ public class LeaderboardFragment extends Fragment {
     private Animation   spinAnimation;
     private LeaderboardAPI leaderboardAPI;
 
+    /** Triggered by background job — just request a fresh load. */
     private final BroadcastReceiver leaderboardReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_LEADERBOARD_DATA);
-            if (data != null) updateList(data);
+            loadLeaderboard();
         }
     };
 
@@ -117,16 +112,7 @@ public class LeaderboardFragment extends Fragment {
                 loadingBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null
                         && !response.body().isEmpty()) {
-                    List<String> rows = new ArrayList<>();
-                    int rank = 1;
-                    for (LeaderboardEntry e : response.body()) {
-                        rows.add("#" + rank + "  " + e.getName()
-                                + "   Liegestützen: " + e.getPushups()
-                                + "   Level: " + e.getLevel()
-                                + "   🔥" + e.getStreak() + " Tage");
-                        rank++;
-                    }
-                    updateList(rows);
+                    showEntries(response.body());
                 } else {
                     showEmpty();
                 }
@@ -142,17 +128,15 @@ public class LeaderboardFragment extends Fragment {
         });
     }
 
-    private void updateList(List<String> rows) {
+    private void showEntries(List<LeaderboardEntry> entries) {
         if (!isAdded()) return;
-        if (rows.isEmpty()) {
+        if (entries.isEmpty()) {
             showEmpty();
             return;
         }
         listView.setVisibility(View.VISIBLE);
         emptyText.setVisibility(View.GONE);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_list_item_1, rows);
-        listView.setAdapter(adapter);
+        listView.setAdapter(new LeaderboardAdapter(requireContext(), entries));
     }
 
     private void showEmpty() {
@@ -160,3 +144,4 @@ public class LeaderboardFragment extends Fragment {
         emptyText.setVisibility(View.VISIBLE);
     }
 }
+

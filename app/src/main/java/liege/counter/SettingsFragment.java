@@ -19,8 +19,16 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
 
     private TextView usernameDisplay;
     private TextView statsTotalPushups;
+    private TextView statsDailyPushups;
+    private TextView statsWeeklyPushups;
+    private TextView statsLevel;
     private TextView statsTotalXp;
+    private TextView statsStreak;
     private TextView statsTotalQuests;
+    private TextView statsQuest1Count;
+    private TextView statsQuest2Count;
+    private TextView statsQuest3Count;
+    private TextView statsBonusCount;
 
     private MainActivity mainActivity;
 
@@ -38,8 +46,16 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
 
         usernameDisplay   = view.findViewById(R.id.usernameDisplay);
         statsTotalPushups = view.findViewById(R.id.statsTotalPushups);
+        statsDailyPushups = view.findViewById(R.id.statsDailyPushups);
+        statsWeeklyPushups = view.findViewById(R.id.statsWeeklyPushups);
+        statsLevel        = view.findViewById(R.id.statsLevel);
         statsTotalXp      = view.findViewById(R.id.statsTotalXp);
+        statsStreak       = view.findViewById(R.id.statsStreak);
         statsTotalQuests  = view.findViewById(R.id.statsTotalQuests);
+        statsQuest1Count  = view.findViewById(R.id.statsQuest1Count);
+        statsQuest2Count  = view.findViewById(R.id.statsQuest2Count);
+        statsQuest3Count  = view.findViewById(R.id.statsQuest3Count);
+        statsBonusCount   = view.findViewById(R.id.statsBonusCount);
 
         Button changeNameButton = view.findViewById(R.id.changeNameButton);
         changeNameButton.setOnClickListener(v -> showChangeNameDialog());
@@ -71,8 +87,16 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         if (mainActivity == null) return;
         usernameDisplay.setText(mainActivity.getUsername());
         statsTotalPushups.setText(String.valueOf(mainActivity.getCounter()));
+        statsDailyPushups.setText(String.valueOf(mainActivity.getDailyPushups()));
+        statsWeeklyPushups.setText(String.valueOf(mainActivity.getWeeklyPushups()));
+        statsLevel.setText(String.valueOf(mainActivity.getLevel()));
         statsTotalXp.setText(String.valueOf(mainActivity.getTotalXpAcrossLevels()));
+        statsStreak.setText(mainActivity.getStreak() + " Tage");
         statsTotalQuests.setText(String.valueOf(mainActivity.getTotalQuestsCompleted()));
+        statsQuest1Count.setText(String.valueOf(mainActivity.getQuestCompletionCount(0)));
+        statsQuest2Count.setText(String.valueOf(mainActivity.getQuestCompletionCount(1)));
+        statsQuest3Count.setText(String.valueOf(mainActivity.getQuestCompletionCount(2)));
+        statsBonusCount.setText(String.valueOf(mainActivity.getBonusXpCollected()));
     }
 
     private void showChangeNameDialog() {
@@ -99,3 +123,4 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
                 .show();
     }
 }
+
