@@ -36,6 +36,7 @@ import android.util.Log;
  *      avgPushupsPerDay     float8
  *      avgPushupsPerWeek    float8
  *      avgPushupsPerMonth   float8
+ *      streak               int8
  *
  *    Note: column names must match the Java field names above (camelCase)
  *    because Gson serialises without @SerializedName annotations.

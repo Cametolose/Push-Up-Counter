@@ -122,7 +122,8 @@ public class LeaderboardFragment extends Fragment {
                     for (LeaderboardEntry e : response.body()) {
                         rows.add("#" + rank + "  " + e.getName()
                                 + "   Liegestützen: " + e.getPushups()
-                                + "   Level: " + e.getLevel());
+                                + "   Level: " + e.getLevel()
+                                + "   🔥" + e.getStreak() + " Tage");
                         rank++;
                     }
                     updateList(rows);

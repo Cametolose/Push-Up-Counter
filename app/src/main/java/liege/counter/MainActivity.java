@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
         xp      += amount;
         logDailyPushups(amount);
         checkLevelUp();
-        checkQuestProgress();
         saveState();
         notifyListeners();
         return amount;
@@ -268,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         notifyListeners();
     }
 
-    void completeQuest(int index) {
+    public void completeQuest(int index) {
         if (questsCompleted[index]) return;
         questsCompleted[index] = true;
         questCompletions[index]++;
@@ -322,13 +321,13 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================================
 
     public int xpForNextLevel() {
-        return (int) (10 * Math.pow(level, 1.5));
+        return (int) (50 * Math.pow(level, 2));
     }
 
     public int totalXpAcrossLevels() {
         int total = 0;
         for (int i = 1; i < level; i++) {
-            total += (int) (10 * Math.pow(i, 1.5));
+            total += (int) (50 * Math.pow(i, 2));
         }
         return total + xp;
     }
@@ -364,18 +363,19 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Returns the current consecutive-day streak.
-     * Counts how many consecutive days (going back from today) had at least 1 push-up.
+     * Counts how many consecutive days (going back from today or yesterday)
+     * had at least 10 push-ups.
      */
     public int getStreak() {
         Calendar cal = Calendar.getInstance();
-        // If today has no pushups yet, start checking from yesterday
-        if (dailyPushupLog.getOrDefault(keyFor(cal), 0) == 0) {
-            return 0;
+        // If today has fewer than 10 pushups, start counting from yesterday
+        // (keeps the streak visible until midnight even if today's session hasn't started)
+        if (dailyPushupLog.getOrDefault(keyFor(cal), 0) < 10) {
+            cal.add(Calendar.DAY_OF_YEAR, -1);
         }
         int streak = 0;
         for (int i = 0; i < 365; i++) {
-            int count = dailyPushupLog.getOrDefault(keyFor(cal), 0);
-            if (count > 0) {
+            if (dailyPushupLog.getOrDefault(keyFor(cal), 0) >= 10) {
                 streak++;
                 cal.add(Calendar.DAY_OF_YEAR, -1);
             } else {
@@ -390,7 +390,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String keyFor(Calendar cal) {
-        return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        return String.format(Locale.US, "%04d-%02d-%02d",
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.DAY_OF_MONTH));
     }
 
     // =========================================================================
@@ -496,6 +499,7 @@ public class MainActivity extends AppCompatActivity {
         entry.setAvgPushupsPerDay(daily);
         entry.setAvgPushupsPerWeek((double) weekly / 7);
         entry.setAvgPushupsPerMonth((double) allTime / 30);
+        entry.setStreak(getStreak());
 
         entry.setId(playerId);
         leaderboardAPI.upsertEntry(entry).enqueue(new Callback<Void>() {
@@ -602,7 +606,8 @@ public class MainActivity extends AppCompatActivity {
                         for (LeaderboardEntry e : response.body()) {
                             rows.add("#" + rank + "  " + e.getName()
                                     + "   Liegestützen: " + e.getPushups()
-                                    + "   Level: " + e.getLevel());
+                                    + "   Level: " + e.getLevel()
+                                    + "   🔥" + e.getStreak() + " Tage");
                             rank++;
                         }
                         Intent intent = new Intent("UPDATE_LEADERBOARD");
