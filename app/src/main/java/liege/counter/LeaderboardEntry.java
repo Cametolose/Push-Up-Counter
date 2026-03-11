@@ -25,6 +25,8 @@ public class LeaderboardEntry {
     private double avgPushupsPerWeek;
     private double avgPushupsPerMonth;
 
+    private int streak;
+
 
     public LeaderboardEntry() {
         this.name = name;
@@ -185,6 +187,12 @@ public class LeaderboardEntry {
     public void setAvgPushupsPerMonth(double avgPushupsPerMonth) {
         this.avgPushupsPerMonth = avgPushupsPerMonth;
     }
+
+    public int getStreak() {
+        return streak;
+    }
+
+    public void setStreak(int streak) {
+        this.streak = streak;
+    }
 }
-
-

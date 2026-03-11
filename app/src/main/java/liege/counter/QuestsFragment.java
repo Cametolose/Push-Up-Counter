@@ -63,12 +63,13 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         }
     };
 
-    private final LinearLayout[] questCards  = new LinearLayout[3];
-    private final TextView[]     questTitles = new TextView[3];
-    private final TextView[]     questDescs  = new TextView[3];
-    private final ProgressBar[]  questBars   = new ProgressBar[3];
-    private final TextView[]     questTexts  = new TextView[3];
-    private final ImageView[]    questChecks = new ImageView[3];
+    private final LinearLayout[] questCards   = new LinearLayout[3];
+    private final TextView[]     questTitles  = new TextView[3];
+    private final TextView[]     questDescs   = new TextView[3];
+    private final ProgressBar[]  questBars    = new ProgressBar[3];
+    private final TextView[]     questTexts   = new TextView[3];
+    private final ImageView[]    questChecks  = new ImageView[3];
+    private final Button[]       completeButtons = new Button[3];
 
     private LinearLayout bonusCard;
     private ImageView    bonusIcon;
@@ -89,20 +90,25 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) requireActivity();
 
-        int[] cardIds   = {R.id.questCard1,          R.id.questCard2,          R.id.questCard3};
-        int[] titleIds  = {R.id.questTitle1,         R.id.questTitle2,         R.id.questTitle3};
-        int[] descIds   = {R.id.questDesc1,          R.id.questDesc2,          R.id.questDesc3};
-        int[] barIds    = {R.id.questProgress1,      R.id.questProgress2,      R.id.questProgress3};
-        int[] textIds   = {R.id.questProgressText1,  R.id.questProgressText2,  R.id.questProgressText3};
-        int[] checkIds  = {R.id.questCheck1,         R.id.questCheck2,         R.id.questCheck3};
+        int[] cardIds    = {R.id.questCard1,             R.id.questCard2,             R.id.questCard3};
+        int[] titleIds   = {R.id.questTitle1,            R.id.questTitle2,            R.id.questTitle3};
+        int[] descIds    = {R.id.questDesc1,             R.id.questDesc2,             R.id.questDesc3};
+        int[] barIds     = {R.id.questProgress1,         R.id.questProgress2,         R.id.questProgress3};
+        int[] textIds    = {R.id.questProgressText1,     R.id.questProgressText2,     R.id.questProgressText3};
+        int[] checkIds   = {R.id.questCheck1,            R.id.questCheck2,            R.id.questCheck3};
+        int[] btnIds     = {R.id.questCompleteButton1,   R.id.questCompleteButton2,   R.id.questCompleteButton3};
 
         for (int i = 0; i < 3; i++) {
-            questCards[i]  = view.findViewById(cardIds[i]);
-            questTitles[i] = view.findViewById(titleIds[i]);
-            questDescs[i]  = view.findViewById(descIds[i]);
-            questBars[i]   = view.findViewById(barIds[i]);
-            questTexts[i]  = view.findViewById(textIds[i]);
-            questChecks[i] = view.findViewById(checkIds[i]);
+            questCards[i]      = view.findViewById(cardIds[i]);
+            questTitles[i]     = view.findViewById(titleIds[i]);
+            questDescs[i]      = view.findViewById(descIds[i]);
+            questBars[i]       = view.findViewById(barIds[i]);
+            questTexts[i]      = view.findViewById(textIds[i]);
+            questChecks[i]     = view.findViewById(checkIds[i]);
+            completeButtons[i] = view.findViewById(btnIds[i]);
+
+            final int index = i;
+            completeButtons[i].setOnClickListener(v -> mainActivity.completeQuest(index));
         }
 
         bonusCard          = view.findViewById(R.id.bonusCard);
@@ -167,6 +173,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
                         questTitles[i].getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 questDescs[i].setText("Abgeschlossen! ✓");
                 questDescs[i].setTextColor(0xFF00E676);
+                completeButtons[i].setVisibility(View.GONE);
             } else {
                 questCards[i].setBackgroundResource(R.drawable.quest_card_bg);
                 questChecks[i].setVisibility(View.GONE);
@@ -175,6 +182,12 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
                 questDescs[i].setText(todayQuests[i][1]);
                 questDescs[i].setTextColor(0xFFBBBBBB);
                 allDone = false;
+                // Show "Complete" button only when enough pushups have been done
+                if (daily >= target) {
+                    completeButtons[i].setVisibility(View.VISIBLE);
+                } else {
+                    completeButtons[i].setVisibility(View.GONE);
+                }
             }
         }
 
