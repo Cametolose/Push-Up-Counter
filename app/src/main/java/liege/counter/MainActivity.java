@@ -251,9 +251,11 @@ public class MainActivity extends AppCompatActivity {
         counter += amount;
         xp      += amount;
         logDailyPushups(amount);
+        checkQuestProgress();
         checkLevelUp();
         saveState();
         notifyListeners();
+        updateOnlineLeaderboard();
         return amount;
     }
 
@@ -506,9 +508,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.d("Leaderboard", "Leaderboard erfolgreich aktualisiert");
+                    Log.d("Leaderboard", "Erfolgreich aktualisiert für: " + username);
                 } else {
-                    Log.e("Leaderboard", "Fehler beim Aktualisieren: " + response.code());
+                    try {
+                        String errorBody = response.errorBody() != null
+                                ? response.errorBody().string() : "kein Body";
+                        Log.e("Leaderboard", "HTTP " + response.code() + " — " + errorBody);
+                    } catch (Exception e) {
+                        Log.e("Leaderboard", "HTTP " + response.code());
+                    }
                 }
             }
 
