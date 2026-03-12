@@ -31,6 +31,7 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 
         TextView rankView    = convertView.findViewById(R.id.lbRank);
         TextView nameView    = convertView.findViewById(R.id.lbName);
+        TextView titleView   = convertView.findViewById(R.id.lbTitle);
         TextView pushupsView = convertView.findViewById(R.id.lbPushups);
         TextView levelView   = convertView.findViewById(R.id.lbLevel);
         TextView streakView  = convertView.findViewById(R.id.lbStreak);
@@ -40,6 +41,16 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
         pushupsView.setText("💪 " + entry.getPushups() + " Liegestütze");
         levelView.setText("⭐ Level " + entry.getLevel());
         streakView.setText("  🔥 " + entry.getStreak() + " Tage");
+
+        String title = entry.getTitle();
+        if (title != null && !title.isEmpty()) {
+            titleView.setVisibility(View.VISIBLE);
+            titleView.setText(title);
+            int color = AchievementManager.getTitleColor(title);
+            titleView.setTextColor(color);
+        } else {
+            titleView.setVisibility(View.GONE);
+        }
 
         return convertView;
     }

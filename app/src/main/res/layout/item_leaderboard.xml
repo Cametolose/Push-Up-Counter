@@ -10,7 +10,7 @@
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp">
 
-    <!-- Rank + Name row -->
+    <!-- Rank + Name + Title row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,15 +30,27 @@
 
         <TextView
             android:id="@+id/lbName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Username"
             android:textColor="#FFFFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/lbTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <!-- Push-ups + Level row -->
@@ -54,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="💪 0 Liegestütze"
-            android:textColor="#00E676"
+            android:textColor="#7C4DFF"
             android:textSize="14sp"/>
 
         <TextView

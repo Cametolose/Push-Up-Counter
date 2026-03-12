@@ -4,13 +4,18 @@
         <set>
             <objectAnimator
                 android:propertyName="scaleX"
-                android:valueTo="0.92"
-                android:duration="80"
+                android:valueTo="0.90"
+                android:duration="100"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
             <objectAnimator
                 android:propertyName="scaleY"
-                android:valueTo="0.92"
-                android:duration="80"
+                android:valueTo="0.90"
+                android:duration="100"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            <objectAnimator
+                android:propertyName="translationZ"
+                android:valueTo="2dp"
+                android:duration="100"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
         </set>
     </item>
@@ -19,13 +24,18 @@
             <objectAnimator
                 android:propertyName="scaleX"
                 android:valueTo="1.0"
-                android:duration="150"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:duration="200"
+                android:interpolator="@android:interpolator/overshoot"/>
             <objectAnimator
                 android:propertyName="scaleY"
                 android:valueTo="1.0"
-                android:duration="150"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:duration="200"
+                android:interpolator="@android:interpolator/overshoot"/>
+            <objectAnimator
+                android:propertyName="translationZ"
+                android:valueTo="6dp"
+                android:duration="200"
+                android:interpolator="@android:interpolator/overshoot"/>
         </set>
     </item>
 </selector>

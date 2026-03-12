@@ -149,7 +149,6 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
     private void updateDisplay() {
         if (mainActivity == null) return;
 
-        int daily = mainActivity.getDailyPushups();
         boolean allDone = true;
 
         int dayIndex = todayDayIndex();
@@ -157,26 +156,28 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
 
         for (int i = 0; i < 3; i++) {
             boolean completed = mainActivity.isQuestCompleted(i);
-            int target   = QUEST_TARGETS[i];
-            int progress = Math.min(daily, target);
 
             questTitles[i].setText(todayQuests[i][0]);
-
-            questBars[i].setMax(target);
-            questBars[i].setProgress(progress);
-            questTexts[i].setText(progress + "/" + target);
 
             if (completed) {
                 questCards[i].setBackgroundResource(R.drawable.quest_card_completed_bg);
                 questChecks[i].setVisibility(View.VISIBLE);
+                questBars[i].setMax(1);
+                questBars[i].setProgress(1);
+                questTexts[i].setText("Erledigt");
+                questTexts[i].setTextColor(0xFF7C4DFF);
                 questTitles[i].setPaintFlags(
                         questTitles[i].getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 questDescs[i].setText("Abgeschlossen! ✓");
-                questDescs[i].setTextColor(0xFF00E676);
+                questDescs[i].setTextColor(0xFF7C4DFF);
                 completeButtons[i].setVisibility(View.GONE);
             } else {
                 questCards[i].setBackgroundResource(R.drawable.quest_card_bg);
                 questChecks[i].setVisibility(View.GONE);
+                questBars[i].setMax(1);
+                questBars[i].setProgress(0);
+                questTexts[i].setText("Offen");
+                questTexts[i].setTextColor(0xFF9E9E9E);
                 questTitles[i].setPaintFlags(
                         questTitles[i].getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
                 questDescs[i].setText(todayQuests[i][1]);

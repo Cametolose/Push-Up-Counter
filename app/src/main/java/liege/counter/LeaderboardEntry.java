@@ -27,6 +27,8 @@ public class LeaderboardEntry {
 
     private int streak;
 
+    private String title;
+
 
     public LeaderboardEntry() {
         this.name = name;
@@ -194,5 +196,13 @@ public class LeaderboardEntry {
 
     public void setStreak(int streak) {
         this.streak = streak;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

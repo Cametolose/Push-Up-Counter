@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/achievement_card_completed_bg"
+    android:padding="24dp"
+    android:minWidth="280dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🏆"
+        android:textSize="48sp"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Erfolg freigeschaltet!"
+        android:textColor="#FFD600"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/popupAchievementName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Achievement Name"
+        android:textColor="#FFFFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/popupAchievementDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textColor="#BBBBBB"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/popupAchievementTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Titel: Name"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/popupDismissButton"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/button_increment_bg"
+        android:text="Weiter"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="14sp"/>
+
+</LinearLayout>

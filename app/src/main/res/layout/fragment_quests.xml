@@ -36,7 +36,7 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- Quest Card 1 -->
+        <!-- Quest Card 1 — Leicht -->
         <LinearLayout
             android:id="@+id/questCard1"
             android:layout_width="match_parent"
@@ -52,6 +52,20 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LEICHT"
+                    android:textColor="#4CAF50"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quest_card_bg"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginEnd="8dp"/>
 
                 <TextView
                     android:id="@+id/questTitle1"
@@ -86,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:progressDrawable="@drawable/progress_bar_quest"
-                android:max="20"
+                android:max="1"
                 android:progress="0"
                 android:layout_marginBottom="6dp"/>
 
@@ -101,7 +115,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="0/20"
+                    android:text="Offen"
                     android:textColor="#9E9E9E"
                     android:textSize="12sp"/>
 
@@ -110,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+20 XP"
-                    android:textColor="#00E676"
+                    android:textColor="#7C4DFF"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -119,17 +133,19 @@
                 android:id="@+id/questCompleteButton1"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/buttonshape"
-                android:backgroundTint="#00E676"
-                android:text="Abschließen"
-                android:textColor="#000000"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="Erledigt ✓"
+                android:textColor="#FFFFFF"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+                android:elevation="4dp"
+                android:visibility="visible"/>
 
         </LinearLayout>
 
-        <!-- Quest Card 2 -->
+        <!-- Quest Card 2 — Mittel -->
         <LinearLayout
             android:id="@+id/questCard2"
             android:layout_width="match_parent"
@@ -145,6 +161,20 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MITTEL"
+                    android:textColor="#FF9800"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quest_card_bg"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginEnd="8dp"/>
 
                 <TextView
                     android:id="@+id/questTitle2"
@@ -179,7 +209,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:progressDrawable="@drawable/progress_bar_quest"
-                android:max="50"
+                android:max="1"
                 android:progress="0"
                 android:layout_marginBottom="6dp"/>
 
@@ -194,7 +224,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="0/50"
+                    android:text="Offen"
                     android:textColor="#9E9E9E"
                     android:textSize="12sp"/>
 
@@ -203,7 +233,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+20 XP"
-                    android:textColor="#00E676"
+                    android:textColor="#7C4DFF"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -212,17 +242,19 @@
                 android:id="@+id/questCompleteButton2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/buttonshape"
-                android:backgroundTint="#00E676"
-                android:text="Abschließen"
-                android:textColor="#000000"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="Erledigt ✓"
+                android:textColor="#FFFFFF"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+                android:elevation="4dp"
+                android:visibility="visible"/>
 
         </LinearLayout>
 
-        <!-- Quest Card 3 -->
+        <!-- Quest Card 3 — Schwer -->
         <LinearLayout
             android:id="@+id/questCard3"
             android:layout_width="match_parent"
@@ -238,6 +270,20 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SCHWER"
+                    android:textColor="#F44336"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quest_card_bg"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginEnd="8dp"/>
 
                 <TextView
                     android:id="@+id/questTitle3"
@@ -272,7 +318,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:progressDrawable="@drawable/progress_bar_quest"
-                android:max="100"
+                android:max="1"
                 android:progress="0"
                 android:layout_marginBottom="6dp"/>
 
@@ -287,7 +333,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="0/100"
+                    android:text="Offen"
                     android:textColor="#9E9E9E"
                     android:textSize="12sp"/>
 
@@ -296,7 +342,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+20 XP"
-                    android:textColor="#00E676"
+                    android:textColor="#7C4DFF"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -305,13 +351,15 @@
                 android:id="@+id/questCompleteButton3"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/buttonshape"
-                android:backgroundTint="#00E676"
-                android:text="Abschließen"
-                android:textColor="#000000"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="Erledigt ✓"
+                android:textColor="#FFFFFF"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+                android:elevation="4dp"
+                android:visibility="visible"/>
 
         </LinearLayout>
 
@@ -374,7 +422,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bonus gesammelt ✓"
-                android:textColor="#00E676"
+                android:textColor="#7C4DFF"
                 android:textSize="16sp"
                 android:gravity="center"
                 android:textStyle="bold"
