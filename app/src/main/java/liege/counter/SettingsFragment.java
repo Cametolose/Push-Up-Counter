@@ -21,6 +21,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
     private TextView statsTotalPushups;
     private TextView statsDailyPushups;
     private TextView statsWeeklyPushups;
+    private TextView statsMonthlyPushups;
+    private TextView statsYearlyPushups;
     private TextView statsLevel;
     private TextView statsTotalXp;
     private TextView statsStreak;
@@ -48,6 +50,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         statsTotalPushups = view.findViewById(R.id.statsTotalPushups);
         statsDailyPushups = view.findViewById(R.id.statsDailyPushups);
         statsWeeklyPushups = view.findViewById(R.id.statsWeeklyPushups);
+        statsMonthlyPushups = view.findViewById(R.id.statsMonthlyPushups);
+        statsYearlyPushups = view.findViewById(R.id.statsYearlyPushups);
         statsLevel        = view.findViewById(R.id.statsLevel);
         statsTotalXp      = view.findViewById(R.id.statsTotalXp);
         statsStreak       = view.findViewById(R.id.statsStreak);
@@ -89,6 +93,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         statsTotalPushups.setText(String.valueOf(mainActivity.getCounter()));
         statsDailyPushups.setText(String.valueOf(mainActivity.getDailyPushups()));
         statsWeeklyPushups.setText(String.valueOf(mainActivity.getWeeklyPushups()));
+        statsMonthlyPushups.setText(String.valueOf(mainActivity.getMonthlyPushups()));
+        statsYearlyPushups.setText(String.valueOf(mainActivity.getYearlyPushups()));
         statsLevel.setText(String.valueOf(mainActivity.getLevel()));
         statsTotalXp.setText(String.valueOf(mainActivity.getTotalXpAcrossLevels()));
         statsStreak.setText(mainActivity.getStreak() + " Tage");

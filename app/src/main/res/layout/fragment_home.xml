@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Heute: 0"
-                android:textColor="#00E676"
+                android:textColor="#7C4DFF"
                 android:textSize="14sp"/>
         </LinearLayout>
 
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Level: 1"
-            android:textColor="#00E676"
+            android:textColor="#7C4DFF"
             android:textSize="22sp"
             android:gravity="center"
             android:layout_marginBottom="16dp"/>
@@ -79,7 +79,7 @@
             android:layout_height="10dp"
             android:progress="0"
             android:max="100"
-            android:progressTint="#00E676"
+            android:progressTint="#7C4DFF"
             android:backgroundTint="#424242"
             android:layout_marginBottom="24dp"/>
 
@@ -113,9 +113,9 @@
                 android:stateListAnimator="@animator/button_press"
                 android:text="+1"
                 android:textColor="#FFFFFFFF"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="6dp"/>
+                android:elevation="8dp"/>
 
             <Button
                 android:id="@+id/incrementButton5"
@@ -127,9 +127,9 @@
                 android:stateListAnimator="@animator/button_press"
                 android:text="+5"
                 android:textColor="#FFFFFFFF"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="6dp"/>
+                android:elevation="8dp"/>
 
             <Button
                 android:id="@+id/incrementButton10"
@@ -141,9 +141,9 @@
                 android:stateListAnimator="@animator/button_press"
                 android:text="+10"
                 android:textColor="#FFFFFFFF"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="6dp"/>
+                android:elevation="8dp"/>
         </LinearLayout>
 
         <!-- Daily German joke / fact card -->

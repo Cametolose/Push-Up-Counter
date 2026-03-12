@@ -17,8 +17,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -174,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new HomeFragment(), false);
             } else if (id == R.id.nav_quests) {
                 loadFragment(new QuestsFragment(), false);
+            } else if (id == R.id.nav_achievements) {
+                loadFragment(new AchievementsFragment(), false);
             } else if (id == R.id.nav_leaderboard) {
                 loadFragment(new LeaderboardFragment(), false);
             } else if (id == R.id.nav_settings) {
@@ -251,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
         counter += amount;
         xp      += amount;
         logDailyPushups(amount);
-        checkQuestProgress();
         checkLevelUp();
         saveState();
         notifyListeners();
@@ -367,6 +370,26 @@ public class MainActivity extends AppCompatActivity {
         return total;
     }
 
+    public int getMonthlyPushups() {
+        int total = 0;
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < 30; i++) {
+            total += dailyPushupLog.getOrDefault(keyFor(cal), 0);
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        return total;
+    }
+
+    public int getYearlyPushups() {
+        int total = 0;
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < 365; i++) {
+            total += dailyPushupLog.getOrDefault(keyFor(cal), 0);
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        return total;
+    }
+
     /**
      * Returns the current consecutive-day streak.
      * Counts how many consecutive days (going back from today or yesterday)
@@ -434,6 +457,56 @@ public class MainActivity extends AppCompatActivity {
         for (OnStateChangedListener l : stateListeners) {
             l.onStateChanged();
         }
+        checkAchievements();
+    }
+
+    private void checkAchievements() {
+        AchievementManager am = AchievementManager.getInstance(this);
+        List<AchievementManager.AchievementDef> newlyCompleted = am.checkAndComplete(this);
+        if (!newlyCompleted.isEmpty()) {
+            for (AchievementManager.AchievementDef ach : newlyCompleted) {
+                showAchievementPopup(ach);
+            }
+        }
+    }
+
+    private void showAchievementPopup(AchievementManager.AchievementDef ach) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar);
+        View popupView = getLayoutInflater().inflate(R.layout.dialog_achievement_popup, null);
+
+        TextView nameView = popupView.findViewById(R.id.popupAchievementName);
+        TextView descView = popupView.findViewById(R.id.popupAchievementDesc);
+        TextView titleView = popupView.findViewById(R.id.popupAchievementTitle);
+        android.widget.Button dismissBtn = popupView.findViewById(R.id.popupDismissButton);
+
+        nameView.setText(ach.name);
+        descView.setText(ach.description);
+        if (ach.titleReward != null && !ach.titleReward.isEmpty()) {
+            titleView.setText("Titel freigeschaltet: " + ach.titleReward);
+            titleView.setTextColor(ach.titleColor);
+            titleView.setVisibility(View.VISIBLE);
+        } else {
+            titleView.setVisibility(View.GONE);
+        }
+
+        builder.setView(popupView);
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dismissBtn.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+
+        // Animate the popup
+        popupView.setScaleX(0.5f);
+        popupView.setScaleY(0.5f);
+        popupView.setAlpha(0f);
+        popupView.animate()
+                .scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new android.view.animation.OvershootInterpolator(1.2f))
+                .start();
     }
 
     // =========================================================================
@@ -499,15 +572,20 @@ public class MainActivity extends AppCompatActivity {
 
         int daily  = getDailyPushups();
         int weekly = getWeeklyPushups();
-        int allTime = getLogTotal();
+        int monthly = getMonthlyPushups();
+        int yearly = getYearlyPushups();
         entry.setDailyPushups(daily);
         entry.setWeeklyPushups(weekly);
-        entry.setMonthlyPushups(allTime);
-        entry.setYearlyPushups(allTime);
+        entry.setMonthlyPushups(monthly);
+        entry.setYearlyPushups(yearly);
         entry.setAvgPushupsPerDay(daily);
         entry.setAvgPushupsPerWeek((double) weekly / 7);
-        entry.setAvgPushupsPerMonth((double) allTime / 30);
+        entry.setAvgPushupsPerMonth((double) monthly / 30);
         entry.setStreak(getStreak());
+
+        AchievementManager am = AchievementManager.getInstance(this);
+        String activeTitle = am.getActiveTitle();
+        entry.setTitle(activeTitle != null ? activeTitle : "");
 
         entry.setId(playerId);
         leaderboardAPI.upsertEntry(entry).enqueue(new Callback<Void>() {
