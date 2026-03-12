@@ -323,13 +323,18 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================================
 
     public int xpForNextLevel() {
-        return 50 * level;
+        return (int) Math.round(Math.pow(level/0.8, 1.5) + 10);
     }
 
     public int totalXpAcrossLevels() {
         // Total XP earned across all previous levels (level 1 through level-1).
         // Each level i required 50*i XP, so sum = 50*(1+2+...+(level-1)) = 50*level*(level-1)/2
-        int total = 50 * level * (level - 1) / 2;
+        int total = 0;
+
+        for (int i = 1; i < level; i++) {
+            total += (int) Math.round(Math.pow(i/0.8, 1.5) + 10);
+        }
+
         return total + xp;
     }
 
@@ -614,7 +619,7 @@ public class MainActivity extends AppCompatActivity {
                         int rank = 1;
                         for (LeaderboardEntry e : response.body()) {
                             rows.add("#" + rank + "  " + e.getName()
-                                    + "   Liegestützen: " + e.getPushups()
+                                    + "   Push-Ups: " + e.getPushups()
                                     + "   Level: " + e.getLevel()
                                     + "   🔥" + e.getStreak() + " Tage");
                             rank++;
