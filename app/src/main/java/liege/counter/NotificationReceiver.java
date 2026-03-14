@@ -9,9 +9,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public static final String ACTION_STREAK = "liege.counter.ACTION_STREAK_NOTIFICATION";
 
-    private static final String NOTIF_PREFS           = "NotificationPrefs";
-    private static final String KEY_STREAK_ENABLED    = "streakNotifEnabled";
-    private static final String KEY_LAST_STREAK_NOTIF = "lastStreakNotifDay";
+    private static final String NOTIF_PREFS              = "NotificationPrefs";
+    private static final String KEY_STREAK_ENABLED        = "streakNotifEnabled";
+    private static final String KEY_LAST_STREAK_NOTIF     = "lastStreakNotifDay";
+    private static final int    MIN_STREAK_FOR_NOTIF      = 3;
+    private static final int    MIN_PUSHUPS_FOR_STREAK_DAY = 10;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,7 +43,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (dailyLog == null) return;
 
         int streak = computeStreak(dailyLog);
-        if (streak > 3) {
+        if (streak > MIN_STREAK_FOR_NOTIF) {
             NotificationHelper.sendStreakNotification(context, streak);
             notifPrefs.edit().putString(KEY_LAST_STREAK_NOTIF, today).apply();
         }
@@ -50,12 +52,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     private int computeStreak(java.util.HashMap<String, Integer> log) {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         String todayKey = keyFor(cal);
-        if (log.getOrDefault(todayKey, 0) < 10) {
+        if (log.getOrDefault(todayKey, 0) < MIN_PUSHUPS_FOR_STREAK_DAY) {
             cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
         }
         int streak = 0;
         for (int i = 0; i < 365; i++) {
-            if (log.getOrDefault(keyFor(cal), 0) >= 10) {
+            if (log.getOrDefault(keyFor(cal), 0) >= MIN_PUSHUPS_FOR_STREAK_DAY) {
                 streak++;
                 cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
             } else {

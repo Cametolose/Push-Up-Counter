@@ -143,7 +143,7 @@ public class LeaderboardFragment extends Fragment {
         List<LeaderboardEntry> filtered = new java.util.ArrayList<>();
         for (LeaderboardEntry entry : entries) {
             String name = entry.getName();
-            if (name == null || !ignoreList.contains(name.toLowerCase(java.util.Locale.ROOT).trim())) {
+            if (name == null || !ignoreList.contains(name.trim().toLowerCase(java.util.Locale.ROOT))) {
                 filtered.add(entry);
             }
         }
