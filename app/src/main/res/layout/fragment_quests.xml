@@ -89,7 +89,7 @@
                 android:id="@+id/questDesc1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mache 20 Liegestütze heute"
+                android:text="Mache 20 Push-Ups heute"
                 android:textColor="#BBBBBB"
                 android:textSize="14sp"
                 android:layout_marginBottom="10dp"/>
@@ -198,7 +198,7 @@
                 android:id="@+id/questDesc2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mache 50 Liegestütze heute"
+                android:text="Mache 50 Push-Ups heute"
                 android:textColor="#BBBBBB"
                 android:textSize="14sp"
                 android:layout_marginBottom="10dp"/>
@@ -307,7 +307,7 @@
                 android:id="@+id/questDesc3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mache 100 Liegestütze heute"
+                android:text="Mache 100 Push-Ups heute"
                 android:textColor="#BBBBBB"
                 android:textSize="14sp"
                 android:layout_marginBottom="10dp"/>

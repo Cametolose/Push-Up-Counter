@@ -25,6 +25,9 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private void handleStreakNotification(Context context) {
+        // Always reschedule for the next day first (setExactAndAllowWhileIdle fires only once)
+        NotificationScheduler.scheduleStreakAlarm(context);
+
         SharedPreferences notifPrefs = context.getSharedPreferences(NOTIF_PREFS, Context.MODE_PRIVATE);
         boolean streakEnabled = notifPrefs.getBoolean(KEY_STREAK_ENABLED, true);
         if (!streakEnabled) return;
@@ -46,8 +49,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             NotificationHelper.sendStreakNotification(context, streak);
             notifPrefs.edit().putString(KEY_LAST_STREAK_NOTIF, today).apply();
         }
-        // Reschedule for the next day (setExactAndAllowWhileIdle fires only once)
-        NotificationScheduler.scheduleStreakAlarm(context);
     }
 
     private int computeStreak(java.util.HashMap<String, Integer> log) {

@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     }
 
     private String buildFallbackJoke() {
-        return "Warum machen Programmierer keine Liegestütze? " +
+        return "Warum machen Programmierer keine Push-Ups? " +
                "Weil sie schon genug Push-Requests haben! 💪";
     }
 }
