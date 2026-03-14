@@ -6,7 +6,6 @@
     android:background="#121212"
     android:padding="16dp">
 
-    <!-- Header -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +22,20 @@
         android:text="Aktueller Titel: —"
         android:textColor="#9E9E9E"
         android:textSize="13sp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="8dp"/>
 
-    <!-- Achievement list -->
+    <Button
+        android:id="@+id/chooseTitleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:background="@drawable/button_modern_bg"
+        android:text="Titel wählen"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        android:layout_marginBottom="12dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"/>
+
     <ListView
         android:id="@+id/achievementListView"
         android:layout_width="match_parent"

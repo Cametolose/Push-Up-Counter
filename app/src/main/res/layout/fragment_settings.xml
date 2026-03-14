@@ -82,7 +82,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/button_modern_bg"
                 android:stateListAnimator="@animator/button_press"
-                android:text="Namen ändern"
+                android:text="Namen \u00e4ndern"
                 android:textColor="#FFFFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -117,7 +117,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Gesamt Liegestütze"
+                    android:text="Gesamt Push-Ups"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 
@@ -297,7 +297,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🔥 Aktueller Streak"
+                    android:text="\ud83d\udd25 Aktueller Streak"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 
@@ -351,7 +351,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  • Leicht (20er) ×"
+                    android:text="  \u2022 Leicht (20er) \u00d7"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -375,7 +375,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  • Mittel (50er) ×"
+                    android:text="  \u2022 Mittel (50er) \u00d7"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -399,7 +399,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  • Schwer (100er) ×"
+                    android:text="  \u2022 Schwer (100er) \u00d7"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -422,7 +422,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bonus XP gesammelt ×"
+                    android:text="Bonus XP gesammelt \u00d7"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 
@@ -435,6 +435,164 @@
                     android:textSize="14sp"
                     android:textStyle="bold"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Notifications section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BENACHRICHTIGUNGEN"
+            android:textColor="#9E9E9E"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/quest_card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <!-- Streak notification -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="\ud83d\udd25 Streak-Erinnerung"
+                        android:textColor="#BBBBBB"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/notificationTimeDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zeit: 08:00"
+                        android:textColor="#9E9E9E"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/switchStreakNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/changeNotificationTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/button_modern_bg"
+                android:text="Zeit \u00e4ndern"
+                android:textColor="#FFFFFFFF"
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#3E3E5E"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Leaderboard notification -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="\ud83d\udcca Leaderboard-Updates"
+                    android:textColor="#BBBBBB"
+                    android:textSize="14sp"/>
+
+                <Switch
+                    android:id="@+id/switchLeaderboardNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Ignore list section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IGNORIERTE SPIELER"
+            android:textColor="#9E9E9E"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/quest_card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Namen auf dieser Liste werden im Leaderboard ausgeblendet."
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/ignoreListInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Spielername eingeben"
+                    android:textColor="#FFFFFFFF"
+                    android:textColorHint="#9E9E9E"
+                    android:inputType="textPersonName"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/addIgnoreButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_modern_bg"
+                    android:text="Hinzuf\u00fcgen"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ignoreListDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keine ignorierten Spieler"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <!-- App info section -->
@@ -452,7 +610,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/quest_card_bg"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -474,6 +633,37 @@
                     android:textColor="#FFFFFFFF"
                     android:textSize="14sp"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Credits section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CREDITS"
+            android:textColor="#9E9E9E"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/quest_card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/creditsButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/button_modern_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="Credits anzeigen"
+                android:textColor="#FFFFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:elevation="6dp"/>
         </LinearLayout>
 
     </LinearLayout>

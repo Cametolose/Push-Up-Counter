@@ -31,8 +31,9 @@ import java.util.Set;
  */
 public class AchievementManager {
 
-    private static final String PREFS_NAME = "AchievementPrefs";
-    private static final String KEY_COMPLETED = "completedAchievements";
+    private static final String PREFS_NAME      = "AchievementPrefs";
+    private static final String KEY_COMPLETED   = "completedAchievements";
+    private static final String KEY_SELECTED_TITLE = "selectedTitle";
 
     private static AchievementManager instance;
     private final SharedPreferences prefs;
@@ -63,14 +64,14 @@ public class AchievementManager {
     // =====================================================================
     public static final AchievementDef[] ACHIEVEMENTS = {
         // --- Total Push-ups ---
-        new AchievementDef("pushups_100",   "Erste Schritte",      "Mache 100 Liegestütze insgesamt",   "pushups", 100,   "💪", "Neuling",       0xFF9E9E9E),
-        new AchievementDef("pushups_500",   "Halb Tausend",        "Mache 500 Liegestütze insgesamt",   "pushups", 500,   "💪", "Kämpfer",       0xFF4CAF50),
-        new AchievementDef("pushups_1000",  "Tausender-Club",      "Mache 1.000 Liegestütze insgesamt", "pushups", 1000,  "💪", "Krieger",       0xFF2196F3),
-        new AchievementDef("pushups_3000",  "Drei Tausend stark",  "Mache 3.000 Liegestütze insgesamt", "pushups", 3000,  "💪", "Champion",      0xFF9C27B0),
-        new AchievementDef("pushups_5000",  "Fünf Tausend Power",  "Mache 5.000 Liegestütze insgesamt", "pushups", 5000,  "💪", "Meister",       0xFFFF9800),
-        new AchievementDef("pushups_10000", "Zehntausend Legende", "Mache 10.000 Liegestütze insgesamt","pushups", 10000, "💪", "Legende",       0xFFFFD600),
-        new AchievementDef("pushups_25000", "Unaufhaltsam",        "Mache 25.000 Liegestütze insgesamt","pushups", 25000, "💪", "Titan",         0xFFF44336),
-        new AchievementDef("pushups_50000", "Unsterbliche Kraft",  "Mache 50.000 Liegestütze insgesamt","pushups", 50000, "💪", "Unsterblich",   0xFFE040FB),
+        new AchievementDef("pushups_100",   "Erste Schritte",      "Mache 100 Push-Ups insgesamt",   "pushups", 100,   "💪", "Neuling",       0xFF9E9E9E),
+        new AchievementDef("pushups_500",   "Halb Tausend",        "Mache 500 Push-Ups insgesamt",   "pushups", 500,   "💪", "Kämpfer",       0xFF4CAF50),
+        new AchievementDef("pushups_1000",  "Tausender-Club",      "Mache 1.000 Push-Ups insgesamt", "pushups", 1000,  "💪", "Krieger",       0xFF2196F3),
+        new AchievementDef("pushups_3000",  "Drei Tausend stark",  "Mache 3.000 Push-Ups insgesamt", "pushups", 3000,  "💪", "Champion",      0xFF9C27B0),
+        new AchievementDef("pushups_5000",  "Fünf Tausend Power",  "Mache 5.000 Push-Ups insgesamt", "pushups", 5000,  "💪", "Meister",       0xFFFF9800),
+        new AchievementDef("pushups_10000", "Zehntausend Legende", "Mache 10.000 Push-Ups insgesamt","pushups", 10000, "💪", "Legende",       0xFFFFD600),
+        new AchievementDef("pushups_25000", "Unaufhaltsam",        "Mache 25.000 Push-Ups insgesamt","pushups", 25000, "💪", "Titan",         0xFFF44336),
+        new AchievementDef("pushups_50000", "Unsterbliche Kraft",  "Mache 50.000 Push-Ups insgesamt","pushups", 50000, "💪", "Unsterblich",   0xFFE040FB),
 
         // --- Quests Completed ---
         new AchievementDef("quests_10",  "Quest-Anfänger",    "Schließe 10 Quests ab",   "quests", 10,  "📋", "Questjäger",   0xFF00BCD4),
@@ -102,25 +103,25 @@ public class AchievementManager {
         new AchievementDef("level_100", "Level 100",          "Erreiche Level 100", "level", 100, "📈", null, 0),
 
         // --- Daily Push-ups ---
-        new AchievementDef("daily_30",  "Tagesrekord 30",     "Mache 30 Liegestütze an einem Tag",  "daily_pushups", 30,  "📅", null, 0),
-        new AchievementDef("daily_50",  "Tagesrekord 50",     "Mache 50 Liegestütze an einem Tag",  "daily_pushups", 50,  "📅", null, 0),
-        new AchievementDef("daily_100", "Tagesrekord 100",    "Mache 100 Liegestütze an einem Tag", "daily_pushups", 100, "📅", null, 0),
-        new AchievementDef("daily_200", "Tagesrekord 200",    "Mache 200 Liegestütze an einem Tag", "daily_pushups", 200, "📅", null, 0),
-        new AchievementDef("daily_500", "Tagesrekord 500",    "Mache 500 Liegestütze an einem Tag", "daily_pushups", 500, "📅", null, 0),
+        new AchievementDef("daily_30",  "Tagesrekord 30",     "Mache 30 Push-Ups an einem Tag",  "daily_pushups", 30,  "📅", null, 0),
+        new AchievementDef("daily_50",  "Tagesrekord 50",     "Mache 50 Push-Ups an einem Tag",  "daily_pushups", 50,  "📅", null, 0),
+        new AchievementDef("daily_100", "Tagesrekord 100",    "Mache 100 Push-Ups an einem Tag", "daily_pushups", 100, "📅", null, 0),
+        new AchievementDef("daily_200", "Tagesrekord 200",    "Mache 200 Push-Ups an einem Tag", "daily_pushups", 200, "📅", null, 0),
+        new AchievementDef("daily_500", "Tagesrekord 500",    "Mache 500 Push-Ups an einem Tag", "daily_pushups", 500, "📅", null, 0),
 
         // --- Weekly Push-ups ---
-        new AchievementDef("weekly_100",  "Wochenstart",        "Mache 100 Liegestütze in einer Woche",   "weekly_pushups", 100,  "📊", null,              0),
-        new AchievementDef("weekly_250",  "Wochenpower",        "Mache 250 Liegestütze in einer Woche",   "weekly_pushups", 250,  "📊", "Wochenkrieger",  0xFF009688),
-        new AchievementDef("weekly_500",  "Wochenchampion",     "Mache 500 Liegestütze in einer Woche",   "weekly_pushups", 500,  "📊", null,              0),
-        new AchievementDef("weekly_1000", "Wochenlegende",      "Mache 1.000 Liegestütze in einer Woche", "weekly_pushups", 1000, "📊", null,              0),
-        new AchievementDef("weekly_2000", "Wochen-Titan",       "Mache 2.000 Liegestütze in einer Woche", "weekly_pushups", 2000, "📊", null,              0),
+        new AchievementDef("weekly_100",  "Wochenstart",        "Mache 100 Push-Ups in einer Woche",   "weekly_pushups", 100,  "📊", null,              0),
+        new AchievementDef("weekly_250",  "Wochenpower",        "Mache 250 Push-Ups in einer Woche",   "weekly_pushups", 250,  "📊", "Wochenkrieger",  0xFF009688),
+        new AchievementDef("weekly_500",  "Wochenchampion",     "Mache 500 Push-Ups in einer Woche",   "weekly_pushups", 500,  "📊", null,              0),
+        new AchievementDef("weekly_1000", "Wochenlegende",      "Mache 1.000 Push-Ups in einer Woche", "weekly_pushups", 1000, "📊", null,              0),
+        new AchievementDef("weekly_2000", "Wochen-Titan",       "Mache 2.000 Push-Ups in einer Woche", "weekly_pushups", 2000, "📊", null,              0),
 
         // --- Monthly Push-ups ---
-        new AchievementDef("monthly_500",   "Monatsanfänger",     "Mache 500 Liegestütze in einem Monat",    "monthly_pushups", 500,   "📆", null,              0),
-        new AchievementDef("monthly_1000",  "Monatskämpfer",      "Mache 1.000 Liegestütze in einem Monat",  "monthly_pushups", 1000,  "📆", "Monatsmeister",  0xFFCDDC39),
-        new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Liegestütze in einem Monat",  "monthly_pushups", 3000,  "📆", null,              0),
-        new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Liegestütze in einem Monat",  "monthly_pushups", 5000,  "📆", null,              0),
-        new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Liegestütze in einem Monat", "monthly_pushups", 10000, "📆", null,              0),
+        new AchievementDef("monthly_500",   "Monatsanfänger",     "Mache 500 Push-Ups in einem Monat",    "monthly_pushups", 500,   "📆", null,              0),
+        new AchievementDef("monthly_1000",  "Monatskämpfer",      "Mache 1.000 Push-Ups in einem Monat",  "monthly_pushups", 1000,  "📆", "Monatsmeister",  0xFFCDDC39),
+        new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Push-Ups in einem Monat",  "monthly_pushups", 3000,  "📆", null,              0),
+        new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", null,              0),
+        new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", null,              0),
     };
 
     // =====================================================================
@@ -236,14 +237,36 @@ public class AchievementManager {
     // =====================================================================
 
     /**
-     * Returns the highest-prestige title the user has earned, or null if none.
-     * Prestige is determined by the order in the ACHIEVEMENTS array (later = higher).
+     * Saves the user's manually selected title to prefs.
+     * Pass null to clear the selection (revert to auto).
+     */
+    public void setSelectedTitle(String title) {
+        if (title == null) {
+            prefs.edit().remove(KEY_SELECTED_TITLE).apply();
+        } else {
+            prefs.edit().putString(KEY_SELECTED_TITLE, title).apply();
+        }
+    }
+
+    /**
+     * Returns the active title. If the user has manually selected a title and it is earned,
+     * returns that title. Otherwise falls back to the highest-prestige earned title.
      */
     public String getActiveTitle() {
         Set<String> completed = getCompletedIds();
-        String bestTitle = null;
 
-        // Iterate through achievements; later ones override earlier ones (higher prestige)
+        // Check for manually selected title
+        String selected = prefs.getString(KEY_SELECTED_TITLE, null);
+        if (selected != null && !selected.isEmpty()) {
+            for (AchievementDef ach : ACHIEVEMENTS) {
+                if (completed.contains(ach.id) && selected.equals(ach.titleReward)) {
+                    return selected;
+                }
+            }
+        }
+
+        // Fall back to highest-prestige earned title
+        String bestTitle = null;
         for (AchievementDef ach : ACHIEVEMENTS) {
             if (completed.contains(ach.id) && ach.titleReward != null && !ach.titleReward.isEmpty()) {
                 bestTitle = ach.titleReward;

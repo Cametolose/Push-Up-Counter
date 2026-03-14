@@ -38,7 +38,7 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 
         rankView.setText("#" + (position + 1));
         nameView.setText(entry.getName() != null ? entry.getName() : "–");
-        pushupsView.setText("💪 " + entry.getPushups() + " Liegestütze");
+        pushupsView.setText("💪 " + entry.getPushups() + " Push-Ups");
         levelView.setText("⭐ Level " + entry.getLevel());
         streakView.setText("  🔥 " + entry.getStreak() + " Tage");
 

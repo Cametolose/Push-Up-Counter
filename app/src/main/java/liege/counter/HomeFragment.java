@@ -126,10 +126,10 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         int level    = mainActivity.getLevel();
         int daily    = mainActivity.getDailyPushups();
         int weekly   = mainActivity.getWeeklyPushups();
-        int total    = mainActivity.getLogTotal();
+        int total    = mainActivity.getMonthlyPushups();
         int xpNeeded = mainActivity.getXpForNextLevel();
 
-        counterTextView.setText("Liegestützen: " + counter);
+        counterTextView.setText("Push-Ups: " + counter);
         levelTextView.setText("Level: " + level);
         xpTextView.setText("XP: " + xp + "/" + xpNeeded);
         xpProgressBar.setProgress(xpNeeded > 0 ? (xp * 100) / xpNeeded : 0);

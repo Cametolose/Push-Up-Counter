@@ -117,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
 
         scheduleLeaderboardJob();
         registerLeaderboardReceiver();
+        NotificationHelper.createNotificationChannels(this);
+        NotificationScheduler.scheduleStreakAlarm(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+        }
     }
 
     @Override

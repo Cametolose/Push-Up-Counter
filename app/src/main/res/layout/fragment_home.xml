@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Liegestütz Counter"
+                android:text="Push-Up Counter"
                 android:textColor="#FFFFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
@@ -42,7 +42,7 @@
             android:id="@+id/counterTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Liegestützen: 0"
+            android:text="Push-Ups: 0"
             android:textColor="#FFFFFFFF"
             android:textSize="48sp"
             android:textStyle="bold"
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Level: 1"
-            android:textColor="#7C4DFF"
+            android:textColor="#4CAF50"
             android:textSize="22sp"
             android:gravity="center"
             android:layout_marginBottom="16dp"/>
@@ -79,7 +79,7 @@
             android:layout_height="10dp"
             android:progress="0"
             android:max="100"
-            android:progressTint="#7C4DFF"
+            android:progressTint="#4CAF50"
             android:backgroundTint="#424242"
             android:layout_marginBottom="24dp"/>
 
@@ -223,7 +223,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gesamt"
+                    android:text="Diesen Monat"
                     android:textColor="#9E9E9E"
                     android:textSize="12sp"/>
 
