@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * LuckyWheelView — a custom View that draws and animates a spinning lucky wheel.
@@ -27,6 +28,7 @@ public class LuckyWheelView extends View {
     private float currentAngle = 0f;
     private ValueAnimator spinAnimator;
     private OnSpinCompleteListener listener;
+    private final Random random = new Random();
 
     private final Paint segmentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -98,7 +100,7 @@ public class LuckyWheelView extends View {
         float landingAngle = 360f - targetMid;
 
         // Add multiple full rotations for visual effect (5-8 spins)
-        int extraSpins = 5 + (int) (Math.random() * 3);
+        int extraSpins = 5 + random.nextInt(3);
         float totalRotation = extraSpins * 360f + landingAngle;
 
         // Ensure we rotate in positive direction from current angle
@@ -106,7 +108,7 @@ public class LuckyWheelView extends View {
         float endAngle = startAngle + totalRotation;
 
         spinAnimator = ValueAnimator.ofFloat(startAngle, endAngle);
-        spinAnimator.setDuration(4000 + (long) (Math.random() * 1000)); // 4-5 seconds
+        spinAnimator.setDuration(4000 + (long) (random.nextInt(1000))); // 4-5 seconds
         spinAnimator.setInterpolator(new DecelerateInterpolator(2.5f));
         spinAnimator.addUpdateListener(animation -> {
             currentAngle = (float) animation.getAnimatedValue();

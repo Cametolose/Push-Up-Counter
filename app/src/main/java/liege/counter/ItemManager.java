@@ -260,7 +260,9 @@ public class ItemManager {
 
     /**
      * Returns the XP multiplier based on active buffs/traps.
-     * Double XP = 2.0, Half XP = 0.5, both = 1.0.
+     * Double XP = 2.0, Half XP = 0.5.
+     * When both are active simultaneously, they cancel out: 2.0 * 0.5 = 1.0.
+     * This is intentional — the effects stack multiplicatively.
      */
     public double getXpMultiplier() {
         double multiplier = 1.0;

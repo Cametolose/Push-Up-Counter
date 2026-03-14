@@ -465,7 +465,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set expiration for time-based traps
         if ("half_xp".equals(trapType)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'+00:00'", Locale.US);
+            sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             Date expiry = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000L);
             trap.setExpires_at(sdf.format(expiry));
         }
@@ -776,19 +777,15 @@ public class MainActivity extends AppCompatActivity {
             Calendar yesterday = (Calendar) cal.clone();
             yesterday.add(Calendar.DAY_OF_YEAR, -1);
             if (dailyPushupLog.getOrDefault(keyFor(yesterday), 0) >= 10) {
-                // Yesterday was fine, today just hasn't started — count from yesterday
-                cal.add(Calendar.DAY_OF_YEAR, -1);
+                // Yesterday was fine, today just hasn't started
             } else if (itemManager.wasStreakSavedToday()) {
-                // Streak was saved today, count from yesterday
-                cal.add(Calendar.DAY_OF_YEAR, -1);
-            } else if (itemManager.useStreakSave()) {
-                // Use a streak save item
-                Toast.makeText(this, "🔥 Streak-Rettung eingesetzt! Dein Streak wurde gerettet!",
-                        Toast.LENGTH_LONG).show();
-                cal.add(Calendar.DAY_OF_YEAR, -1);
+                // Streak was already saved today
             } else {
-                cal.add(Calendar.DAY_OF_YEAR, -1);
+                // Attempt to use a streak save item
+                itemManager.useStreakSave();
             }
+            // In all cases, start counting from yesterday
+            cal.add(Calendar.DAY_OF_YEAR, -1);
         }
         int streak = 0;
         for (int i = 0; i < 365; i++) {
