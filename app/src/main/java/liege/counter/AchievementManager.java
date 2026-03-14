@@ -57,6 +57,7 @@ public class AchievementManager {
         new Title("Marathonläufer", 0xFF3F51B5), // indigo
         new Title("Wochenkrieger", 0xFF009688), // teal dark
         new Title("Monatsmeister", 0xFFCDDC39), // lime
+        new Title("The Gambler",   0xFFE040FB), // pink — rare 1% from lucky wheel
     };
 
     // =====================================================================
@@ -258,10 +259,15 @@ public class AchievementManager {
         // Check for manually selected title
         String selected = prefs.getString(KEY_SELECTED_TITLE, null);
         if (selected != null && !selected.isEmpty()) {
+            // Check if the title is from achievements
             for (AchievementDef ach : ACHIEVEMENTS) {
                 if (completed.contains(ach.id) && selected.equals(ach.titleReward)) {
                     return selected;
                 }
+            }
+            // Check if it's "The Gambler" from the lucky wheel
+            if ("The Gambler".equals(selected) && prefs.getBoolean("gambler_title_earned", false)) {
+                return selected;
             }
         }
 
@@ -270,6 +276,14 @@ public class AchievementManager {
         for (AchievementDef ach : ACHIEVEMENTS) {
             if (completed.contains(ach.id) && ach.titleReward != null && !ach.titleReward.isEmpty()) {
                 bestTitle = ach.titleReward;
+            }
+        }
+
+        // Also check for "The Gambler" title from the lucky wheel
+        if (bestTitle == null) {
+            boolean gamblerEarned = prefs.getBoolean("gambler_title_earned", false);
+            if (gamblerEarned) {
+                bestTitle = "The Gambler";
             }
         }
 
@@ -293,5 +307,19 @@ public class AchievementManager {
         if (isCompleted(ach.id)) return 100;
         int current = getCurrentValue(ach.category, activity);
         return Math.min(100, (int) ((current * 100L) / ach.target));
+    }
+
+    /**
+     * Marks "The Gambler" title as earned (from lucky wheel, not from achievements).
+     */
+    public void earnGamblerTitle() {
+        prefs.edit().putBoolean("gambler_title_earned", true).apply();
+    }
+
+    /**
+     * Checks if "The Gambler" title has been earned from the lucky wheel.
+     */
+    public boolean isGamblerTitleEarned() {
+        return prefs.getBoolean("gambler_title_earned", false);
     }
 }

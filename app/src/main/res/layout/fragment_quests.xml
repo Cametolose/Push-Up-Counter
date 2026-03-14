@@ -391,7 +391,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bonus XP"
+                    android:text="Glücksrad"
                     android:textColor="#FFFFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
@@ -401,7 +401,7 @@
                 android:id="@+id/bonusDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Schließe alle Aufgaben ab, um 50 Bonus XP zu erhalten"
+                android:text="Schließe alle Aufgaben ab, um das Glücksrad zu drehen und ein Item zu gewinnen!"
                 android:textColor="#BBBBBB"
                 android:textSize="14sp"
                 android:layout_marginBottom="12dp"/>

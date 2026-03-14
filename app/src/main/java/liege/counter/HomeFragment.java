@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,20 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     private TextView streakTextView;
     private TextView jokeTextView;
 
+    // Active effects
+    private LinearLayout activeEffectsSection;
+    private LinearLayout doubleXpEffect;
+    private TextView doubleXpTimer;
+    private LinearLayout halfXpEffect;
+    private TextView halfXpInfo;
+
+    // Inventory
+    private LinearLayout inventorySection;
+    private LinearLayout negateTrapItem;
+    private TextView negateTrapCount;
+    private LinearLayout streakSaveItem;
+    private TextView streakSaveCount;
+
     private MainActivity mainActivity;
 
     @Nullable
@@ -66,6 +81,20 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         totalTextView      = view.findViewById(R.id.totalTextView);
         streakTextView     = view.findViewById(R.id.streakTextView);
         jokeTextView       = view.findViewById(R.id.jokeTextView);
+
+        // Active effects
+        activeEffectsSection = view.findViewById(R.id.activeEffectsSection);
+        doubleXpEffect       = view.findViewById(R.id.doubleXpEffect);
+        doubleXpTimer        = view.findViewById(R.id.doubleXpTimer);
+        halfXpEffect         = view.findViewById(R.id.halfXpEffect);
+        halfXpInfo           = view.findViewById(R.id.halfXpInfo);
+
+        // Inventory
+        inventorySection = view.findViewById(R.id.inventorySection);
+        negateTrapItem   = view.findViewById(R.id.negateTrapItem);
+        negateTrapCount  = view.findViewById(R.id.negateTrapCount);
+        streakSaveItem   = view.findViewById(R.id.streakSaveItem);
+        streakSaveCount  = view.findViewById(R.id.streakSaveCount);
 
         setupButtons(view);
         updateDisplay();
@@ -144,6 +173,61 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         } else {
             streakTextView.setVisibility(View.GONE);
         }
+
+        // Update active effects and inventory
+        updateActiveEffects();
+        updateInventory();
+    }
+
+    private void updateActiveEffects() {
+        ItemManager itemManager = mainActivity.getItemManager();
+        boolean hasEffects = false;
+
+        // Double XP
+        if (itemManager.isDoubleXpActive()) {
+            doubleXpEffect.setVisibility(View.VISIBLE);
+            doubleXpTimer.setText("Noch " + ItemManager.formatRemaining(itemManager.getDoubleXpRemaining()));
+            hasEffects = true;
+        } else {
+            doubleXpEffect.setVisibility(View.GONE);
+        }
+
+        // Half XP
+        if (itemManager.isHalfXpActive()) {
+            halfXpEffect.setVisibility(View.VISIBLE);
+            halfXpInfo.setText("Von " + itemManager.getHalfXpFrom() + " — Noch "
+                    + ItemManager.formatRemaining(itemManager.getHalfXpRemaining()));
+            hasEffects = true;
+        } else {
+            halfXpEffect.setVisibility(View.GONE);
+        }
+
+        activeEffectsSection.setVisibility(hasEffects ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateInventory() {
+        ItemManager itemManager = mainActivity.getItemManager();
+        boolean hasItems = false;
+
+        int negateTrapAmt = itemManager.getNegateTrapCount();
+        if (negateTrapAmt > 0) {
+            negateTrapItem.setVisibility(View.VISIBLE);
+            negateTrapCount.setText("×" + negateTrapAmt);
+            hasItems = true;
+        } else {
+            negateTrapItem.setVisibility(View.GONE);
+        }
+
+        int streakSaveAmt = itemManager.getStreakSaveCount();
+        if (streakSaveAmt > 0) {
+            streakSaveItem.setVisibility(View.VISIBLE);
+            streakSaveCount.setText("×" + streakSaveAmt);
+            hasItems = true;
+        } else {
+            streakSaveItem.setVisibility(View.GONE);
+        }
+
+        inventorySection.setVisibility(hasItems ? View.VISIBLE : View.GONE);
     }
 
     // =========================================================================

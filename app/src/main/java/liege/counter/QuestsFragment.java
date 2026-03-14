@@ -192,6 +192,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
             bonusCard.setBackgroundResource(R.drawable.quest_card_completed_bg);
             bonusButton.setVisibility(View.GONE);
             bonusCollectedText.setVisibility(View.VISIBLE);
+            bonusCollectedText.setText("Glücksrad gedreht ✓");
             bonusIcon.setImageResource(R.drawable.ic_check);
         } else if (allDone) {
             bonusCard.setBackgroundResource(R.drawable.quest_card_locked_bg);
@@ -201,7 +202,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
             bonusButton.setBackgroundResource(R.drawable.buttonshape);
             bonusButton.getBackground().setTint(0xFFFFD600);
             bonusButton.setTextColor(0xFF000000);
-            bonusButton.setText("50 Bonus XP sammeln!");
+            bonusButton.setText("🎰 Glücksrad drehen!");
             bonusIcon.setImageResource(R.drawable.ic_nav_quests);
         } else {
             bonusCard.setBackgroundResource(R.drawable.quest_card_locked_bg);
