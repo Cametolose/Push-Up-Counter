@@ -16,10 +16,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +30,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -83,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
     // --- Networking ---
     private SharedPreferences sharedPreferences;
     private LeaderboardAPI leaderboardAPI;
+    private ItemAPI itemAPI;
+
+    // --- Cached leaderboard entries for trap targeting ---
+    private List<LeaderboardEntry> cachedLeaderboardEntries = new ArrayList<>();
 
     // --- Fragment state listeners ---
     private final CopyOnWriteArrayList<OnStateChangedListener> stateListeners =
@@ -122,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
+
+        // Fetch leaderboard for trap targeting & check incoming traps
+        fetchLeaderboardForItems();
+        checkIncomingTraps();
     }
 
     @Override
@@ -148,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         leaderboardAPI = retrofit.create(LeaderboardAPI.class);
+        itemAPI = retrofit.create(ItemAPI.class);
     }
 
     /**
@@ -255,16 +269,18 @@ public class MainActivity extends AppCompatActivity {
     // Counter & XP Logic
     // =========================================================================
 
-    /** Increments counter and returns XP gained (equals amount added). */
+    /** Increments counter and returns XP gained (with multiplier). */
     public int incrementCounter(int amount) {
         counter += amount;
-        xp      += amount;
+        double multiplier = ItemManager.getInstance(this).getXpMultiplier();
+        int xpGained = (int) Math.round(amount * multiplier);
+        xp += xpGained;
         logDailyPushups(amount);
         checkLevelUp();
         saveState();
         notifyListeners();
         updateOnlineLeaderboard();
-        return amount;
+        return xpGained;
     }
 
     /** Decrements counter (undo). Minimum 0. */
@@ -288,6 +304,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Quest abgeschlossen! +20 XP", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Called when the player collects the daily bonus (all quests completed).
+     * Instead of giving direct XP, shows the lucky wheel popup.
+     */
     public void collectBonus() {
         for (boolean done : questsCompleted) {
             if (!done) {
@@ -297,13 +317,359 @@ public class MainActivity extends AppCompatActivity {
         }
         if (bonusCollected) return;
 
-        xp += 50;
         bonusXpCollected++;
         bonusCollected = true;
-        checkLevelUp();
         saveState();
         notifyListeners();
-        Toast.makeText(this, "+50 Bonus XP gesammelt!", Toast.LENGTH_SHORT).show();
+
+        showLuckyWheelDialog();
+    }
+
+    // =========================================================================
+    // Lucky Wheel & Item System
+    // =========================================================================
+
+    /** Shows the lucky wheel dialog for the daily bonus spin. */
+    private void showLuckyWheelDialog() {
+        ItemManager itemManager = ItemManager.getInstance(this);
+        List<ItemManager.WheelItem> eligible = itemManager.getEligibleItems();
+
+        android.app.AlertDialog.Builder builder =
+                new android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar);
+        View wheelView = getLayoutInflater().inflate(R.layout.dialog_lucky_wheel, null);
+
+        LuckyWheelView luckyWheel = wheelView.findViewById(R.id.luckyWheel);
+        Button spinButton = wheelView.findViewById(R.id.spinButton);
+
+        luckyWheel.setItems(eligible);
+
+        builder.setView(wheelView);
+        builder.setCancelable(false);
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // Pre-determine the winning index
+        final int winIndex = itemManager.spinWheel();
+
+        spinButton.setOnClickListener(v -> {
+            if (luckyWheel.isSpinning()) return;
+            spinButton.setEnabled(false);
+            spinButton.setText("Dreht...");
+
+            luckyWheel.setOnSpinCompleteListener(selectedIndex -> {
+                // Small delay for dramatic effect
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    dialog.dismiss();
+                    processWheelResult(eligible.get(selectedIndex));
+                }, 600);
+            });
+
+            luckyWheel.spin(winIndex);
+        });
+
+        dialog.show();
+
+        // Animate the popup in
+        wheelView.setScaleX(0.5f);
+        wheelView.setScaleY(0.5f);
+        wheelView.setAlpha(0f);
+        wheelView.animate()
+                .scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new android.view.animation.OvershootInterpolator(1.2f))
+                .start();
+    }
+
+    /** Processes the item won from the lucky wheel. */
+    private void processWheelResult(ItemManager.WheelItem item) {
+        ItemManager itemManager = ItemManager.getInstance(this);
+        String extraInfo = null;
+
+        switch (item.id) {
+            case "xp_50":
+                xp += 50;
+                checkLevelUp();
+                saveState();
+                notifyListeners();
+                break;
+
+            case "xp_100":
+                xp += 100;
+                checkLevelUp();
+                saveState();
+                notifyListeners();
+                break;
+
+            case "double_xp":
+                itemManager.activateDoubleXp();
+                notifyListeners();
+                break;
+
+            case "half_xp":
+                extraInfo = sendTrapToRandomPlayer("half_xp");
+                break;
+
+            case "minus_50":
+                extraInfo = sendTrapToRandomPlayer("minus_50");
+                break;
+
+            case "minus_100":
+                extraInfo = sendTrapToRandomPlayer("minus_100");
+                break;
+
+            case "negate_trap":
+                itemManager.addNegateTrap();
+                notifyListeners();
+                break;
+
+            case "streak_save":
+                itemManager.addStreakSave();
+                notifyListeners();
+                break;
+
+            case "gambler":
+                itemManager.earnGamblerTitle();
+                AchievementManager.getInstance(this).earnGamblerTitle();
+                updateOnlineLeaderboard();
+                notifyListeners();
+                break;
+        }
+
+        showItemResultDialog(item, extraInfo);
+    }
+
+    /** Sends a trap to a random player from the leaderboard. */
+    private String sendTrapToRandomPlayer(String trapType) {
+        String username = getUsername();
+        String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
+
+        ItemManager itemManager = ItemManager.getInstance(this);
+        LeaderboardEntry target = itemManager.pickRandomTarget(cachedLeaderboardEntries, playerId);
+
+        if (target == null) {
+            Toast.makeText(this, "Keine anderen Spieler gefunden!", Toast.LENGTH_SHORT).show();
+            return "Kein Ziel gefunden";
+        }
+
+        // Create and send the trap
+        PlayerTrap trap = new PlayerTrap();
+        trap.setSender_id(playerId);
+        trap.setSender_name(username);
+        trap.setReceiver_id(target.getId());
+        trap.setReceiver_name(target.getName());
+        trap.setTrap_type(trapType);
+        trap.setActive(true);
+        trap.setNegated(false);
+
+        // Set expiration for time-based traps
+        if ("half_xp".equals(trapType)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            Date expiry = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000L);
+            trap.setExpires_at(sdf.format(expiry));
+        }
+
+        itemAPI.sendTrap(trap).enqueue(new Callback<List<PlayerTrap>>() {
+            @Override
+            public void onResponse(Call<List<PlayerTrap>> call, Response<List<PlayerTrap>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Items", "Falle gesendet an: " + target.getName());
+                } else {
+                    Log.e("Items", "Fehler beim Senden der Falle: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PlayerTrap>> call, Throwable t) {
+                Log.e("Items", "Fehler beim Senden der Falle", t);
+            }
+        });
+
+        return "Gesendet an: " + target.getName();
+    }
+
+    /** Shows the item result dialog after the wheel spin. */
+    private void showItemResultDialog(ItemManager.WheelItem item, String extraInfo) {
+        android.app.AlertDialog.Builder builder =
+                new android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar);
+        View popupView = getLayoutInflater().inflate(R.layout.dialog_item_result, null);
+
+        TextView emojiView = popupView.findViewById(R.id.itemEmoji);
+        TextView nameView = popupView.findViewById(R.id.itemName);
+        TextView typeBadge = popupView.findViewById(R.id.itemTypeBadge);
+        TextView descView = popupView.findViewById(R.id.itemDescription);
+        TextView extraInfoView = popupView.findViewById(R.id.itemExtraInfo);
+        Button dismissBtn = popupView.findViewById(R.id.itemDismissButton);
+
+        emojiView.setText(item.emoji);
+        nameView.setText(item.name);
+        nameView.setTextColor(item.color);
+        descView.setText(item.description);
+
+        // Set type badge
+        switch (item.type) {
+            case XP:
+                typeBadge.setText("XP");
+                typeBadge.setTextColor(0xFF4CAF50);
+                break;
+            case BUFF:
+                typeBadge.setText("BUFF");
+                typeBadge.setTextColor(0xFFFF9800);
+                break;
+            case TRAP:
+                typeBadge.setText("FALLE");
+                typeBadge.setTextColor(0xFFF44336);
+                break;
+            case AUTOMATIC:
+                typeBadge.setText("INVENTAR");
+                typeBadge.setTextColor(0xFF00BCD4);
+                break;
+            case TITLE:
+                typeBadge.setText("TITEL");
+                typeBadge.setTextColor(0xFFE040FB);
+                break;
+        }
+
+        if (extraInfo != null && !extraInfo.isEmpty()) {
+            extraInfoView.setText(extraInfo);
+            extraInfoView.setVisibility(View.VISIBLE);
+        }
+
+        builder.setView(popupView);
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dismissBtn.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+
+        // Animate the popup
+        popupView.setScaleX(0.5f);
+        popupView.setScaleY(0.5f);
+        popupView.setAlpha(0f);
+        popupView.animate()
+                .scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new android.view.animation.OvershootInterpolator(1.2f))
+                .start();
+    }
+
+    /** Fetches leaderboard entries for trap targeting. */
+    private void fetchLeaderboardForItems() {
+        leaderboardAPI.getLeaderboard().enqueue(new Callback<List<LeaderboardEntry>>() {
+            @Override
+            public void onResponse(Call<List<LeaderboardEntry>> call,
+                                   Response<List<LeaderboardEntry>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    cachedLeaderboardEntries = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LeaderboardEntry>> call, Throwable t) {
+                Log.w("Items", "Leaderboard für Items konnte nicht geladen werden", t);
+            }
+        });
+    }
+
+    /** Checks for incoming traps from other players. */
+    private void checkIncomingTraps() {
+        String username = getUsername();
+        if (username.equals("Unbekannt") || username.trim().isEmpty()) return;
+        String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
+
+        itemAPI.getActiveTrapsForReceiver("eq." + playerId).enqueue(new Callback<List<PlayerTrap>>() {
+            @Override
+            public void onResponse(Call<List<PlayerTrap>> call, Response<List<PlayerTrap>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (PlayerTrap trap : response.body()) {
+                        handleIncomingTrap(trap);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PlayerTrap>> call, Throwable t) {
+                Log.w("Items", "Fallen konnten nicht abgerufen werden", t);
+            }
+        });
+    }
+
+    /** Handles an incoming trap from another player. */
+    private void handleIncomingTrap(PlayerTrap trap) {
+        ItemManager itemManager = ItemManager.getInstance(this);
+
+        // Try to negate the trap
+        if (itemManager.useNegateTrap()) {
+            // Mark trap as negated on server
+            PlayerTrap update = new PlayerTrap();
+            update.setActive(false);
+            update.setNegated(true);
+            itemAPI.updateTrap("eq." + trap.getId(), update).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    Log.d("Items", "Falle negiert von: " + trap.getSender_name());
+                }
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("Items", "Fehler beim Negieren der Falle", t);
+                }
+            });
+
+            Toast.makeText(this, "🛡️ Falle von " + trap.getSender_name() + " negiert! ("
+                    + getTrapTypeName(trap.getTrap_type()) + ")", Toast.LENGTH_LONG).show();
+            notifyListeners();
+            return;
+        }
+
+        // Apply the trap
+        switch (trap.getTrap_type()) {
+            case "half_xp":
+                itemManager.activateHalfXp(trap.getSender_name());
+                Toast.makeText(this, "😈 " + trap.getSender_name() + " hat dir Halbe XP für 24h geschickt!",
+                        Toast.LENGTH_LONG).show();
+                break;
+            case "minus_50":
+                xp = Math.max(0, xp - 50);
+                saveState();
+                Toast.makeText(this, "💀 " + trap.getSender_name() + " hat dir -50 XP geschickt!",
+                        Toast.LENGTH_LONG).show();
+                break;
+            case "minus_100":
+                xp = Math.max(0, xp - 100);
+                saveState();
+                Toast.makeText(this, "☠️ " + trap.getSender_name() + " hat dir -100 XP geschickt!",
+                        Toast.LENGTH_LONG).show();
+                break;
+        }
+
+        // Mark trap as consumed on server
+        PlayerTrap update = new PlayerTrap();
+        update.setActive(false);
+        itemAPI.updateTrap("eq." + trap.getId(), update).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d("Items", "Falle verarbeitet von: " + trap.getSender_name());
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Items", "Fehler beim Verarbeiten der Falle", t);
+            }
+        });
+
+        notifyListeners();
+        updateOnlineLeaderboard();
+    }
+
+    private String getTrapTypeName(String trapType) {
+        switch (trapType) {
+            case "half_xp": return "Halbe XP";
+            case "minus_50": return "-50 XP";
+            case "minus_100": return "-100 XP";
+            default: return trapType;
+        }
     }
 
     private void checkQuestProgress() {
@@ -398,14 +764,31 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Returns the current consecutive-day streak.
      * Counts how many consecutive days (going back from today or yesterday)
-     * had at least 10 push-ups.
+     * had at least 10 push-ups. Streak-Rettung items are considered.
      */
     public int getStreak() {
         Calendar cal = Calendar.getInstance();
-        // If today has fewer than 10 pushups, start counting from yesterday
-        // (keeps the streak visible until midnight even if today's session hasn't started)
+        ItemManager itemManager = ItemManager.getInstance(this);
+
+        // If today has fewer than 10 pushups, check if we can use a streak save
         if (dailyPushupLog.getOrDefault(keyFor(cal), 0) < 10) {
-            cal.add(Calendar.DAY_OF_YEAR, -1);
+            // Check yesterday — if yesterday also had <10, streak would be broken
+            Calendar yesterday = (Calendar) cal.clone();
+            yesterday.add(Calendar.DAY_OF_YEAR, -1);
+            if (dailyPushupLog.getOrDefault(keyFor(yesterday), 0) >= 10) {
+                // Yesterday was fine, today just hasn't started — count from yesterday
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+            } else if (itemManager.wasStreakSavedToday()) {
+                // Streak was saved today, count from yesterday
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+            } else if (itemManager.useStreakSave()) {
+                // Use a streak save item
+                Toast.makeText(this, "🔥 Streak-Rettung eingesetzt! Dein Streak wurde gerettet!",
+                        Toast.LENGTH_LONG).show();
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+            } else {
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+            }
         }
         int streak = 0;
         for (int i = 0; i < 365; i++) {
@@ -452,6 +835,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUsername(String name) {
         sharedPreferences.edit().putString(KEY_USERNAME, name).apply();
+    }
+
+    /** Returns the ItemManager instance for accessing active effects and inventory. */
+    public ItemManager getItemManager() {
+        return ItemManager.getInstance(this);
     }
 
     // =========================================================================

@@ -103,6 +103,11 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             }
         }
 
+        // Also include "The Gambler" title if earned from lucky wheel
+        if (achievementManager.isGamblerTitleEarned() && !unlockedTitles.contains("The Gambler")) {
+            unlockedTitles.add("The Gambler");
+        }
+
         if (unlockedTitles.size() <= 1) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Titel w\u00e4hlen")
