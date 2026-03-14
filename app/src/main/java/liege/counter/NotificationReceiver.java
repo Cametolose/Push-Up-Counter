@@ -21,8 +21,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (ACTION_STREAK.equals(action)) {
             handleStreakNotification(context);
-        } else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
-            NotificationScheduler.scheduleStreakAlarm(context);
         }
     }
 
