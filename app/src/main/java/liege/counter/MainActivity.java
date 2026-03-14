@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -371,6 +372,13 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.show();
 
+        // Ensure dialog is large enough
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
         // Animate the popup in
         wheelView.setScaleX(0.5f);
         wheelView.setScaleY(0.5f);
@@ -545,6 +553,13 @@ public class MainActivity extends AppCompatActivity {
 
         dismissBtn.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
+
+        // Ensure dialog is large enough and not cut off
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
 
         // Animate the popup
         popupView.setScaleX(0.5f);

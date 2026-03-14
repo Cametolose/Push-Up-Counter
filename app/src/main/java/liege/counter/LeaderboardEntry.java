@@ -29,11 +29,10 @@ public class LeaderboardEntry {
 
     private String title;
 
+    private boolean banned;
+
 
     public LeaderboardEntry() {
-        this.name = name;
-        this.pushups = pushups;
-        this.level = level;
     }
 
 
@@ -204,5 +203,13 @@ public class LeaderboardEntry {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 }

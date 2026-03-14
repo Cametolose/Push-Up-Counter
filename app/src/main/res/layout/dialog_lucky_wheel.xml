@@ -28,8 +28,8 @@
     <!-- Lucky Wheel -->
     <liege.counter.LuckyWheelView
         android:id="@+id/luckyWheel"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
+        android:layout_width="310dp"
+        android:layout_height="310dp"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"/>
 
@@ -43,6 +43,6 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:elevation="4dp"/>
+        android:elevation="6dp"/>
 
 </LinearLayout>

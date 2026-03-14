@@ -25,12 +25,13 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private void handleStreakNotification(Context context) {
-        // Always reschedule for the next day first (setExactAndAllowWhileIdle fires only once)
-        NotificationScheduler.scheduleStreakAlarm(context);
-
         SharedPreferences notifPrefs = context.getSharedPreferences(NOTIF_PREFS, Context.MODE_PRIVATE);
         boolean streakEnabled = notifPrefs.getBoolean(KEY_STREAK_ENABLED, true);
+
+        // Only reschedule if notifications are enabled (setExactAndAllowWhileIdle fires only once)
         if (!streakEnabled) return;
+
+        NotificationScheduler.scheduleStreakAlarm(context);
 
         String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
                 .format(new java.util.Date());
