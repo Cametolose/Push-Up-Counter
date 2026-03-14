@@ -1,6 +1,8 @@
 package liege.counter;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +18,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.HashSet;
+import java.util.Set;
+
+@SuppressWarnings("deprecation")
 public class SettingsFragment extends Fragment implements MainActivity.OnStateChangedListener {
+
+    private static final String NOTIF_PREFS        = "NotificationPrefs";
+    private static final String KEY_STREAK_ENABLED = "streakNotifEnabled";
+    private static final String KEY_LB_ENABLED     = "lbNotifEnabled";
+    private static final String KEY_IGNORE_LIST    = "ignoreList";
 
     private TextView usernameDisplay;
     private TextView statsTotalPushups;
@@ -31,6 +43,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
     private TextView statsQuest2Count;
     private TextView statsQuest3Count;
     private TextView statsBonusCount;
+    private TextView notificationTimeDisplay;
+    private TextView ignoreListDisplay;
 
     private MainActivity mainActivity;
 
@@ -46,23 +60,72 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) requireActivity();
 
-        usernameDisplay   = view.findViewById(R.id.usernameDisplay);
-        statsTotalPushups = view.findViewById(R.id.statsTotalPushups);
-        statsDailyPushups = view.findViewById(R.id.statsDailyPushups);
+        usernameDisplay    = view.findViewById(R.id.usernameDisplay);
+        statsTotalPushups  = view.findViewById(R.id.statsTotalPushups);
+        statsDailyPushups  = view.findViewById(R.id.statsDailyPushups);
         statsWeeklyPushups = view.findViewById(R.id.statsWeeklyPushups);
         statsMonthlyPushups = view.findViewById(R.id.statsMonthlyPushups);
         statsYearlyPushups = view.findViewById(R.id.statsYearlyPushups);
-        statsLevel        = view.findViewById(R.id.statsLevel);
-        statsTotalXp      = view.findViewById(R.id.statsTotalXp);
-        statsStreak       = view.findViewById(R.id.statsStreak);
-        statsTotalQuests  = view.findViewById(R.id.statsTotalQuests);
-        statsQuest1Count  = view.findViewById(R.id.statsQuest1Count);
-        statsQuest2Count  = view.findViewById(R.id.statsQuest2Count);
-        statsQuest3Count  = view.findViewById(R.id.statsQuest3Count);
-        statsBonusCount   = view.findViewById(R.id.statsBonusCount);
+        statsLevel         = view.findViewById(R.id.statsLevel);
+        statsTotalXp       = view.findViewById(R.id.statsTotalXp);
+        statsStreak        = view.findViewById(R.id.statsStreak);
+        statsTotalQuests   = view.findViewById(R.id.statsTotalQuests);
+        statsQuest1Count   = view.findViewById(R.id.statsQuest1Count);
+        statsQuest2Count   = view.findViewById(R.id.statsQuest2Count);
+        statsQuest3Count   = view.findViewById(R.id.statsQuest3Count);
+        statsBonusCount    = view.findViewById(R.id.statsBonusCount);
+        notificationTimeDisplay = view.findViewById(R.id.notificationTimeDisplay);
+        ignoreListDisplay  = view.findViewById(R.id.ignoreListDisplay);
 
+        // Name change button -- hide after name is set
         Button changeNameButton = view.findViewById(R.id.changeNameButton);
-        changeNameButton.setOnClickListener(v -> showChangeNameDialog());
+        String currentName = mainActivity.getUsername();
+        if (!currentName.equals("Unbekannt") && !currentName.trim().isEmpty()) {
+            changeNameButton.setVisibility(View.GONE);
+        } else {
+            changeNameButton.setOnClickListener(v -> showChangeNameDialog());
+        }
+
+        // Notification switches
+        SharedPreferences notifPrefs = requireContext()
+                .getSharedPreferences(NOTIF_PREFS, requireContext().MODE_PRIVATE);
+
+        Switch switchStreak = view.findViewById(R.id.switchStreakNotification);
+        switchStreak.setChecked(notifPrefs.getBoolean(KEY_STREAK_ENABLED, true));
+        switchStreak.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notifPrefs.edit().putBoolean(KEY_STREAK_ENABLED, isChecked).apply();
+            if (isChecked) {
+                NotificationScheduler.scheduleStreakAlarm(requireContext());
+            } else {
+                NotificationScheduler.cancelStreakAlarm(requireContext());
+            }
+        });
+
+        Switch switchLeaderboard = view.findViewById(R.id.switchLeaderboardNotification);
+        switchLeaderboard.setChecked(notifPrefs.getBoolean(KEY_LB_ENABLED, true));
+        switchLeaderboard.setOnCheckedChangeListener((buttonView, isChecked) ->
+                notifPrefs.edit().putBoolean(KEY_LB_ENABLED, isChecked).apply());
+
+        updateNotificationTimeDisplay();
+
+        Button changeTimeButton = view.findViewById(R.id.changeNotificationTimeButton);
+        changeTimeButton.setOnClickListener(v -> showTimePickerDialog());
+
+        updateIgnoreListDisplay();
+        Button addIgnoreButton = view.findViewById(R.id.addIgnoreButton);
+        addIgnoreButton.setOnClickListener(v -> {
+            EditText input = view.findViewById(R.id.ignoreListInput);
+            String name = input.getText().toString().trim();
+            if (!name.isEmpty()) {
+                addToIgnoreList(name);
+                input.setText("");
+                updateIgnoreListDisplay();
+                Toast.makeText(getContext(), name + " ignoriert", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Button creditsButton = view.findViewById(R.id.creditsButton);
+        creditsButton.setOnClickListener(v -> showCreditsDialog());
 
         updateDisplay();
     }
@@ -111,22 +174,78 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         input.setHint("Dein Name");
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Neuen Namen eingeben")
+                .setTitle("Namen eingeben")
                 .setView(input)
                 .setPositiveButton("Speichern", (dialog, which) -> {
                     String name = input.getText().toString().trim();
                     if (!name.isEmpty()) {
                         mainActivity.setUsername(name);
                         updateDisplay();
-                        Toast.makeText(getContext(), "Name geändert zu: " + name,
-                                Toast.LENGTH_SHORT).show();
+                        Button btn = getView() != null ? getView().findViewById(R.id.changeNameButton) : null;
+                        if (btn != null) btn.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Name gesetzt: " + name, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getContext(), "Name darf nicht leer sein!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Name darf nicht leer sein!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Abbrechen", null)
                 .show();
     }
-}
 
+    private void showTimePickerDialog() {
+        int hour   = NotificationScheduler.getNotifHour(requireContext());
+        int minute = NotificationScheduler.getNotifMinute(requireContext());
+
+        new TimePickerDialog(requireContext(), (timePicker, h, m) -> {
+            NotificationScheduler.setNotificationTime(requireContext(), h, m);
+            updateNotificationTimeDisplay();
+            Toast.makeText(getContext(),
+                    String.format("Benachrichtigungszeit: %02d:%02d", h, m),
+                    Toast.LENGTH_SHORT).show();
+        }, hour, minute, true).show();
+    }
+
+    private void updateNotificationTimeDisplay() {
+        int hour   = NotificationScheduler.getNotifHour(requireContext());
+        int minute = NotificationScheduler.getNotifMinute(requireContext());
+        if (notificationTimeDisplay != null) {
+            notificationTimeDisplay.setText(String.format("Zeit: %02d:%02d", hour, minute));
+        }
+    }
+
+    private Set<String> getIgnoreList() {
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences(NOTIF_PREFS, requireContext().MODE_PRIVATE);
+        return new HashSet<>(prefs.getStringSet(KEY_IGNORE_LIST, new HashSet<>()));
+    }
+
+    private void addToIgnoreList(String name) {
+        Set<String> list = getIgnoreList();
+        list.add(name.toLowerCase(java.util.Locale.ROOT));
+        requireContext().getSharedPreferences(NOTIF_PREFS, requireContext().MODE_PRIVATE)
+                .edit().putStringSet(KEY_IGNORE_LIST, list).apply();
+    }
+
+    private void updateIgnoreListDisplay() {
+        Set<String> list = getIgnoreList();
+        if (ignoreListDisplay == null) return;
+        if (list.isEmpty()) {
+            ignoreListDisplay.setText("Keine ignorierten Spieler");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (String name : list) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(name);
+            }
+            ignoreListDisplay.setText(sb.toString());
+        }
+    }
+
+    private void showCreditsDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Credits")
+                .setMessage("Entwickelt von: [Ihr Name hier]\n\nBesonderer Dank an alle Nutzer!\n\nVersion: 127.0.0.1")
+                .setPositiveButton("OK", null)
+                .show();
+    }
+}

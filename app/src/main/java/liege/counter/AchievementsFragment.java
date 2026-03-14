@@ -1,10 +1,12 @@
 package liege.counter;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,12 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class AchievementsFragment extends Fragment implements MainActivity.OnStateChangedListener {
 
     private ListView achievementListView;
     private TextView titleDisplayView;
     private MainActivity mainActivity;
     private AchievementManager achievementManager;
+    private AchievementAdapter achievementAdapter;
 
     @Nullable
     @Override
@@ -36,8 +43,12 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
         achievementListView = view.findViewById(R.id.achievementListView);
         titleDisplayView = view.findViewById(R.id.achievementTitleDisplay);
 
-        achievementListView.setAdapter(new AchievementAdapter());
+        achievementAdapter = new AchievementAdapter();
+        achievementListView.setAdapter(achievementAdapter);
         updateTitleDisplay();
+
+        Button chooseTitleBtn = view.findViewById(R.id.chooseTitleButton);
+        chooseTitleBtn.setOnClickListener(v -> showTitleChooserDialog());
     }
 
     @Override
@@ -61,8 +72,9 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
     }
 
     private void updateDisplay() {
-        if (achievementListView != null && achievementListView.getAdapter() != null) {
-            ((BaseAdapter) achievementListView.getAdapter()).notifyDataSetChanged();
+        if (achievementAdapter != null) {
+            achievementAdapter.refreshSortedList();
+            achievementAdapter.notifyDataSetChanged();
         }
         updateTitleDisplay();
     }
@@ -74,9 +86,44 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             titleDisplayView.setText("Aktueller Titel: " + title);
             titleDisplayView.setTextColor(color);
         } else {
-            titleDisplayView.setText("Aktueller Titel: —");
+            titleDisplayView.setText("Aktueller Titel: \u2014");
             titleDisplayView.setTextColor(0xFF9E9E9E);
         }
+    }
+
+    private void showTitleChooserDialog() {
+        Set<String> completedIds = achievementManager.getCompletedIds();
+        List<String> unlockedTitles = new ArrayList<>();
+        unlockedTitles.add("Automatisch (h\u00f6chster Rang)");
+
+        for (AchievementManager.AchievementDef ach : AchievementManager.ACHIEVEMENTS) {
+            if (completedIds.contains(ach.id) && ach.titleReward != null
+                    && !ach.titleReward.isEmpty() && !unlockedTitles.contains(ach.titleReward)) {
+                unlockedTitles.add(ach.titleReward);
+            }
+        }
+
+        if (unlockedTitles.size() <= 1) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Titel w\u00e4hlen")
+                    .setMessage("Du hast noch keine Titel freigeschaltet. Schlie\u00dfe Errungenschaften ab!")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        String[] options = unlockedTitles.toArray(new String[0]);
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Titel w\u00e4hlen")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        achievementManager.setSelectedTitle(null);
+                    } else {
+                        achievementManager.setSelectedTitle(options[which]);
+                    }
+                    updateTitleDisplay();
+                })
+                .show();
     }
 
     // =====================================================================
@@ -85,14 +132,36 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
 
     private class AchievementAdapter extends BaseAdapter {
 
+        private final List<AchievementManager.AchievementDef> sortedList = new ArrayList<>();
+
+        AchievementAdapter() {
+            refreshSortedList();
+        }
+
+        void refreshSortedList() {
+            sortedList.clear();
+            // Add incomplete achievements first
+            for (AchievementManager.AchievementDef ach : AchievementManager.ACHIEVEMENTS) {
+                if (!achievementManager.isCompleted(ach.id)) {
+                    sortedList.add(ach);
+                }
+            }
+            // Then add completed achievements
+            for (AchievementManager.AchievementDef ach : AchievementManager.ACHIEVEMENTS) {
+                if (achievementManager.isCompleted(ach.id)) {
+                    sortedList.add(ach);
+                }
+            }
+        }
+
         @Override
         public int getCount() {
-            return AchievementManager.ACHIEVEMENTS.length;
+            return sortedList.size();
         }
 
         @Override
         public AchievementManager.AchievementDef getItem(int position) {
-            return AchievementManager.ACHIEVEMENTS[position];
+            return sortedList.get(position);
         }
 
         @Override
@@ -110,17 +179,14 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             AchievementManager.AchievementDef ach = getItem(position);
             boolean completed = achievementManager.isCompleted(ach.id);
 
-            // Card background
             View card = convertView.findViewById(R.id.achievementCard);
             card.setBackgroundResource(completed
                     ? R.drawable.achievement_card_completed_bg
                     : R.drawable.achievement_card_bg);
 
-            // Icon
             TextView iconView = convertView.findViewById(R.id.achievementIcon);
-            iconView.setText(completed ? "✅" : ach.icon);
+            iconView.setText(completed ? "\u2705" : ach.icon);
 
-            // Name & Description
             TextView nameView = convertView.findViewById(R.id.achievementName);
             TextView descView = convertView.findViewById(R.id.achievementDesc);
             nameView.setText(ach.name);
@@ -134,7 +200,6 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
                 descView.setTextColor(0xFF9E9E9E);
             }
 
-            // Progress
             ProgressBar progressBar = convertView.findViewById(R.id.achievementProgress);
             TextView progressText = convertView.findViewById(R.id.achievementProgressText);
 
@@ -143,14 +208,13 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             progressBar.setProgress(progress);
 
             if (completed) {
-                progressText.setText("Abgeschlossen ✓");
+                progressText.setText("Abgeschlossen \u2713");
                 progressText.setTextColor(0xFF7C4DFF);
             } else {
                 progressText.setText(currentValue + "/" + ach.target);
                 progressText.setTextColor(0xFF9E9E9E);
             }
 
-            // Title reward
             TextView titleView = convertView.findViewById(R.id.achievementTitle);
             TextView rewardView = convertView.findViewById(R.id.achievementReward);
 

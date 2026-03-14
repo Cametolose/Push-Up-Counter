@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Liegestütz Counter</string>
+    <string name="app_name">Push-Up Counter</string>
     <string name="default_web_client_id">93321571757-3kv3l4tvj6k8sknqishqmdgn5jbaehp3.apps.googleusercontent.com</string>
     <!-- Leaderboard URL is now managed in SupabaseConfig.java -->
     <string name="base_url">https://YOUR_PROJECT_REF.supabase.co/rest/v1/</string>

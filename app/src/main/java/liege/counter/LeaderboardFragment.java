@@ -134,9 +134,53 @@ public class LeaderboardFragment extends Fragment {
             showEmpty();
             return;
         }
+
+        // Filter out ignored players
+        android.content.SharedPreferences notifPrefs = requireContext()
+                .getSharedPreferences("NotificationPrefs", android.content.Context.MODE_PRIVATE);
+        java.util.Set<String> ignoreList = notifPrefs.getStringSet("ignoreList", new java.util.HashSet<>());
+
+        List<LeaderboardEntry> filtered = new java.util.ArrayList<>();
+        for (LeaderboardEntry entry : entries) {
+            String name = entry.getName();
+            if (name == null || !ignoreList.contains(name.trim().toLowerCase(java.util.Locale.ROOT))) {
+                filtered.add(entry);
+            }
+        }
+
+        if (filtered.isEmpty()) {
+            showEmpty();
+            return;
+        }
+
+        // Check for rank drop and send notification if needed
+        String myName = ((MainActivity) requireActivity()).getUsername();
+        int currentRank = -1;
+        for (int i = 0; i < filtered.size(); i++) {
+            if (filtered.get(i).getName() != null
+                    && filtered.get(i).getName().equalsIgnoreCase(myName)) {
+                currentRank = i + 1;
+                break;
+            }
+        }
+        if (currentRank > 0) {
+            android.content.SharedPreferences rankPrefs = requireContext()
+                    .getSharedPreferences("NotificationPrefs", android.content.Context.MODE_PRIVATE);
+            int prevRank = rankPrefs.getInt("lastLeaderboardRank_" + myName, currentRank);
+            boolean lbEnabled = rankPrefs.getBoolean("lbNotifEnabled", true);
+            String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+                    .format(new java.util.Date());
+            String lastLbNotif = rankPrefs.getString("lastLbNotifDay", "");
+            if (lbEnabled && currentRank > prevRank && !today.equals(lastLbNotif)) {
+                NotificationHelper.sendLeaderboardNotification(requireContext());
+                rankPrefs.edit().putString("lastLbNotifDay", today).apply();
+            }
+            rankPrefs.edit().putInt("lastLeaderboardRank_" + myName, currentRank).apply();
+        }
+
         listView.setVisibility(View.VISIBLE);
         emptyText.setVisibility(View.GONE);
-        listView.setAdapter(new LeaderboardAdapter(requireContext(), entries));
+        listView.setAdapter(new LeaderboardAdapter(requireContext(), filtered));
     }
 
     private void showEmpty() {

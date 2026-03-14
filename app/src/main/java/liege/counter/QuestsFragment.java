@@ -27,39 +27,39 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
      */
     private static final String[][][] QUEST_DATA = {
         { // Sonntag — Erholung & Stretching
-            {"Morgendehnung", "Dehne dich 10 Minuten und mache 20 breite Liegestütze (breiter Griff = mehr Brust)"},
-            {"Aktive Erholung", "30 normale + 20 Diamant-Liegestütze (Hände eng zusammen = Trizeps-Fokus)"},
-            {"Sonntags-Champion", "100 Liegestütze nach Wahl — mische verschiedene Varianten für maximalen Effekt"}
+            {"Morgendehnung", "Dehne dich 10 Minuten und mache 20 breite Push-Ups (breiter Griff = mehr Brust)"},
+            {"Aktive Erholung", "30 normale + 20 Diamant-Push-Ups (Hände eng zusammen = Trizeps-Fokus)"},
+            {"Sonntags-Champion", "100 Push-Ups nach Wahl — mische verschiedene Varianten für maximalen Effekt"}
         },
         { // Montag — Wochenstart
-            {"Wochenstart-Power", "20 klassische Liegestütze als motivierter Tagesstart — saubere Technik!"},
-            {"Montags-Schub", "20 normale + 20 breite + 10 Diamant-Liegestütze (kurze Pausen erlaubt)"},
-            {"Montags-Held", "100 Liegestütze in Sets deiner Wahl — z.B. 10×10 oder 5×20"}
+            {"Wochenstart-Power", "20 klassische Push-Ups als motivierter Tagesstart — saubere Technik!"},
+            {"Montags-Schub", "20 normale + 20 breite + 10 Diamant-Push-Ups (kurze Pausen erlaubt)"},
+            {"Montags-Held", "100 Push-Ups in Sets deiner Wahl — z.B. 10×10 oder 5×20"}
         },
         { // Dienstag — Oberkörper
-            {"Schulter-Aktivierung", "20 Pike-Liegestütze: Gesäß hoch, Kopf zwischen die Arme — ideal für Schultern"},
-            {"Brust & Trizeps", "25 normale + 25 Diamant-Liegestütze für Brust und Trizeps"},
-            {"Dienstags-Krieger", "100 Liegestütze + je 3×30 Sek. Plank zwischen den Sets zur Core-Stärkung"}
+            {"Schulter-Aktivierung", "20 Pike-Push-Ups: Gesäß hoch, Kopf zwischen die Arme — ideal für Schultern"},
+            {"Brust & Trizeps", "25 normale + 25 Diamant-Push-Ups für Brust und Trizeps"},
+            {"Dienstags-Krieger", "100 Push-Ups + je 3×30 Sek. Plank zwischen den Sets zur Core-Stärkung"}
         },
         { // Mittwoch — Core & Stabilität
-            {"Slow-Push-up Challenge", "20 Liegestütze mit 3-Sek.-Halt unten — maximale Spannung, langsam & kontrolliert"},
-            {"Wochenmitte-Push", "20 normale + 20 breite + 10 Archer-Liegestütze (eine Seite strecken, abwechselnd)"},
-            {"Mittwochs-Meister", "100 Liegestütze gemischt + 10 Minuten Stretching danach (Schultern, Brust, Trizeps)"}
+            {"Slow-Push-up Challenge", "20 Push-Ups mit 3-Sek.-Halt unten — maximale Spannung, langsam & kontrolliert"},
+            {"Wochenmitte-Push", "20 normale + 20 breite + 10 Archer-Push-Ups (eine Seite strecken, abwechselnd)"},
+            {"Mittwochs-Meister", "100 Push-Ups gemischt + 10 Minuten Stretching danach (Schultern, Brust, Trizeps)"}
         },
         { // Donnerstag — Ausdauer
-            {"Ausdauer-Basis", "20 Liegestütze in langsamem Tempo — 2 Sek. runter, kurz halten, 2 Sek. hoch"},
-            {"Donnerstags-Kraft", "5 Sätze à 10 Liegestütze mit je 30 Sek. Pause — Fokus auf gleichmäßige Form"},
-            {"Donnerstags-Titan", "100 Liegestütze beliebig verteilt + 5 Min. Dehnübungen für Schultern & Brust"}
+            {"Ausdauer-Basis", "20 Push-Ups in langsamem Tempo — 2 Sek. runter, kurz halten, 2 Sek. hoch"},
+            {"Donnerstags-Kraft", "5 Sätze à 10 Push-Ups mit je 30 Sek. Pause — Fokus auf gleichmäßige Form"},
+            {"Donnerstags-Titan", "100 Push-Ups beliebig verteilt + 5 Min. Dehnübungen für Schultern & Brust"}
         },
         { // Freitag — Power & Explosivität
-            {"Feierabend-Starter", "20 Archer-Liegestütze — eine Seite strecken und abwechseln (Koordination & Kraft)"},
-            {"Freitags-Feuer", "50 explosive Liegestütze — drücke dich so schnell wie möglich hoch (Sprengkraft)"},
-            {"Wochenend-Countdown", "100 Liegestütze: breiter Griff → normaler Griff → Diamant (je ~33)"}
+            {"Feierabend-Starter", "20 Archer-Push-Ups — eine Seite strecken und abwechseln (Koordination & Kraft)"},
+            {"Freitags-Feuer", "50 explosive Push-Ups — drücke dich so schnell wie möglich hoch (Sprengkraft)"},
+            {"Wochenend-Countdown", "100 Push-Ups: breiter Griff → normaler Griff → Diamant (je ~33)"}
         },
         { // Samstag — Wochenend-Warrior
-            {"Wochenend-Warmup", "5 Min. Ganzkörper-Dehnen, dann 20 Liegestütze nach Wahl — locker bleiben"},
-            {"Samstags-Booster", "25 normale + 15 Decline-Liegestütze (Füße erhöht = obere Brust) + 10 Pike"},
-            {"Wochenend-Warrior", "100 Liegestütze + Hampelmann 3×30 Sek. und 2×30 Sek. Plank zur Abkühlung"}
+            {"Wochenend-Warmup", "5 Min. Ganzkörper-Dehnen, dann 20 Push-Ups nach Wahl — locker bleiben"},
+            {"Samstags-Booster", "25 normale + 15 Decline-Push-Ups (Füße erhöht = obere Brust) + 10 Pike"},
+            {"Wochenend-Warrior", "100 Push-Ups + Hampelmann 3×30 Sek. und 2×30 Sek. Plank zur Abkühlung"}
         }
     };
 
