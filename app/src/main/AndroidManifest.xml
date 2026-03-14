@@ -28,7 +28,7 @@
 
         <receiver
             android:name=".NotificationReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="liege.counter.ACTION_STREAK_NOTIFICATION" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

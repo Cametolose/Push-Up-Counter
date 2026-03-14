@@ -17,6 +17,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (intent == null) return;
         String action = intent.getAction();
         if (ACTION_STREAK.equals(action)) {
             handleStreakNotification(context);
