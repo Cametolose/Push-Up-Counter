@@ -38,7 +38,12 @@ public class NotificationScheduler {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && !alarmManager.canScheduleExactAlarms()) {
+            // Exact alarm permission not granted on Android 12+; fall back to inexact alarm
+            alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
         } else {
