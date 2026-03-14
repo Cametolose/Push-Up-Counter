@@ -42,10 +42,12 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (dailyLog == null) return;
 
         int streak = computeStreak(dailyLog);
-        if (streak > MIN_STREAK_FOR_NOTIF) {
+        if (streak >= MIN_STREAK_FOR_NOTIF) {
             NotificationHelper.sendStreakNotification(context, streak);
             notifPrefs.edit().putString(KEY_LAST_STREAK_NOTIF, today).apply();
         }
+        // Reschedule for the next day (setExactAndAllowWhileIdle fires only once)
+        NotificationScheduler.scheduleStreakAlarm(context);
     }
 
     private int computeStreak(java.util.HashMap<String, Integer> log) {
