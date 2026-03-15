@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     private TextView levelTextView;
     private TextView xpTextView;
     private ProgressBar xpProgressBar;
-    private TextView todayCountTextView;
+    private TextView dailyTextView;
     private TextView weeklyTextView;
     private TextView totalTextView;
     private TextView streakTextView;
@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         levelTextView      = view.findViewById(R.id.levelTextView);
         xpTextView         = view.findViewById(R.id.xpTextView);
         xpProgressBar      = view.findViewById(R.id.xpProgressBar);
-        todayCountTextView = view.findViewById(R.id.todayCountTextView);
+        dailyTextView      = view.findViewById(R.id.dailyTextView);
         weeklyTextView     = view.findViewById(R.id.weeklyTextView);
         totalTextView      = view.findViewById(R.id.totalTextView);
         streakTextView     = view.findViewById(R.id.streakTextView);
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         levelTextView.setText("Level: " + level);
         xpTextView.setText("XP: " + xp + "/" + xpNeeded);
         xpProgressBar.setProgress(xpNeeded > 0 ? (xp * 100) / xpNeeded : 0);
-        todayCountTextView.setText("Heute: " + daily);
+        dailyTextView.setText(String.valueOf(daily));
         weeklyTextView.setText(String.valueOf(weekly));
         totalTextView.setText(String.valueOf(total));
 

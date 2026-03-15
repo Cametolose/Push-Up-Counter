@@ -119,9 +119,10 @@ public class LuckyWheelView extends View {
     public void spin(int targetIndex) {
         if (items == null || items.isEmpty() || segmentAngles == null) return;
 
-        // Calculate the target angle so the pointer (top) lands in the middle of the target segment.
+        // Calculate the target angle so the pointer (top, at 270° in canvas coordinates)
+        // lands in the middle of the target segment.
         float targetMid = segmentStarts[targetIndex] + segmentAngles[targetIndex] / 2f;
-        float landingAngle = 360f - targetMid;
+        float landingAngle = ((270f - targetMid) % 360f + 360f) % 360f;
 
         // Add multiple full rotations for visual effect (5-8 spins)
         int extraSpins = 5 + random.nextInt(3);
