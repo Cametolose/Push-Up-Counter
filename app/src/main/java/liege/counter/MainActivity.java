@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
         String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
 
         // Block traps from unbekannt or banned players
-        if ("unbekannt".equals(playerId) || username.equals("Unbekannt") || username.trim().isEmpty()) {
+        if ("unbekannt".equals(playerId) || username.trim().isEmpty()) {
             Toast.makeText(this, "Setze zuerst deinen Namen!", Toast.LENGTH_SHORT).show();
             return "Setze zuerst deinen Namen!";
         }

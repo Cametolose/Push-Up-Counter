@@ -75,8 +75,8 @@ public class ItemManager {
 
     /**
      * All items on the lucky wheel. Weights are relative.
-     * Each regular item has weight 99 (equal chance: ~12.375% each).
-     * "The Gambler" has weight 8, giving exactly 1% chance (8/800 = 1%).
+     * Each regular item has weight 99 (12.375% chance each).
+     * "The Gambler" has weight 8 (exactly 1% chance: 8/800).
      */
     public static final WheelItem[] WHEEL_ITEMS = {
         new WheelItem("xp_50",       "+50 XP",           "Sofort +50 XP!",

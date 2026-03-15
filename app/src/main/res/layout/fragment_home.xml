@@ -56,6 +56,9 @@
             android:layout_height="wrap_content"
             android:text="Level: 1"
             android:textColor="#81C784"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
 
         <!-- XP label -->
         <TextView
