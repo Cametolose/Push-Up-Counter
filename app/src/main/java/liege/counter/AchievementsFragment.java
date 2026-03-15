@@ -227,7 +227,7 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
                 titleView.setVisibility(View.VISIBLE);
                 titleView.setText(ach.titleReward);
                 titleView.setTextColor(ach.titleColor);
-                rewardView.setText("Titel: " + ach.titleReward);
+                rewardView.setText("");
             } else {
                 titleView.setVisibility(View.GONE);
                 rewardView.setText("");

@@ -105,15 +105,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         setupIncrementButton(root, R.id.incrementButton1, 1);
         setupIncrementButton(root, R.id.incrementButton5, 5);
         setupIncrementButton(root, R.id.incrementButton10, 10);
-
-        // Long-press on +1 for -1 (undo)
-        Button btn1 = root.findViewById(R.id.incrementButton1);
-        btn1.setOnLongClickListener(v -> {
-            v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            mainActivity.decrementCounter(1);
-            Toast.makeText(getContext(), "-1 rückgängig gemacht", Toast.LENGTH_SHORT).show();
-            return true;
-        });
     }
 
     private void setupIncrementButton(View root, int buttonId, int amount) {
@@ -207,27 +198,17 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
 
     private void updateInventory() {
         ItemManager itemManager = mainActivity.getItemManager();
-        boolean hasItems = false;
 
         int negateTrapAmt = itemManager.getNegateTrapCount();
-        if (negateTrapAmt > 0) {
-            negateTrapItem.setVisibility(View.VISIBLE);
-            negateTrapCount.setText("×" + negateTrapAmt);
-            hasItems = true;
-        } else {
-            negateTrapItem.setVisibility(View.GONE);
-        }
+        negateTrapItem.setVisibility(View.VISIBLE);
+        negateTrapCount.setText("×" + negateTrapAmt);
 
         int streakSaveAmt = itemManager.getStreakSaveCount();
-        if (streakSaveAmt > 0) {
-            streakSaveItem.setVisibility(View.VISIBLE);
-            streakSaveCount.setText("×" + streakSaveAmt);
-            hasItems = true;
-        } else {
-            streakSaveItem.setVisibility(View.GONE);
-        }
+        streakSaveItem.setVisibility(View.VISIBLE);
+        streakSaveCount.setText("×" + streakSaveAmt);
 
-        inventorySection.setVisibility(hasItems ? View.VISIBLE : View.GONE);
+        // Always show inventory section
+        inventorySection.setVisibility(View.VISIBLE);
     }
 
     // =========================================================================
