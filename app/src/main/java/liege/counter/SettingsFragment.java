@@ -18,16 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @SuppressWarnings("deprecation")
 public class SettingsFragment extends Fragment implements MainActivity.OnStateChangedListener {
 
     private static final String NOTIF_PREFS        = "NotificationPrefs";
     private static final String KEY_STREAK_ENABLED = "streakNotifEnabled";
     private static final String KEY_LB_ENABLED     = "lbNotifEnabled";
-    private static final String KEY_IGNORE_LIST    = "ignoreList";
 
     private TextView usernameDisplay;
     private TextView statsTotalPushups;
@@ -44,7 +40,6 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
     private TextView statsQuest3Count;
     private TextView statsBonusCount;
     private TextView notificationTimeDisplay;
-    private TextView ignoreListDisplay;
 
     private MainActivity mainActivity;
 
@@ -75,7 +70,6 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         statsQuest3Count   = view.findViewById(R.id.statsQuest3Count);
         statsBonusCount    = view.findViewById(R.id.statsBonusCount);
         notificationTimeDisplay = view.findViewById(R.id.notificationTimeDisplay);
-        ignoreListDisplay  = view.findViewById(R.id.ignoreListDisplay);
 
         // Name change button -- hide after name is set
         Button changeNameButton = view.findViewById(R.id.changeNameButton);
@@ -110,19 +104,6 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
 
         Button changeTimeButton = view.findViewById(R.id.changeNotificationTimeButton);
         changeTimeButton.setOnClickListener(v -> showTimePickerDialog());
-
-        updateIgnoreListDisplay();
-        Button addIgnoreButton = view.findViewById(R.id.addIgnoreButton);
-        addIgnoreButton.setOnClickListener(v -> {
-            EditText input = view.findViewById(R.id.ignoreListInput);
-            String name = input.getText().toString().trim();
-            if (!name.isEmpty()) {
-                addToIgnoreList(name);
-                input.setText("");
-                updateIgnoreListDisplay();
-                Toast.makeText(getContext(), name + " ignoriert", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         Button creditsButton = view.findViewById(R.id.creditsButton);
         creditsButton.setOnClickListener(v -> showCreditsDialog());
@@ -210,34 +191,6 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         int minute = NotificationScheduler.getNotifMinute(requireContext());
         if (notificationTimeDisplay != null) {
             notificationTimeDisplay.setText(String.format("Zeit: %02d:%02d", hour, minute));
-        }
-    }
-
-    private Set<String> getIgnoreList() {
-        SharedPreferences prefs = requireContext()
-                .getSharedPreferences(NOTIF_PREFS, requireContext().MODE_PRIVATE);
-        return new HashSet<>(prefs.getStringSet(KEY_IGNORE_LIST, new HashSet<>()));
-    }
-
-    private void addToIgnoreList(String name) {
-        Set<String> list = getIgnoreList();
-        list.add(name.toLowerCase(java.util.Locale.ROOT));
-        requireContext().getSharedPreferences(NOTIF_PREFS, requireContext().MODE_PRIVATE)
-                .edit().putStringSet(KEY_IGNORE_LIST, list).apply();
-    }
-
-    private void updateIgnoreListDisplay() {
-        Set<String> list = getIgnoreList();
-        if (ignoreListDisplay == null) return;
-        if (list.isEmpty()) {
-            ignoreListDisplay.setText("Keine ignorierten Spieler");
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (String name : list) {
-                if (sb.length() > 0) sb.append(", ");
-                sb.append(name);
-            }
-            ignoreListDisplay.setText(sb.toString());
         }
     }
 

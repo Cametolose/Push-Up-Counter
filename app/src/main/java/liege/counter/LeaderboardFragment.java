@@ -135,15 +135,10 @@ public class LeaderboardFragment extends Fragment {
             return;
         }
 
-        // Filter out ignored players
-        android.content.SharedPreferences notifPrefs = requireContext()
-                .getSharedPreferences("NotificationPrefs", android.content.Context.MODE_PRIVATE);
-        java.util.Set<String> ignoreList = notifPrefs.getStringSet("ignoreList", new java.util.HashSet<>());
-
+        // Filter out banned players (banned flag set in database by admin)
         List<LeaderboardEntry> filtered = new java.util.ArrayList<>();
         for (LeaderboardEntry entry : entries) {
-            String name = entry.getName();
-            if (name == null || !ignoreList.contains(name.trim().toLowerCase(java.util.Locale.ROOT))) {
+            if (!entry.isBanned()) {
                 filtered.add(entry);
             }
         }

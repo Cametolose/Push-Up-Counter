@@ -76,24 +76,24 @@ public class ItemManager {
     /** All items on the lucky wheel. Weights don't need to sum to 1.0 — they are relative. */
     public static final WheelItem[] WHEEL_ITEMS = {
         new WheelItem("xp_50",       "+50 XP",           "Sofort +50 XP!",
-                "💰", ItemType.XP,        0xFF4CAF50, 20),  // green
+                "✨", ItemType.XP,        0xFF4CAF50, 20),  // green
         new WheelItem("xp_100",      "+100 XP",          "Sofort +100 XP!",
                 "💎", ItemType.XP,        0xFF2196F3, 10),  // blue
         new WheelItem("double_xp",   "Doppel-XP",        "Doppelte XP für 24 Stunden!",
-                "⚡", ItemType.BUFF,      0xFFFF9800, 12),  // orange
+                "🚀", ItemType.BUFF,      0xFFFF9800, 12),  // orange
         new WheelItem("half_xp",     "Halbe XP",         "Halbe XP für 24h — wird an einen zufälligen Spieler gesendet!",
-                "😈", ItemType.TRAP,      0xFFF44336, 12),  // red
+                "🐌", ItemType.TRAP,      0xFFF44336, 12),  // red
         new WheelItem("minus_50",    "-50 XP",           "-50 XP für einen zufälligen Spieler!",
-                "💀", ItemType.TRAP,      0xFF9C27B0, 15),  // purple
+                "💣", ItemType.TRAP,      0xFF9C27B0, 15),  // purple
         new WheelItem("minus_100",   "-100 XP",          "-100 XP für einen zufälligen Spieler!",
-                "☠️", ItemType.TRAP,      0xFF880E4F, 8),   // dark pink
+                "💥", ItemType.TRAP,      0xFF880E4F, 8),   // dark pink
         new WheelItem("negate_trap", "Fallen-Schutz",    "Negiert automatisch die nächste Falle, die du erhältst!",
                 "🛡️", ItemType.AUTOMATIC, 0xFF00BCD4, 12),  // teal
         new WheelItem("streak_save", "Streak-Rettung",   "Rettet deinen Streak automatisch, wenn du ihn verlieren würdest!",
-                "🔥", ItemType.AUTOMATIC, 0xFFFFD600, 10),  // gold
+                "❤️", ItemType.AUTOMATIC, 0xFFFFD600, 10),  // gold
         // "The Gambler" is special — 1% chance, removed after earning
         new WheelItem("gambler",     "The Gambler",       "Seltener Titel: \"The Gambler\" freigeschaltet!",
-                "🎰", ItemType.TITLE,     0xFFE040FB, 1),   // pink — 1% approx
+                "🃏", ItemType.TITLE,     0xFFE040FB, 1),   // pink — 1% approx
     };
 
     // =====================================================================

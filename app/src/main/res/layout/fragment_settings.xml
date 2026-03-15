@@ -533,68 +533,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Ignore list section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="IGNORIERTE SPIELER"
-            android:textColor="#9E9E9E"
-            android:textSize="12sp"
-            android:letterSpacing="0.1"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/quest_card_bg"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Namen auf dieser Liste werden im Leaderboard ausgeblendet."
-                android:textColor="#9E9E9E"
-                android:textSize="12sp"
-                android:layout_marginBottom="12dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <EditText
-                    android:id="@+id/ignoreListInput"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Spielername eingeben"
-                    android:textColor="#FFFFFFFF"
-                    android:textColorHint="#9E9E9E"
-                    android:inputType="textPersonName"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:id="@+id/addIgnoreButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_modern_bg"
-                    android:text="Hinzuf\u00fcgen"
-                    android:textColor="#FFFFFFFF"
-                    android:textSize="12sp"/>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/ignoreListDisplay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Keine ignorierten Spieler"
-                android:textColor="#9E9E9E"
-                android:textSize="12sp"/>
-        </LinearLayout>
-
         <!-- App info section -->
         <TextView
             android:layout_width="match_parent"
