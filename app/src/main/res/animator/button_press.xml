@@ -4,19 +4,19 @@
         <set>
             <objectAnimator
                 android:propertyName="scaleX"
-                android:valueTo="0.90"
-                android:duration="100"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:valueTo="0.92"
+                android:duration="80"
+                android:interpolator="@android:interpolator/accelerate_decelerate"/>
             <objectAnimator
                 android:propertyName="scaleY"
-                android:valueTo="0.90"
-                android:duration="100"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:valueTo="0.92"
+                android:duration="80"
+                android:interpolator="@android:interpolator/accelerate_decelerate"/>
             <objectAnimator
                 android:propertyName="translationZ"
-                android:valueTo="2dp"
-                android:duration="100"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                android:valueTo="1dp"
+                android:duration="80"
+                android:interpolator="@android:interpolator/accelerate_decelerate"/>
         </set>
     </item>
     <item>
@@ -24,17 +24,17 @@
             <objectAnimator
                 android:propertyName="scaleX"
                 android:valueTo="1.0"
-                android:duration="200"
+                android:duration="250"
                 android:interpolator="@android:interpolator/overshoot"/>
             <objectAnimator
                 android:propertyName="scaleY"
                 android:valueTo="1.0"
-                android:duration="200"
+                android:duration="250"
                 android:interpolator="@android:interpolator/overshoot"/>
             <objectAnimator
                 android:propertyName="translationZ"
-                android:valueTo="6dp"
-                android:duration="200"
+                android:valueTo="4dp"
+                android:duration="250"
                 android:interpolator="@android:interpolator/overshoot"/>
         </set>
     </item>

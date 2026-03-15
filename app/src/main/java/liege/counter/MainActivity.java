@@ -453,6 +453,20 @@ public class MainActivity extends AppCompatActivity {
         String username = getUsername();
         String playerId = username.toLowerCase(Locale.ROOT).replaceAll("\\s+", "-");
 
+        // Block traps from unbekannt or banned players
+        if ("unbekannt".equals(playerId) || username.equals("Unbekannt") || username.trim().isEmpty()) {
+            Toast.makeText(this, "Setze zuerst deinen Namen!", Toast.LENGTH_SHORT).show();
+            return "Setze zuerst deinen Namen!";
+        }
+
+        // Check if the current player is banned
+        for (LeaderboardEntry entry : cachedLeaderboardEntries) {
+            if (playerId.equals(entry.getId()) && entry.isBanned()) {
+                Toast.makeText(this, "Du kannst keine Fallen senden.", Toast.LENGTH_SHORT).show();
+                return "Gesperrt";
+            }
+        }
+
         ItemManager itemManager = ItemManager.getInstance(this);
         LeaderboardEntry target = itemManager.pickRandomTarget(cachedLeaderboardEntries, playerId);
 

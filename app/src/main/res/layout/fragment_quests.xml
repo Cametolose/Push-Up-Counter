@@ -412,10 +412,12 @@
                 android:layout_height="48dp"
                 android:background="@drawable/buttonshape"
                 android:backgroundTint="#424242"
+                android:stateListAnimator="@animator/button_press"
                 android:text="Alle Aufgaben abschließen"
                 android:textColor="#9E9E9E"
                 android:textSize="14sp"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:elevation="4dp"/>
 
             <TextView
                 android:id="@+id/bonusCollectedText"

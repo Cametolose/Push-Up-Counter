@@ -29,12 +29,14 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:background="@drawable/button_modern_bg"
+        android:stateListAnimator="@animator/button_press"
         android:text="Titel wählen"
         android:textColor="#FFFFFFFF"
         android:textSize="12sp"
         android:layout_marginBottom="12dp"
         android:paddingStart="12dp"
-        android:paddingEnd="12dp"/>
+        android:paddingEnd="12dp"
+        android:elevation="4dp"/>
 
     <ListView
         android:id="@+id/achievementListView"

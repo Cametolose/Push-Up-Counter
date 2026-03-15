@@ -75,11 +75,12 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:background="@drawable/button_increment_bg"
+            android:stateListAnimator="@animator/button_press"
             android:text="Super!"
             android:textColor="#FFFFFF"
             android:textSize="17sp"
             android:textStyle="bold"
-            android:elevation="6dp"/>
+            android:elevation="4dp"/>
 
     </LinearLayout>
 </ScrollView>

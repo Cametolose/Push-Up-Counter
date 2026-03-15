@@ -73,27 +73,31 @@ public class ItemManager {
         }
     }
 
-    /** All items on the lucky wheel. Weights don't need to sum to 1.0 — they are relative. */
+    /**
+     * All items on the lucky wheel. Weights are relative.
+     * Each regular item has weight 99 (equal chance: ~12.375% each).
+     * "The Gambler" has weight 8, giving exactly 1% chance (8/800 = 1%).
+     */
     public static final WheelItem[] WHEEL_ITEMS = {
         new WheelItem("xp_50",       "+50 XP",           "Sofort +50 XP!",
-                "✨", ItemType.XP,        0xFF4CAF50, 20),  // green
+                "✨", ItemType.XP,        0xFF4CAF50, 99),  // green — 12.375%
         new WheelItem("xp_100",      "+100 XP",          "Sofort +100 XP!",
-                "💎", ItemType.XP,        0xFF2196F3, 10),  // blue
+                "💎", ItemType.XP,        0xFF2196F3, 99),  // blue — 12.375%
         new WheelItem("double_xp",   "Doppel-XP",        "Doppelte XP für 24 Stunden!",
-                "🚀", ItemType.BUFF,      0xFFFF9800, 12),  // orange
+                "🚀", ItemType.BUFF,      0xFFFF9800, 99),  // orange — 12.375%
         new WheelItem("half_xp",     "Halbe XP",         "Halbe XP für 24h — wird an einen zufälligen Spieler gesendet!",
-                "🐌", ItemType.TRAP,      0xFFF44336, 12),  // red
+                "🐌", ItemType.TRAP,      0xFFF44336, 99),  // red — 12.375%
         new WheelItem("minus_50",    "-50 XP",           "-50 XP für einen zufälligen Spieler!",
-                "💣", ItemType.TRAP,      0xFF9C27B0, 15),  // purple
+                "💣", ItemType.TRAP,      0xFF9C27B0, 99),  // purple — 12.375%
         new WheelItem("minus_100",   "-100 XP",          "-100 XP für einen zufälligen Spieler!",
-                "💥", ItemType.TRAP,      0xFF880E4F, 8),   // dark pink
+                "💥", ItemType.TRAP,      0xFF880E4F, 99),  // dark pink — 12.375%
         new WheelItem("negate_trap", "Fallen-Schutz",    "Negiert automatisch die nächste Falle, die du erhältst!",
-                "🛡️", ItemType.AUTOMATIC, 0xFF00BCD4, 12),  // teal
+                "🛡️", ItemType.AUTOMATIC, 0xFF00BCD4, 99),  // teal — 12.375%
         new WheelItem("streak_save", "Streak-Rettung",   "Rettet deinen Streak automatisch, wenn du ihn verlieren würdest!",
-                "❤️", ItemType.AUTOMATIC, 0xFFFFD600, 10),  // gold
-        // "The Gambler" is special — 1% chance, removed after earning
+                "❤️", ItemType.AUTOMATIC, 0xFFFFD600, 99),  // gold — 12.375%
+        // "The Gambler" is special — exactly 1% chance (8/800), removed after earning
         new WheelItem("gambler",     "The Gambler",       "Seltener Titel: \"The Gambler\" freigeschaltet!",
-                "🃏", ItemType.TITLE,     0xFFE040FB, 1),   // pink — 1% approx
+                "🃏", ItemType.TITLE,     0xFFE040FB, 8),   // pink — 1%
     };
 
     // =====================================================================

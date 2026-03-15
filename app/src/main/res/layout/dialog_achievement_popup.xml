@@ -62,9 +62,11 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:background="@drawable/button_increment_bg"
+        android:stateListAnimator="@animator/button_press"
         android:text="Weiter"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:elevation="4dp"/>
 
 </LinearLayout>

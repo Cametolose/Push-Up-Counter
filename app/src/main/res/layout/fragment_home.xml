@@ -55,10 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Level: 1"
-            android:textColor="#4CAF50"
-            android:textSize="22sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="#81C784"
 
         <!-- XP label -->
         <TextView
@@ -79,7 +76,7 @@
             android:layout_height="10dp"
             android:progress="0"
             android:max="100"
-            android:progressTint="#4CAF50"
+            android:progressTint="#81C784"
             android:backgroundTint="#424242"
             android:layout_marginBottom="24dp"/>
 
@@ -315,7 +312,7 @@
                 android:textColor="#FFFFFFFF"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="8dp"/>
+                android:elevation="4dp"/>
 
             <Button
                 android:id="@+id/incrementButton5"
@@ -329,7 +326,7 @@
                 android:textColor="#FFFFFFFF"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="8dp"/>
+                android:elevation="4dp"/>
 
             <Button
                 android:id="@+id/incrementButton10"
@@ -343,7 +340,7 @@
                 android:textColor="#FFFFFFFF"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:elevation="8dp"/>
+                android:elevation="4dp"/>
         </LinearLayout>
 
         <!-- Daily German joke / fact card -->
