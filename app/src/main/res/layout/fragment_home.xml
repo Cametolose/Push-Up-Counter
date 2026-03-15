@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#121212"
@@ -11,32 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Top bar -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Push-Up Counter"
-                android:textColor="#FFFFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/todayCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Heute: 0"
-                android:textColor="#7C4DFF"
-                android:textSize="14sp"/>
-        </LinearLayout>
-
         <!-- Counter display -->
         <TextView
             android:id="@+id/counterTextView"
@@ -47,6 +22,7 @@
             android:textSize="48sp"
             android:textStyle="bold"
             android:gravity="center"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
 
         <!-- Level text -->
@@ -95,6 +71,181 @@
             android:layout_marginBottom="16dp"
             android:visibility="gone"/>
 
+        <!-- Increment buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/incrementButton1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="+1"
+                android:textColor="#FFFFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:elevation="4dp"
+                app:backgroundTint="@null"/>
+
+            <Button
+                android:id="@+id/incrementButton5"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="+5"
+                android:textColor="#FFFFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:elevation="4dp"
+                app:backgroundTint="@null"/>
+
+            <Button
+                android:id="@+id/incrementButton10"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:background="@drawable/button_increment_bg"
+                android:stateListAnimator="@animator/button_press"
+                android:text="+10"
+                android:textColor="#FFFFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:elevation="4dp"
+                app:backgroundTint="@null"/>
+        </LinearLayout>
+
+        <!-- Daily German joke / fact card -->
+        <LinearLayout
+            android:id="@+id/jokeCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/quest_card_bg"
+            android:padding="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💡 Täglicher Witz"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/jokeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wird geladen…"
+                android:textColor="#FFFFFFFF"
+                android:textSize="14sp"
+                android:lineSpacingMultiplier="1.3"/>
+        </LinearLayout>
+
+        <!-- Stats row (Daily / Weekly / Monthly) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/quest_card_bg"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heute"
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/dailyTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#3E3E5E"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Diese Woche"
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/weeklyTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#3E3E5E"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Diesen Monat"
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/totalTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
         <!-- Active Effects Section -->
         <LinearLayout
             android:id="@+id/activeEffectsSection"
@@ -102,7 +253,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginBottom="8dp">
+            android:layout_marginTop="12dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -206,7 +357,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp">
 
             <TextView
@@ -291,149 +442,6 @@
                     android:text="×0"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Increment buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="24dp">
-
-            <Button
-                android:id="@+id/incrementButton1"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/button_increment_bg"
-                android:stateListAnimator="@animator/button_press"
-                android:text="+1"
-                android:textColor="#FFFFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:elevation="4dp"/>
-
-            <Button
-                android:id="@+id/incrementButton5"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/button_increment_bg"
-                android:stateListAnimator="@animator/button_press"
-                android:text="+5"
-                android:textColor="#FFFFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:elevation="4dp"/>
-
-            <Button
-                android:id="@+id/incrementButton10"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/button_increment_bg"
-                android:stateListAnimator="@animator/button_press"
-                android:text="+10"
-                android:textColor="#FFFFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:elevation="4dp"/>
-        </LinearLayout>
-
-        <!-- Daily German joke / fact card -->
-        <LinearLayout
-            android:id="@+id/jokeCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/quest_card_bg"
-            android:padding="14dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="💡 Täglicher Witz"
-                android:textColor="#9E9E9E"
-                android:textSize="11sp"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:id="@+id/jokeTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wird geladen…"
-                android:textColor="#FFFFFFFF"
-                android:textSize="14sp"
-                android:lineSpacingMultiplier="1.3"/>
-        </LinearLayout>
-
-        <!-- Weekly stats row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/quest_card_bg"
-            android:padding="12dp"
-            android:layout_marginTop="8dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Diese Woche"
-                    android:textColor="#9E9E9E"
-                    android:textSize="12sp"/>
-
-                <TextView
-                    android:id="@+id/weeklyTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#FFFFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#3E3E5E"/>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Diesen Monat"
-                    android:textColor="#9E9E9E"
-                    android:textSize="12sp"/>
-
-                <TextView
-                    android:id="@+id/totalTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#FFFFFFFF"
-                    android:textSize="20sp"
                     android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
