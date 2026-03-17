@@ -26,18 +26,16 @@
             android:layout_marginBottom="8dp"/>
 
         <!-- Level + Streak row -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
 
             <TextView
                 android:id="@+id/levelTextView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_centerInParent="true"
                 android:text="Level: 1"
                 android:textColor="#81C784"
                 android:textSize="22sp"
@@ -48,6 +46,8 @@
                 android:id="@+id/streakTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:text=""
                 android:textColor="#FFD600"
                 android:textSize="16sp"
@@ -59,7 +59,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <!-- XP label -->
         <TextView

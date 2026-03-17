@@ -247,7 +247,68 @@ SUPABASE_ANON_KEY=your-anon-key
 
 ---
 
-## Key Patterns for AI Prompts
+## OTA Updates (APK Distribution Without Play Store)
+
+To distribute updates to users directly via APK — without the Play Store — and have the app update itself automatically, follow this approach:
+
+### Recommended Approach: GitHub Releases + In-App Update Check
+
+**What you need:**
+
+1. **Host releases on GitHub** (or any HTTPS server you control):
+   - Build a signed release APK: `./gradlew assembleRelease`
+   - Sign it with your keystore (same key every release, so Android allows updates)
+   - Create a GitHub Release and attach the APK as an asset
+   - Publish a `version.json` alongside it:
+     ```json
+     { "versionCode": 2, "versionName": "1.1.0", "apkUrl": "https://github.com/you/repo/releases/download/v1.1.0/app-release.apk" }
+     ```
+
+2. **Add an in-app update checker** (`UpdateChecker.java`):
+   - On app start (or in Settings), fetch `version.json` from your server
+   - Compare `versionCode` against `BuildConfig.VERSION_CODE`
+   - If a newer version exists, show a dialog: "Update verfügbar — jetzt installieren?"
+   - On confirmation, download the APK with `DownloadManager` and install it via `FileProvider`
+
+3. **Required in `AndroidManifest.xml`**:
+   ```xml
+   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+   <!-- FileProvider for sharing the downloaded APK -->
+   <provider
+       android:name="androidx.core.content.FileProvider"
+       android:authorities="${applicationId}.provider"
+       android:exported="false"
+       android:grantUriPermissions="true">
+       <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+           android:resource="@xml/file_paths"/>
+   </provider>
+   ```
+
+4. **Signing (critical — prevents "virus" warnings)**:
+   - Always sign with the same release keystore (`./gradlew assembleRelease` with `signingConfig`)
+   - A consistent signature proves the APK comes from you — Android's package manager trusts upgrades from the same signer
+   - Android's Play Protect may still warn on first install of an "unknown" APK (this is normal); users tap "Install anyway"
+   - **Never** use a debug keystore for distribution — debug-signed APKs trigger stronger warnings
+
+5. **Install flow (Android 8+)**:
+   - The user must have "Install from unknown sources" enabled for your app (Android will prompt automatically on first install)
+   - After download, trigger install:
+     ```java
+     Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", apkFile);
+     Intent install = new Intent(Intent.ACTION_VIEW);
+     install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+     install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+     context.startActivity(install);
+     ```
+
+**Summary of steps:**
+1. Set up a release keystore and sign every APK with it
+2. Host APKs + a `version.json` on GitHub Releases (free)
+3. Add an `UpdateChecker` that fetches `version.json` on app launch and prompts the user
+4. Add `REQUEST_INSTALL_PACKAGES` permission and a `FileProvider` to the manifest
+5. Users install the first APK manually; all future updates happen automatically via the in-app checker
+
+
 
 1. **State Management**: All state in `MainActivity`. Fragments register as `OnStateChangedListener` in `onResume`, unregister in `onPause`. Call `notifyListeners()` after any state change.
 2. **Adding Items**: Add to `ItemManager.getEligibleItems()` with `WheelItem(id, name, description, emoji, type, color, weight)`. Handle in `MainActivity.processWheelResult()`.

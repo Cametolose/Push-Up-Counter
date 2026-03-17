@@ -1,15 +1,22 @@
 package liege.counter;
 
 import android.app.AlertDialog;
+import android.app.AlarmManager;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +47,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
     private TextView statsQuest3Count;
     private TextView statsBonusCount;
     private TextView notificationTimeDisplay;
+    private LinearLayout exactAlarmRow;
+    private TextView exactAlarmStatus;
 
     private MainActivity mainActivity;
 
@@ -70,6 +79,8 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         statsQuest3Count   = view.findViewById(R.id.statsQuest3Count);
         statsBonusCount    = view.findViewById(R.id.statsBonusCount);
         notificationTimeDisplay = view.findViewById(R.id.notificationTimeDisplay);
+        exactAlarmRow           = view.findViewById(R.id.exactAlarmRow);
+        exactAlarmStatus        = view.findViewById(R.id.exactAlarmStatus);
 
         // Name change button -- hide after name is set
         Button changeNameButton = view.findViewById(R.id.changeNameButton);
@@ -105,6 +116,12 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         Button changeTimeButton = view.findViewById(R.id.changeNotificationTimeButton);
         changeTimeButton.setOnClickListener(v -> showTimePickerDialog());
 
+        Button exactAlarmBtn = view.findViewById(R.id.exactAlarmSettingsButton);
+        if (exactAlarmBtn != null) {
+            exactAlarmBtn.setOnClickListener(v -> openExactAlarmSettings());
+        }
+        updateExactAlarmStatus();
+
         Button creditsButton = view.findViewById(R.id.creditsButton);
         creditsButton.setOnClickListener(v -> showCreditsDialog());
 
@@ -116,6 +133,7 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         super.onResume();
         mainActivity.addStateChangedListener(this);
         updateDisplay();
+        updateExactAlarmStatus();
     }
 
     @Override
@@ -191,6 +209,36 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
         int minute = NotificationScheduler.getNotifMinute(requireContext());
         if (notificationTimeDisplay != null) {
             notificationTimeDisplay.setText(String.format("Zeit: %02d:%02d", hour, minute));
+        }
+    }
+
+    private void updateExactAlarmStatus() {
+        if (exactAlarmRow == null || exactAlarmStatus == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager am = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+            boolean canSchedule = am != null && am.canScheduleExactAlarms();
+            exactAlarmRow.setVisibility(View.VISIBLE);
+            if (canSchedule) {
+                exactAlarmStatus.setText("✓ Exakte Alarme aktiviert");
+                exactAlarmStatus.setTextColor(0xFF4CAF50);
+                View btn = getView() != null ? getView().findViewById(R.id.exactAlarmSettingsButton) : null;
+                if (btn != null) btn.setVisibility(View.GONE);
+            } else {
+                exactAlarmStatus.setText("⚠ Exakte Alarme deaktiviert");
+                exactAlarmStatus.setTextColor(0xFFFF9800);
+                View btn = getView() != null ? getView().findViewById(R.id.exactAlarmSettingsButton) : null;
+                if (btn != null) btn.setVisibility(View.VISIBLE);
+            }
+        } else {
+            exactAlarmRow.setVisibility(View.GONE);
+        }
+    }
+
+    private void openExactAlarmSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                    Uri.parse("package:" + requireContext().getPackageName()));
+            startActivity(intent);
         }
     }
 
