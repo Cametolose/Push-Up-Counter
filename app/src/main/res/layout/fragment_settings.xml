@@ -423,7 +423,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bonus XP gesammelt \u00d7"
+                    android:text="Glücksrad gedreht \u00d7"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 

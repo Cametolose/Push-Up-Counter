@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         button.setOnClickListener(v -> {
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
             int xpGained = mainActivity.incrementCounter(amount);
-            if (xpGained > 0) {
+            if (xpGained > 10) {
                 Toast.makeText(getContext(), "+" + xpGained + " XP!", Toast.LENGTH_SHORT).show();
             }
         });

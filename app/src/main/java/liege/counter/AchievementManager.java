@@ -42,87 +42,139 @@ public class AchievementManager {
     // TITLES — Add new titles here. Color is ARGB int (0xAARRGGBB).
     // =====================================================================
     public static final Title[] TITLES = {
-        new Title("Neuling",      0xFF9E9E9E),  // gray
-        new Title("Kämpfer",      0xFF4CAF50),  // green
-        new Title("Krieger",      0xFF2196F3),  // blue
-        new Title("Champion",     0xFF9C27B0),  // purple
-        new Title("Meister",      0xFFFF9800),  // orange
-        new Title("Legende",      0xFFFFD600),  // gold
-        new Title("Titan",        0xFFF44336),  // red
-        new Title("Unsterblich",  0xFFE040FB),  // pink
-        new Title("Questjäger",   0xFF00BCD4),  // teal
-        new Title("Questmeister", 0xFFFF5722),  // deep orange
-        new Title("Ausdauernd",   0xFF8BC34A),  // light green
-        new Title("Unaufhaltsam", 0xFFFF1744),  // red accent
-        new Title("Marathonläufer", 0xFF3F51B5), // indigo
-        new Title("Wochenkrieger", 0xFF009688), // teal dark
-        new Title("Monatsmeister", 0xFFCDDC39), // lime
-        new Title("The Gambler",   0xFFE040FB), // pink — rare 1% from lucky wheel
+            new Title("Neuling",       0xFF9E9E9E),  // gray
+            new Title("Kämpfer",       0xFF4CAF50),  // green
+            new Title("Krieger",       0xFF2196F3),  // blue
+            new Title("Champion",      0xFF9C27B0),  // purple
+            new Title("Meister",       0xFFFF9800),  // orange
+            new Title("Legende",       0xFFFFD600),  // gold
+            new Title("Titan",         0xFFF44336),  // red
+            new Title("Unsterblich",   0xFFE040FB),  // pink
+            new Title("Questjäger",    0xFF00BCD4),  // teal
+            new Title("Chef",          0xFF0D47A1),  // deep navy
+            new Title("Grinder",       0xFFD84315),  // burnt orange
+            new Title("Unaufhaltsam",  0xFFFF1744),  // red accent
+            new Title("Mystisch",      0xFFAD1457),  // dark magenta (mythic pink)
+            new Title("Pionier",       0xFF1B5E20),  // dark forest green
+            new Title("Huiuiui",       0xFF00E5FF),  // electric cyan
+            new Title("Striker",       0xFF039BE5),  // sky blue
+            new Title("Macher",        0xFFBF360C),  // deep red-orange
+            new Title("Chiller",       0xFF80D8FF),  // very light blue
+            new Title("Bauarbeiter",   0xFFF57F17),  // construction amber
+            new Title("Handlanger",    0xFF8D6E63),  // medium brown
+            new Title("Bot",           0xFF90A4AE),  // blue-gray silver
+            new Title("Noob",          0xFF69F0AE),  // mint green
+            new Title("Haferbrei",     0xFFD7B896),  // oatmeal beige
+            new Title("Bananenbieger", 0xFFFFEE58),  // banana yellow
+            new Title("Cheater",       0xFF7F0000),  // dark maroon (dunkleres Rot)
+            new Title("Rüpel",         0xFF827717),  // dirty olive
+            new Title("Unfall",        0xFFDD2C00),  // accident orange-red
+            new Title("Draufgänger",   0xFF7C4DFF),  // bold purple
+            new Title("Gym Bro",       0xFFFF4081),  // pink accent
+            new Title("Insider",       0xFFEF9A9A),  // light rose (hellrot)
+            new Title("Pro",           0xFFE57373),  // medium-light red (dunkleres hellrot)
+            new Title("InsiderPro",    0xFFEF5350),  // medium red (noch dunkleres hellrot)
+            new Title("Cooler Typ",    0xFFFF6F00),  // amber orange
+            new Title("Regenwurm",     0xFFEC407A),  // earthworm pink
+            new Title("Sniper",        0xFF0277BD),  // dark steel blue (Blau)
+            new Title("Monke",         0xFF795548),  // medium brown (Braun)
+            new Title("Fake-Burger",   0xFFD32F2F),  // medium red (Rot)
+            new Title("Angeber",       0xFFFFCCBC),  // light peach/skin (Hautfarbe)
+            new Title("Muskelprotz",   0xFFFF8A65),  // deep tan/skin (Hautfarbe, darker)
+            new Title("Gorilla",       0xFF78909C),  // blue-gray mix (Braun/Grau)
+            new Title("Dreikäsehoch",  0xFFFFD180),  // cheese yellow (Käsegelb)
+            new Title("Crook",         0xFF607D8B),  // slate gray (scheiß grau)
+            new Title("Godzilla",      0xFF4E342E),  // dark brown (Braun dunkel)
+            new Title("Mafia Boss",    0xFF4A148C),  // dark purple (Lila dunkel)
+            new Title("Lauch",         0xFF7CB342),  // leek green (Lauch grün)
+            new Title("Flex God",      0xFFB8860B),  // dark goldenrod (Gold glitzernd)
+            new Title("Gigachad",      0xFF424242),  // dark gray (Grau dunkel)
+            new Title("Discord Kitten",0xFFFF80AB),  // light pink (hell)
+            new Title("Pushups > Situps",0xFF6CF000), // light green
+            new Title("Situps > Pushups",0xFFFF0A1F), // dark red
+            new Title("Nyakuza",0xFFA937DA), // Purple
+            new Title("Demon",  0xFF400301), // Dark Red)
+
+            new Title("The Gambler",   0xFFF50057),  // deep pink — rare 1% from lucky wheel
     };
 
     // =====================================================================
     // ACHIEVEMENTS — Add new achievements here. Easy to expand!
     // =====================================================================
     public static final AchievementDef[] ACHIEVEMENTS = {
-        // --- Total Push-ups ---
-        new AchievementDef("pushups_100",   "Erste Schritte",      "Mache 100 Push-Ups insgesamt",   "pushups", 100,   "💪", "Neuling",       0xFF9E9E9E),
-        new AchievementDef("pushups_500",   "Halb Tausend",        "Mache 500 Push-Ups insgesamt",   "pushups", 500,   "💪", "Kämpfer",       0xFF4CAF50),
-        new AchievementDef("pushups_1000",  "Tausender-Club",      "Mache 1.000 Push-Ups insgesamt", "pushups", 1000,  "💪", "Krieger",       0xFF2196F3),
-        new AchievementDef("pushups_3000",  "Drei Tausend stark",  "Mache 3.000 Push-Ups insgesamt", "pushups", 3000,  "💪", "Champion",      0xFF9C27B0),
-        new AchievementDef("pushups_5000",  "Fünf Tausend Power",  "Mache 5.000 Push-Ups insgesamt", "pushups", 5000,  "💪", "Meister",       0xFFFF9800),
-        new AchievementDef("pushups_10000", "Zehntausend Legende", "Mache 10.000 Push-Ups insgesamt","pushups", 10000, "💪", "Legende",       0xFFFFD600),
-        new AchievementDef("pushups_25000", "Unaufhaltsam",        "Mache 25.000 Push-Ups insgesamt","pushups", 25000, "💪", "Titan",         0xFFF44336),
-        new AchievementDef("pushups_50000", "Unsterbliche Kraft",  "Mache 50.000 Push-Ups insgesamt","pushups", 50000, "💪", "Unsterblich",   0xFFE040FB),
+            // --- Total Push-ups ---
+            // Prestige titles scale with volume. The main title progression lives here.
+            new AchievementDef("pushups_100",   "Erste Schritte",      "Mache 100 Push-Ups insgesamt",    "pushups", 100,   "💪", "Neuling",       0xFF9E9E9E),
+            new AchievementDef("pushups_500",   "Halb Tausend",        "Mache 500 Push-Ups insgesamt",    "pushups", 500,   "💪", "Kämpfer",       0xFF4CAF50),
+            new AchievementDef("pushups_1000",  "Tausender-Club",      "Mache 1.000 Push-Ups insgesamt",  "pushups", 1000,  "💪", "Krieger",       0xFF2196F3),
+            new AchievementDef("pushups_3000",  "Drei Tausend stark",  "Mache 3.000 Push-Ups insgesamt",  "pushups", 3000,  "💪", "Champion",      0xFF9C27B0),
+            new AchievementDef("pushups_5000",  "Fünf Tausend Power",  "Mache 5.000 Push-Ups insgesamt",  "pushups", 5000,  "💪", "Meister",       0xFFFF9800),
+            new AchievementDef("pushups_10000", "Zehntausend Legende", "Mache 10.000 Push-Ups insgesamt", "pushups", 10000, "💪", "Legende",       0xFFFFD600),
+            new AchievementDef("pushups_25000", "Unaufhaltsam",        "Mache 25.000 Push-Ups insgesamt", "pushups", 25000, "💪", "Titan",         0xFFF44336),
+            new AchievementDef("pushups_50000", "Unsterbliche Kraft",  "Mache 50.000 Push-Ups insgesamt", "pushups", 50000, "💪", "Unsterblich",   0xFFE040FB),
+            new AchievementDef("pushups_100000","Krank",               "Mache 100.000 Push-Ups insgesamt","pushups", 100000,"💪", "Gigachad",      0xFF424242),
 
-        // --- Quests Completed ---
-        new AchievementDef("quests_10",  "Quest-Anfänger",    "Schließe 10 Quests ab",   "quests", 10,  "📋", "Questjäger",   0xFF00BCD4),
-        new AchievementDef("quests_30",  "Quest-Jäger",       "Schließe 30 Quests ab",   "quests", 30,  "📋", null,            0),
-        new AchievementDef("quests_90",  "Quest-Veteran",     "Schließe 90 Quests ab",   "quests", 90,  "📋", null,            0),
-        new AchievementDef("quests_180", "Quest-Champion",    "Schließe 180 Quests ab",  "quests", 180, "📋", "Questmeister", 0xFFFF5722),
-        new AchievementDef("quests_365", "Quest-Meister",     "Schließe 365 Quests ab",  "quests", 365, "📋", null,            0),
+            // --- Quests Completed ---
+            // Quest-based titles reward dedication & long-term grind.
+            new AchievementDef("quests_10",   "Quest-Anfänger",    "Schließe 10 Quests ab",   "quests", 10,  "📋", "Questjäger",  0xFF00BCD4),
+            new AchievementDef("quests_30",   "Quest-Jäger",       "Schließe 30 Quests ab",   "quests", 30,  "📋", "Macher",      0xFFBF360C),
+            new AchievementDef("quests_90",   "Quest-Veteran",     "Schließe 90 Quests ab",   "quests", 90,  "📋", "Grinder",     0xFFD84315),
+            new AchievementDef("quests_180",  "Quest-Champion",    "Schließe 180 Quests ab",  "quests", 180, "📋", "Situps > Pushups",        0xFFFF0A1F ),// "Huiuiui" 0xFF00E5FF
+            new AchievementDef("quests_365",  "Quest-Meister",     "Schließe 365 Quests ab",  "quests", 365, "📋", "Pushups > Situps",       0xFF6CF000 ),
+            new AchievementDef("quests_666",  "Quest-Legende",     "Schließe 666 Quests ab",  "quests", 666, "📋", "Demon",  0xFF400301),
+            new AchievementDef("quests_1000", "Quest-Grinder",     "Schließe 1000 Quests ab", "quests", 1000,"📋", "Flex God",    0xFFB8860B),
 
-        // --- Streak ---
-        new AchievementDef("streak_3",   "Drei Tage stark",   "Erreiche einen 3-Tage-Streak",   "streak", 3,   "🔥", null,             0),
-        new AchievementDef("streak_7",   "Eine Woche durch",  "Erreiche einen 7-Tage-Streak",   "streak", 7,   "🔥", "Ausdauernd",    0xFF8BC34A),
-        new AchievementDef("streak_14",  "Zwei Wochen Feuer", "Erreiche einen 14-Tage-Streak",  "streak", 14,  "🔥", null,             0),
-        new AchievementDef("streak_30",  "Monatskrieger",     "Erreiche einen 30-Tage-Streak",  "streak", 30,  "🔥", "Unaufhaltsam",  0xFFFF1744),
-        new AchievementDef("streak_60",  "Zwei Monate Feuer", "Erreiche einen 60-Tage-Streak",  "streak", 60,  "🔥", null,             0),
-        new AchievementDef("streak_100", "100 Tage Legende",  "Erreiche einen 100-Tage-Streak", "streak", 100, "🔥", null,             0),
+            // --- Streak ---
+            // Consistency is rewarded with increasingly powerful titles.
+            new AchievementDef("streak_3",   "Drei Tage stark",   "Erreiche einen 3-Tage-Streak",   "streak", 3,   "🔥", "Pionier",      0xFF1B5E20),
+            new AchievementDef("streak_7",   "Eine Woche durch",  "Erreiche einen 7-Tage-Streak",   "streak", 7,   "🔥", "Draufgänger",  0xFF7C4DFF),
+            new AchievementDef("streak_14",  "Zwei Wochen Feuer", "Erreiche einen 14-Tage-Streak",  "streak", 14,  "🔥", "Striker",      0xFF039BE5),
+            new AchievementDef("streak_30",  "Monatskrieger",     "Erreiche einen 30-Tage-Streak",  "streak", 30,  "🔥", "Nyakuza", 0xFFA937DA),
+            new AchievementDef("streak_60",  "Zwei Monate Feuer", "Erreiche einen 60-Tage-Streak",  "streak", 60,  "🔥", "Gorilla",      0xFF78909C),
+            new AchievementDef("streak_90",  "Drei Monate Meta",  "Erreiche einen 90-Tage-Streak",  "streak", 90,  "🔥", "Sniper",     0xFF0277BD),
+            new AchievementDef("streak_180", "Halbe Legende",     "Erreiche einen 180-Tage-Streak", "streak", 180, "🔥", "Mystisch",     0xFFAD1457),
+            new AchievementDef("streak_365", "Volle Legende",     "Erreiche einen 365-Tage-Streak", "streak", 365, "🔥", "Godzilla",     0xFF4E342E  ),
 
-        // --- Bonus Quests ---
-        new AchievementDef("bonus_5",   "Bonus-Sammler",      "Sammle 5x Bonus XP",   "bonus", 5,   "⭐", null, 0),
-        new AchievementDef("bonus_15",  "Bonus-Jäger",        "Sammle 15x Bonus XP",  "bonus", 15,  "⭐", null, 0),
-        new AchievementDef("bonus_30",  "Bonus-Meister",      "Sammle 30x Bonus XP",  "bonus", 30,  "⭐", null, 0),
-        new AchievementDef("bonus_60",  "Bonus-Champion",     "Sammle 60x Bonus XP",  "bonus", 60,  "⭐", null, 0),
-        new AchievementDef("bonus_100", "Bonus-Legende",      "Sammle 100x Bonus XP", "bonus", 100, "⭐", null, 0),
+            // --- Bonus / Gamble ---
+            // Lucky wheel usage. Titles get progressively shadier.
+            new AchievementDef("bonus_5",   "Bonus-Sammler",      "Gamble 5x mal",   "bonus", 5,   "⭐", "Noob",   0xFF69F0AE ),
+            new AchievementDef("bonus_15",  "Bonus-Jäger",        "Gamble 15x mal",  "bonus", 15,  "⭐", "Chiller",    0xFF80D8FF),
+            new AchievementDef("bonus_30",  "Bonus-Meister",      "Gamble 30x mal",  "bonus", 30,  "⭐", "Cooler Typ", 0xFFFF6F00),
+            new AchievementDef("bonus_60",  "Bonus-Champion",     "Gamble 60x mal",  "bonus", 60,  "⭐", "Pro",    0xFFE57373),
+            new AchievementDef("bonus_100", "Bonus-Legende",      "Gamble 100x mal", "bonus", 100, "⭐", "Insider", 0xFFEF9A9A),
+            new AchievementDef("bonus_300", "Bonus-Gambler",      "Gamble 300x mal", "bonus", 300, "⭐", "InsiderPro",     0xFFEF5350 ),
 
-        // --- Level ---
-        new AchievementDef("level_5",   "Level 5",            "Erreiche Level 5",   "level", 5,   "📈", null, 0),
-        new AchievementDef("level_10",  "Level 10",           "Erreiche Level 10",  "level", 10,  "📈", null, 0),
-        new AchievementDef("level_25",  "Level 25",           "Erreiche Level 25",  "level", 25,  "📈", null, 0),
-        new AchievementDef("level_50",  "Level 50",           "Erreiche Level 50",  "level", 50,  "📈", null, 0),
-        new AchievementDef("level_100", "Level 100",          "Erreiche Level 100", "level", 100, "📈", null, 0),
+            // --- Level ---
+            // Level milestones. Starts humbling, ends flexing.
+            new AchievementDef("level_5",   "Level 5",            "Erreiche Level 5",   "level", 5,   "📈", "Crook",     0xFF607D8B  ),
+            new AchievementDef("level_10",  "Level 10",           "Erreiche Level 10",  "level", 10,  "📈", "Handlanger", 0xFF8D6E63),
+            new AchievementDef("level_25",  "Level 25",           "Erreiche Level 25",  "level", 25,  "📈", "Bauarbeiter",0xFFF57F17),
+            new AchievementDef("level_50",  "Level 50",           "Erreiche Level 50",  "level", 50,  "📈", "Rüpel",   0xFF827717 ),
+            new AchievementDef("level_100", "Level 100",          "Erreiche Level 100", "level", 100, "📈", "Mafia Boss", 0xFF4A148C),
 
-        // --- Daily Push-ups ---
-        new AchievementDef("daily_30",  "Tagesrekord 30",     "Mache 30 Push-Ups an einem Tag",  "daily_pushups", 30,  "📅", null, 0),
-        new AchievementDef("daily_50",  "Tagesrekord 50",     "Mache 50 Push-Ups an einem Tag",  "daily_pushups", 50,  "📅", null, 0),
-        new AchievementDef("daily_100", "Tagesrekord 100",    "Mache 100 Push-Ups an einem Tag", "daily_pushups", 100, "📅", null, 0),
-        new AchievementDef("daily_200", "Tagesrekord 200",    "Mache 200 Push-Ups an einem Tag", "daily_pushups", 200, "📅", null, 0),
-        new AchievementDef("daily_500", "Tagesrekord 500",    "Mache 500 Push-Ups an einem Tag", "daily_pushups", 500, "📅", null, 0),
+            // --- Daily Push-ups ---
+            // Starts with mockery, earns respect as numbers get absurd.
+            new AchievementDef("daily_30",   "Tagesrekord 30",    "Mache 30 Push-Ups an einem Tag",    "daily_pushups", 30,   "📅", "Lauch",    0xFF7CB342),
+            new AchievementDef("daily_50",   "Tagesrekord 50",    "Mache 50 Push-Ups an einem Tag",    "daily_pushups", 50,   "📅", "Bot",      0xFF90A4AE),
+            new AchievementDef("daily_100",  "Tagesrekord 100",   "Mache 100 Push-Ups an einem Tag",   "daily_pushups", 100,  "📅", "Gym Bro",  0xFFFF4081),
+            new AchievementDef("daily_200",  "Tagesrekord 200",   "Mache 200 Push-Ups an einem Tag",   "daily_pushups", 200,  "📅", "Monke",    0xFF795548),
+            new AchievementDef("daily_500",  "Tagesrekord 500",   "Mache 500 Push-Ups an einem Tag",   "daily_pushups", 500,  "📅", "Angeber",  0xFFFFCCBC),
+            new AchievementDef("daily_1000", "Tagesrekord 1000",  "Mache 1000 Push-Ups an einem Tag",  "daily_pushups", 1000, "📅", "Cheater",  0xFF7F0000),
+            // --- Weekly Push-ups ---
+            // Funny/quirky titles early; blank for harder milestones.
+            new AchievementDef("weekly_100",  "Wochenstart",        "Mache 100 Push-Ups in einer Woche",   "weekly_pushups", 100,  "📊", "Bananenbieger", 0xFFFFEE58),
+            new AchievementDef("weekly_250",  "Wochenpower",        "Mache 250 Push-Ups in einer Woche",   "weekly_pushups", 250,  "📊", "Dreikäsehoch",  0xFFFFD180),
+            new AchievementDef("weekly_500",  "Wochenchampion",     "Mache 500 Push-Ups in einer Woche",   "weekly_pushups", 500,  "📊", "Haferbrei",     0xFFD7B896),
+            new AchievementDef("weekly_1000", "Wochenlegende",      "Mache 1.000 Push-Ups in einer Woche", "weekly_pushups", 1000, "📊", "Fake-Burger",   0xFFD32F2F),
+            new AchievementDef("weekly_3000", "Wochen-Titan",       "Mache 3.000 Push-Ups in einer Woche", "weekly_pushups", 3000, "📊", "Chef",  0xFF0D47A1),
 
-        // --- Weekly Push-ups ---
-        new AchievementDef("weekly_100",  "Wochenstart",        "Mache 100 Push-Ups in einer Woche",   "weekly_pushups", 100,  "📊", null,              0),
-        new AchievementDef("weekly_250",  "Wochenpower",        "Mache 250 Push-Ups in einer Woche",   "weekly_pushups", 250,  "📊", "Wochenkrieger",  0xFF009688),
-        new AchievementDef("weekly_500",  "Wochenchampion",     "Mache 500 Push-Ups in einer Woche",   "weekly_pushups", 500,  "📊", null,              0),
-        new AchievementDef("weekly_1000", "Wochenlegende",      "Mache 1.000 Push-Ups in einer Woche", "weekly_pushups", 1000, "📊", null,              0),
-        new AchievementDef("weekly_2000", "Wochen-Titan",       "Mache 2.000 Push-Ups in einer Woche", "weekly_pushups", 2000, "📊", null,              0),
-
-        // --- Monthly Push-ups ---
-        new AchievementDef("monthly_500",   "Monatsanfänger",     "Mache 500 Push-Ups in einem Monat",    "monthly_pushups", 500,   "📆", null,              0),
-        new AchievementDef("monthly_1000",  "Monatskämpfer",      "Mache 1.000 Push-Ups in einem Monat",  "monthly_pushups", 1000,  "📆", "Monatsmeister",  0xFFCDDC39),
-        new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Push-Ups in einem Monat",  "monthly_pushups", 3000,  "📆", null,              0),
-        new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", null,              0),
-        new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", null,              0),
+            // --- Monthly Push-ups ---
+            // Monthly grind; big titles for big numbers.
+            new AchievementDef("monthly_500",   "Monatsanfänger",     "Mache 500 Push-Ups in einem Monat",    "monthly_pushups", 500,   "📆", "Unfall",         0xFFDD2C00),
+            new AchievementDef("monthly_1000",  "Monatskämpfer",      "Mache 1.000 Push-Ups in einem Monat",  "monthly_pushups", 1000,  "📆", "Regenwurm",      0xFFEC407A),
+            new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Push-Ups in einem Monat",  "monthly_pushups", 3000,  "📆", "Unaufhaltsam",   0xFFFF1744),
+            new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", "Muskelprotz", 0xFFFF8A65),
+            new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Discord Kitten", 0xFFFF80AB),
     };
 
     // =====================================================================

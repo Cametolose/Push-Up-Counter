@@ -298,11 +298,12 @@ public class MainActivity extends AppCompatActivity {
         if (questsCompleted[index]) return;
         questsCompleted[index] = true;
         questCompletions[index]++;
-        xp += 20;
+        int xpGain = 20 + (index * 10);
+        xp += xpGain;
         checkLevelUp();
         saveState();
         notifyListeners();
-        Toast.makeText(this, "Quest abgeschlossen! +20 XP", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Quest abgeschlossen! +" + xpGain + " XP", Toast.LENGTH_SHORT).show();
     }
 
     /**

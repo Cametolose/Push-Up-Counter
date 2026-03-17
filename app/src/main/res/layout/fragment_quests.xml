@@ -234,7 +234,7 @@
                     android:id="@+id/questReward2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+20 XP"
+                    android:text="+30 XP"
                     android:textColor="#7C4DFF"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
@@ -344,7 +344,7 @@
                     android:id="@+id/questReward3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+20 XP"
+                    android:text="+40 XP"
                     android:textColor="#7C4DFF"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
