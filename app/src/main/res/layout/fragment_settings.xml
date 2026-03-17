@@ -502,11 +502,58 @@
                 android:text="Zeit \u00e4ndern"
                 android:textColor="#FFFFFFFF"
                 android:textSize="12sp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:elevation="4dp"
                 app:backgroundTint="@null"/>
+
+            <!-- Exact alarm permission row (Android 12+) -->
+            <LinearLayout
+                android:id="@+id/exactAlarmRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/exactAlarmStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="\u26a0 Exakte Alarme deaktiviert"
+                        android:textColor="#FF9800"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Benötigt für pünktliche Erinnerungen"
+                        android:textColor="#9E9E9E"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/exactAlarmSettingsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/button_modern_bg"
+                    android:stateListAnimator="@animator/button_press"
+                    android:text="Aktivieren"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="11sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:elevation="4dp"
+                    app:backgroundTint="@null"/>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

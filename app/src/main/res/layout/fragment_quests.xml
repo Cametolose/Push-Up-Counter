@@ -81,27 +81,29 @@
                 <!-- Info button -->
                 <Button
                     android:id="@+id/questInfoButton1"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="ℹ"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#00E5FF"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_info_bg"
                     android:padding="0dp"
-                    android:layout_marginEnd="2dp"/>
+                    android:layout_marginEnd="4dp"
+                    app:backgroundTint="@null"/>
 
                 <!-- Timer button -->
                 <Button
                     android:id="@+id/questTimerButton1"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="⏱"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#FFD600"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_timer_bg"
                     android:padding="0dp"
                     android:layout_marginEnd="4dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:backgroundTint="@null"/>
 
                 <ImageView
                     android:id="@+id/questCheck1"
@@ -216,27 +218,29 @@
                 <!-- Info button -->
                 <Button
                     android:id="@+id/questInfoButton2"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="ℹ"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#00E5FF"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_info_bg"
                     android:padding="0dp"
-                    android:layout_marginEnd="2dp"/>
+                    android:layout_marginEnd="4dp"
+                    app:backgroundTint="@null"/>
 
                 <!-- Timer button -->
                 <Button
                     android:id="@+id/questTimerButton2"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="⏱"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#FFD600"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_timer_bg"
                     android:padding="0dp"
                     android:layout_marginEnd="4dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:backgroundTint="@null"/>
 
                 <ImageView
                     android:id="@+id/questCheck2"
@@ -351,27 +355,29 @@
                 <!-- Info button -->
                 <Button
                     android:id="@+id/questInfoButton3"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="ℹ"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#00E5FF"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_info_bg"
                     android:padding="0dp"
-                    android:layout_marginEnd="2dp"/>
+                    android:layout_marginEnd="4dp"
+                    app:backgroundTint="@null"/>
 
                 <!-- Timer button -->
                 <Button
                     android:id="@+id/questTimerButton3"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:text="⏱"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textColor="#FFD600"
-                    android:background="@android:color/transparent"
+                    android:background="@drawable/button_circle_timer_bg"
                     android:padding="0dp"
                     android:layout_marginEnd="4dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:backgroundTint="@null"/>
 
                 <ImageView
                     android:id="@+id/questCheck3"
