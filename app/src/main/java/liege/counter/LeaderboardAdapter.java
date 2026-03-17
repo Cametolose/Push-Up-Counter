@@ -14,8 +14,17 @@ import java.util.List;
 
 public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 
+    private final boolean monthly;
+
     public LeaderboardAdapter(@NonNull Context context, @NonNull List<LeaderboardEntry> entries) {
         super(context, 0, entries);
+        this.monthly = false;
+    }
+
+    public LeaderboardAdapter(@NonNull Context context, @NonNull List<LeaderboardEntry> entries,
+                              boolean monthly) {
+        super(context, 0, entries);
+        this.monthly = monthly;
     }
 
     @NonNull
@@ -38,7 +47,12 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 
         rankView.setText("#" + (position + 1));
         nameView.setText(entry.getName() != null ? entry.getName() : "–");
-        pushupsView.setText("💪 " + entry.getPushups() + " Push-Ups");
+
+        if (monthly) {
+            pushupsView.setText("📅 " + entry.getMonthlyPushups() + " Push-Ups");
+        } else {
+            pushupsView.setText("💪 " + entry.getPushups() + " Push-Ups");
+        }
         levelView.setText("⭐ Level " + entry.getLevel());
         streakView.setText("  🔥 " + entry.getStreak() + " Tage");
 

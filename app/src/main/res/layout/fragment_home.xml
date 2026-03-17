@@ -25,16 +25,41 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Level text -->
-        <TextView
-            android:id="@+id/levelTextView"
+        <!-- Level + Streak row -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Level: 1"
-            android:textColor="#81C784"
-            android:textSize="22sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/levelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Level: 1"
+                android:textColor="#81C784"
+                android:textSize="22sp"
+                android:gravity="center"/>
+
+            <!-- Compact streak badge -->
+            <TextView
+                android:id="@+id/streakTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FFD600"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:background="@drawable/quest_card_bg"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"/>
+
+        </LinearLayout>
 
         <!-- XP label -->
         <TextView
@@ -58,18 +83,6 @@
             android:progressTint="#81C784"
             android:backgroundTint="#424242"
             android:layout_marginBottom="24dp"/>
-
-        <!-- Streak indicator -->
-        <TextView
-            android:id="@+id/streakTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#FFD600"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"/>
 
         <!-- Increment buttons -->
         <LinearLayout

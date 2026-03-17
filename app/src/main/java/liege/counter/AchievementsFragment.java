@@ -1,6 +1,8 @@
 package liege.counter;
 
 import android.app.AlertDialog;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
 
     private ListView achievementListView;
     private TextView titleDisplayView;
+    private TextView achievementCountText;
     private MainActivity mainActivity;
     private AchievementManager achievementManager;
     private AchievementAdapter achievementAdapter;
@@ -42,10 +45,12 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
 
         achievementListView = view.findViewById(R.id.achievementListView);
         titleDisplayView = view.findViewById(R.id.achievementTitleDisplay);
+        achievementCountText = view.findViewById(R.id.achievementCountText);
 
         achievementAdapter = new AchievementAdapter();
         achievementListView.setAdapter(achievementAdapter);
         updateTitleDisplay();
+        updateAchievementCount();
 
         Button chooseTitleBtn = view.findViewById(R.id.chooseTitleButton);
         chooseTitleBtn.setOnClickListener(v -> showTitleChooserDialog());
@@ -77,6 +82,14 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             achievementAdapter.notifyDataSetChanged();
         }
         updateTitleDisplay();
+        updateAchievementCount();
+    }
+
+    private void updateAchievementCount() {
+        if (achievementCountText == null) return;
+        int total = AchievementManager.ACHIEVEMENTS.length;
+        int completed = achievementManager.getCompletedIds().size();
+        achievementCountText.setText(completed + "/" + total);
     }
 
     private void updateTitleDisplay() {
@@ -108,6 +121,11 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             unlockedTitles.add("The Gambler");
         }
 
+        // Also include "Goat" title if earned from monthly leaderboard
+        if (achievementManager.isGoatTitleEarned() && !unlockedTitles.contains("Goat")) {
+            unlockedTitles.add("Goat");
+        }
+
         if (unlockedTitles.size() <= 1) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Titel w\u00e4hlen")
@@ -129,6 +147,25 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
                     updateTitleDisplay();
                 })
                 .show();
+    }
+
+    // =====================================================================
+    // Rainbow gradient helper
+    // =====================================================================
+
+    private static void applyRainbowGradient(TextView textView) {
+        textView.post(() -> {
+            float w = textView.getWidth();
+            if (w > 0) {
+                int[] colors = {0xFFFF0000, 0xFFFF8800, 0xFFFFFF00,
+                                0xFF00FF00, 0xFF0088FF, 0xFF8800FF};
+                LinearGradient gradient = new LinearGradient(
+                        0, 0, w, 0, colors, null, Shader.TileMode.CLAMP);
+                textView.getPaint().setShader(gradient);
+                textView.setTextColor(0xFFFFFFFF);
+                textView.invalidate();
+            }
+        });
     }
 
     // =====================================================================
@@ -226,7 +263,12 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             if (ach.titleReward != null && !ach.titleReward.isEmpty()) {
                 titleView.setVisibility(View.VISIBLE);
                 titleView.setText(ach.titleReward);
-                titleView.setTextColor(ach.titleColor);
+                if ("MegaGigachadUltraGodBossGrinder".equals(ach.titleReward)) {
+                    applyRainbowGradient(titleView);
+                } else {
+                    titleView.getPaint().setShader(null);
+                    titleView.setTextColor(ach.titleColor);
+                }
                 rewardView.setText("");
             } else {
                 titleView.setVisibility(View.GONE);
