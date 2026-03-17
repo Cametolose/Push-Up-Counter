@@ -204,14 +204,15 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
     }
 
     /** Parses timer seconds from a quest description like "3min Dehnen" or "60s Plank". */
+    private static final Pattern MIN_PAT = Pattern.compile("(\\d+)min");
+    private static final Pattern SEC_PAT = Pattern.compile("(\\d+)s\\b");
+
     private static int parseTimerSeconds(String description) {
-        Pattern minPat = Pattern.compile("(\\d+)min");
-        Matcher m = minPat.matcher(description);
+        Matcher m = MIN_PAT.matcher(description);
         if (m.find()) {
             return Integer.parseInt(m.group(1)) * 60;
         }
-        Pattern secPat = Pattern.compile("(\\d+)s\\b");
-        m = secPat.matcher(description);
+        m = SEC_PAT.matcher(description);
         if (m.find()) {
             return Integer.parseInt(m.group(1));
         }
@@ -399,7 +400,11 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         linkTv.setOnClickListener(v -> {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                android.util.Log.w("QuestsFragment", "Konnte Video-Link nicht öffnen", e);
+                android.widget.Toast.makeText(requireContext(),
+                        "Link konnte nicht geöffnet werden", android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
         android.widget.LinearLayout.LayoutParams linkParams =
                 new android.widget.LinearLayout.LayoutParams(

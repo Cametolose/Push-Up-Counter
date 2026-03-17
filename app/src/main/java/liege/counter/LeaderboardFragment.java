@@ -211,7 +211,7 @@ public class LeaderboardFragment extends Fragment {
         for (LeaderboardEntry e : base) {
             if (e.getMonthlyPushups() > 0) monthly.add(e);
         }
-        monthly.sort((a, b) -> Integer.compare(b.getMonthlyPushups(), a.getMonthlyPushups()));
+        monthly.sort(Comparator.comparingInt(LeaderboardEntry::getMonthlyPushups).reversed());
         return monthly;
     }
 
