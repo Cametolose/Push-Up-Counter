@@ -238,14 +238,14 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
 
         android.widget.LinearLayout layout = new android.widget.LinearLayout(requireContext());
         layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-        layout.setPadding(48, 40, 48, 32);
+        layout.setPadding(56, 40, 56, 40);
         layout.setBackgroundResource(R.drawable.quest_card_bg);
         layout.setGravity(android.view.Gravity.CENTER);
 
         TextView titleTv = new TextView(requireContext());
         titleTv.setText("⏱ Timer");
         titleTv.setTextColor(0xFFFFD600);
-        titleTv.setTextSize(20);
+        titleTv.setTextSize(22);
         titleTv.setTypeface(null, android.graphics.Typeface.BOLD);
         titleTv.setGravity(android.view.Gravity.CENTER);
         layout.addView(titleTv);
@@ -253,26 +253,26 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         TextView subtitleTv = new TextView(requireContext());
         subtitleTv.setText(description);
         subtitleTv.setTextColor(0xFF9E9E9E);
-        subtitleTv.setTextSize(13);
+        subtitleTv.setTextSize(14);
         subtitleTv.setGravity(android.view.Gravity.CENTER);
         android.widget.LinearLayout.LayoutParams subtitleParams =
                 new android.widget.LinearLayout.LayoutParams(
-                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                         android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        subtitleParams.setMargins(0, 8, 0, 24);
+        subtitleParams.setMargins(0, 10, 0, 28);
         layout.addView(subtitleTv, subtitleParams);
 
         TextView timerTv = new TextView(requireContext());
         timerTv.setText(formatTime(totalSecs));
         timerTv.setTextColor(0xFFFFFFFF);
-        timerTv.setTextSize(48);
+        timerTv.setTextSize(56);
         timerTv.setTypeface(null, android.graphics.Typeface.BOLD);
         timerTv.setGravity(android.view.Gravity.CENTER);
         android.widget.LinearLayout.LayoutParams timerParams =
                 new android.widget.LinearLayout.LayoutParams(
-                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                         android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        timerParams.setMargins(0, 0, 0, 24);
+        timerParams.setMargins(0, 0, 0, 28);
         layout.addView(timerTv, timerParams);
 
         Button startBtn = new Button(requireContext());
@@ -281,7 +281,7 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         startBtn.setTextSize(15);
         android.widget.LinearLayout.LayoutParams btnParams =
                 new android.widget.LinearLayout.LayoutParams(
-                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 120);
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 130);
         btnParams.setMargins(0, 0, 0, 0);
         startBtn.setBackgroundResource(R.drawable.button_increment_bg);
         startBtn.setLayoutParams(btnParams);
@@ -293,6 +293,13 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
         dialog.show();
+        // Ensure the dialog is wide enough for the text to display fully
+        if (dialog.getWindow() != null) {
+            int screenWidth = requireContext().getResources().getDisplayMetrics().widthPixels;
+            dialog.getWindow().setLayout(
+                    (int)(screenWidth * 0.9f),
+                    android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+        }
 
         final int[] remaining = {totalSecs};
         final CountDownTimer[] activeTimer = {null};
