@@ -28,6 +28,7 @@ import java.util.Set;
  *   "daily_pushups"    — push-ups done today
  *   "weekly_pushups"   — push-ups done this week (last 7 days)
  *   "monthly_pushups"  — push-ups done this month (last 30 days)
+ *   "all_achievements" — number of non-meta achievements completed
  */
 public class AchievementManager {
 
@@ -96,6 +97,8 @@ public class AchievementManager {
             new Title("Demon",  0xFF400301), // Dark Red)
 
             new Title("The Gambler",   0xFFF50057),  // deep pink — rare 1% from lucky wheel
+            new Title("Goat",          0xFFFFD600),  // gold — monthly leaderboard #1 reward
+            new Title("MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),  // rainbow gradient — all achievements
     };
 
     // =====================================================================
@@ -175,6 +178,9 @@ public class AchievementManager {
             new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Push-Ups in einem Monat",  "monthly_pushups", 3000,  "📆", "Unaufhaltsam",   0xFFFF1744),
             new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", "Muskelprotz", 0xFFFF8A65),
             new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Discord Kitten", 0xFFFF80AB),
+
+            // --- All Achievements (Meta) ---
+            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 51, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
     };
 
     // =====================================================================
@@ -281,6 +287,16 @@ public class AchievementManager {
             case "daily_pushups":   return activity.getDailyPushups();
             case "weekly_pushups":  return activity.getWeeklyPushups();
             case "monthly_pushups": return activity.getMonthlyPushups();
+            case "all_achievements": {
+                Set<String> completed = getCompletedIds();
+                int count = 0;
+                for (AchievementDef a : ACHIEVEMENTS) {
+                    if (!"all_achievements".equals(a.category) && completed.contains(a.id)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
             default:                return 0;
         }
     }
@@ -321,6 +337,10 @@ public class AchievementManager {
             if ("The Gambler".equals(selected) && prefs.getBoolean("gambler_title_earned", false)) {
                 return selected;
             }
+            // Check if it's "Goat" from monthly leaderboard
+            if ("Goat".equals(selected) && prefs.getBoolean("goat_title_earned", false)) {
+                return selected;
+            }
         }
 
         // Fall back to highest-prestige earned title
@@ -336,6 +356,14 @@ public class AchievementManager {
             boolean gamblerEarned = prefs.getBoolean("gambler_title_earned", false);
             if (gamblerEarned) {
                 bestTitle = "The Gambler";
+            }
+        }
+
+        // Also check for "Goat" title from monthly leaderboard
+        if (bestTitle == null) {
+            boolean goatEarned = prefs.getBoolean("goat_title_earned", false);
+            if (goatEarned) {
+                bestTitle = "Goat";
             }
         }
 
@@ -373,5 +401,19 @@ public class AchievementManager {
      */
     public boolean isGamblerTitleEarned() {
         return prefs.getBoolean("gambler_title_earned", false);
+    }
+
+    /**
+     * Marks the "Goat" title as earned (top monthly leaderboard player).
+     */
+    public void earnGoatTitle() {
+        prefs.edit().putBoolean("goat_title_earned", true).apply();
+    }
+
+    /**
+     * Checks if the "Goat" title has been earned.
+     */
+    public boolean isGoatTitleEarned() {
+        return prefs.getBoolean("goat_title_earned", false);
     }
 }

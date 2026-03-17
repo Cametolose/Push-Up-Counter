@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,9 +13,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
         <TextView
+            android:id="@+id/leaderboardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,6 +33,56 @@
             android:src="@drawable/ic_reload"
             android:contentDescription="Rangliste neu laden"/>
     </LinearLayout>
+
+    <!-- Toggle row: Normal / Monatlich -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnLeaderboardNormal"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/button_increment_bg"
+            android:stateListAnimator="@animator/button_press"
+            android:text="🏆 Gesamt"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:elevation="2dp"
+            app:backgroundTint="@null"/>
+
+        <Button
+            android:id="@+id/btnLeaderboardMonthly"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_modern_bg"
+            android:stateListAnimator="@animator/button_press"
+            android:text="📅 Diesen Monat"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:elevation="2dp"
+            app:backgroundTint="@null"/>
+    </LinearLayout>
+
+    <!-- Monthly leaderboard info (Goat reward) -->
+    <TextView
+        android:id="@+id/monthlyLeaderboardInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🐐 Platz 1 am Monatsende erhält den Titel: &quot;Goat&quot;"
+        android:textColor="#FFD600"
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
 
     <!-- Loading indicator -->
     <ProgressBar

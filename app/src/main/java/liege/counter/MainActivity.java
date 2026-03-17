@@ -897,6 +897,7 @@ public class MainActivity extends AppCompatActivity {
         TextView nameView = popupView.findViewById(R.id.popupAchievementName);
         TextView descView = popupView.findViewById(R.id.popupAchievementDesc);
         TextView titleView = popupView.findViewById(R.id.popupAchievementTitle);
+        android.widget.Button shareBtn   = popupView.findViewById(R.id.popupShareButton);
         android.widget.Button dismissBtn = popupView.findViewById(R.id.popupDismissButton);
 
         nameView.setText(ach.name);
@@ -914,6 +915,17 @@ public class MainActivity extends AppCompatActivity {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
+
+        String username = getUsername();
+        shareBtn.setOnClickListener(v -> {
+            String shareText = "🏆 " + username + " hat den Erfolg „" + ach.name
+                    + "" erreicht! 💪\n" + ach.description
+                    + "\n\n#PushUpCounter #Fitness";
+            android.content.Intent shareIntent = new android.content.Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
+            startActivity(android.content.Intent.createChooser(shareIntent, "Teilen mit…"));
+        });
 
         dismissBtn.setOnClickListener(v -> dialog.dismiss());
         dialog.show();

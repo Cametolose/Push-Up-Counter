@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         int streak = mainActivity.getStreak();
         if (streak >= 2) {
             streakTextView.setVisibility(View.VISIBLE);
-            streakTextView.setText("🔥 " + streak + " Tage in Folge!");
+            streakTextView.setText("🔥 " + streak);
         } else {
             streakTextView.setVisibility(View.GONE);
         }

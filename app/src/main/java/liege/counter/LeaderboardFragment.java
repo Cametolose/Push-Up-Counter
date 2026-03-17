@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -21,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,8 +39,13 @@ public class LeaderboardFragment extends Fragment {
     private ListView    listView;
     private ProgressBar loadingBar;
     private TextView    emptyText;
+    private TextView    monthlyInfo;
+    private Button      btnNormal;
+    private Button      btnMonthly;
     private Animation   spinAnimation;
     private LeaderboardAPI leaderboardAPI;
+    private List<LeaderboardEntry> allEntries = new ArrayList<>();
+    private boolean showMonthly = false;
 
     /** Triggered by background job — just request a fresh load. */
     private final BroadcastReceiver leaderboardReceiver = new BroadcastReceiver() {
@@ -61,7 +69,19 @@ public class LeaderboardFragment extends Fragment {
         listView      = view.findViewById(R.id.leaderboardListView);
         loadingBar    = view.findViewById(R.id.leaderboardLoading);
         emptyText     = view.findViewById(R.id.leaderboardEmpty);
+        monthlyInfo   = view.findViewById(R.id.monthlyLeaderboardInfo);
+        btnNormal     = view.findViewById(R.id.btnLeaderboardNormal);
+        btnMonthly    = view.findViewById(R.id.btnLeaderboardMonthly);
         spinAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.spin);
+
+        btnNormal.setOnClickListener(v -> {
+            showMonthly = false;
+            updateLeaderboardView();
+        });
+        btnMonthly.setOnClickListener(v -> {
+            showMonthly = true;
+            updateLeaderboardView();
+        });
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SupabaseConfig.SUPABASE_URL)
@@ -136,7 +156,7 @@ public class LeaderboardFragment extends Fragment {
         }
 
         // Filter out banned players (banned flag set in database by admin)
-        List<LeaderboardEntry> filtered = new java.util.ArrayList<>();
+        List<LeaderboardEntry> filtered = new ArrayList<>();
         for (LeaderboardEntry entry : entries) {
             if (!entry.isBanned()) {
                 filtered.add(entry);
@@ -173,9 +193,51 @@ public class LeaderboardFragment extends Fragment {
             rankPrefs.edit().putInt("lastLeaderboardRank_" + myName, currentRank).apply();
         }
 
-        listView.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.GONE);
-        listView.setAdapter(new LeaderboardAdapter(requireContext(), filtered));
+        // Check if current user is #1 monthly and award Goat title
+        List<LeaderboardEntry> monthlyFiltered = getMonthlyFiltered(filtered);
+        if (!monthlyFiltered.isEmpty()) {
+            LeaderboardEntry monthlyLeader = monthlyFiltered.get(0);
+            if (monthlyLeader.getName() != null && monthlyLeader.getName().equalsIgnoreCase(myName)) {
+                AchievementManager.getInstance(requireContext()).earnGoatTitle();
+            }
+        }
+
+        allEntries = filtered;
+        updateLeaderboardView();
+    }
+
+    private List<LeaderboardEntry> getMonthlyFiltered(List<LeaderboardEntry> base) {
+        List<LeaderboardEntry> monthly = new ArrayList<>();
+        for (LeaderboardEntry e : base) {
+            if (e.getMonthlyPushups() > 0) monthly.add(e);
+        }
+        monthly.sort((a, b) -> Integer.compare(b.getMonthlyPushups(), a.getMonthlyPushups()));
+        return monthly;
+    }
+
+    private void updateLeaderboardView() {
+        if (!isAdded() || allEntries == null || allEntries.isEmpty()) return;
+
+        List<LeaderboardEntry> toShow;
+        if (showMonthly) {
+            toShow = getMonthlyFiltered(allEntries);
+            monthlyInfo.setVisibility(View.VISIBLE);
+            btnMonthly.setAlpha(1.0f);
+            btnNormal.setAlpha(0.5f);
+        } else {
+            toShow = allEntries;
+            monthlyInfo.setVisibility(View.GONE);
+            btnNormal.setAlpha(1.0f);
+            btnMonthly.setAlpha(0.5f);
+        }
+
+        if (toShow.isEmpty()) {
+            showEmpty();
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyText.setVisibility(View.GONE);
+            listView.setAdapter(new LeaderboardAdapter(requireContext(), toShow, showMonthly));
+        }
     }
 
     private void showEmpty() {

@@ -59,6 +59,20 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/popupShareButton"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/button_modern_bg"
+        android:stateListAnimator="@animator/button_press"
+        android:text="📤 Teilen"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:elevation="4dp"
+        android:layout_marginBottom="8dp"
+        app:backgroundTint="@null"/>
+
+    <Button
         android:id="@+id/popupDismissButton"
         android:layout_width="match_parent"
         android:layout_height="44dp"
