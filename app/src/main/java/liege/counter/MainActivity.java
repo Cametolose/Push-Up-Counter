@@ -919,7 +919,7 @@ public class MainActivity extends AppCompatActivity {
         String username = getUsername();
         shareBtn.setOnClickListener(v -> {
             String shareText = "🏆 " + username + " hat den Erfolg „" + ach.name
-                    + "" erreicht! 💪\n" + ach.description
+                    + "\" erreicht! 💪\n- " + ach.description
                     + "\n\n#PushUpCounter #Fitness";
             android.content.Intent shareIntent = new android.content.Intent(android.content.Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
