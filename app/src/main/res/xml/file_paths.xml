@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- App-private external storage (e.g. /sdcard/Android/data/<pkg>/files/Downloads/) -->
+    <external-files-path name="external_files" path="." />
+    <!-- App-private internal storage (fallback when external storage is unavailable) -->
+    <files-path name="internal_files" path="." />
+</paths>
