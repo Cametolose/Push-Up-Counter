@@ -11,9 +11,11 @@ android {
         val apiBaseUrl       = project.findProperty("API_BASE_URL")        as String? ?: "https://fallback-url.com/"
         val supabaseUrl      = project.findProperty("SUPABASE_URL")        as String? ?: "https://YOUR_PROJECT_REF.supabase.co/rest/v1/"
         val supabaseAnonKey  = project.findProperty("SUPABASE_ANON_KEY")   as String? ?: "YOUR_ANON_KEY_HERE"
+        val versionJsonUrl   = project.findProperty("VERSION_JSON_URL")    as String? ?: ""
         buildConfigField("String", "API_BASE_URL",       "\"$apiBaseUrl\"")
         buildConfigField("String", "SUPABASE_URL",       "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_ANON_KEY",  "\"$supabaseAnonKey\"")
+        buildConfigField("String", "VERSION_JSON_URL",   "\"$versionJsonUrl\"")
         applicationId = "liege.counter"
         minSdk = 24
         targetSdk = 34
