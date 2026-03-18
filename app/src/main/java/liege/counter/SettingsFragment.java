@@ -243,6 +243,7 @@ public class SettingsFragment extends Fragment implements MainActivity.OnStateCh
     }
 
     private void showCreditsDialog() {
+        mainActivity.onCreditsViewed();
         new AlertDialog.Builder(requireContext())
                 .setTitle("Credits")
                 .setMessage("Entwickelt von: Alex\n\nIdeen von: Äkwav, Viktor, Philipp, Emil & Alex\n\nBesonderer Dank an die Kartoffel und dem Fake Burger")

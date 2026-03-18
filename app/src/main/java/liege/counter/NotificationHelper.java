@@ -53,7 +53,11 @@ public class NotificationHelper {
         }
     }
 
-    public static void sendStreakNotification(Context context, int streak) {
+    /**
+     * Sends the streak reminder notification.
+     * @return true if the notification was posted successfully, false if permission was not granted.
+     */
+    public static boolean sendStreakNotification(Context context, int streak) {
         String message = STREAK_MESSAGES[new Random().nextInt(STREAK_MESSAGES.length)]
                 .replace("{streak}", String.valueOf(streak));
 
@@ -72,8 +76,10 @@ public class NotificationHelper {
 
         try {
             NotificationManagerCompat.from(context).notify(1001, builder.build());
+            return true;
         } catch (SecurityException e) {
-            // Permission not granted
+            // POST_NOTIFICATIONS permission not granted
+            return false;
         }
     }
 

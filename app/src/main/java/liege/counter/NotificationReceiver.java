@@ -12,7 +12,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String NOTIF_PREFS              = "NotificationPrefs";
     private static final String KEY_STREAK_ENABLED        = "streakNotifEnabled";
     private static final String KEY_LAST_STREAK_NOTIF     = "lastStreakNotifDay";
-    private static final int    MIN_STREAK_FOR_NOTIF      = 3;
+    private static final int    MIN_STREAK_FOR_NOTIF      = 1;
     private static final int    MIN_PUSHUPS_FOR_STREAK_DAY = 10;
 
     @Override
@@ -47,8 +47,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         int streak = computeStreak(dailyLog);
         if (streak >= MIN_STREAK_FOR_NOTIF) {
-            NotificationHelper.sendStreakNotification(context, streak);
-            notifPrefs.edit().putString(KEY_LAST_STREAK_NOTIF, today).apply();
+            // Only mark the day as notified if the notification was actually sent.
+            // If POST_NOTIFICATIONS permission is not yet granted, sendStreakNotification returns
+            // false and we do NOT mark the day — this allows a retry next time the alarm fires.
+            boolean sent = NotificationHelper.sendStreakNotification(context, streak);
+            if (sent) {
+                notifPrefs.edit().putString(KEY_LAST_STREAK_NOTIF, today).apply();
+            }
         }
     }
 

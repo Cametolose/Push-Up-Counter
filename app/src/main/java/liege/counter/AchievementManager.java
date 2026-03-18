@@ -186,8 +186,14 @@ public class AchievementManager {
             new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", "Muskelprotz", 0xFFFF8A65),
             new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Stahlträger", 0xFF696969),
 
+            // --- Hard Quest Streak (7 consecutive hard-quest-only days) ---
+            new AchievementDef("hard_quest_7", "Nur das Schwerste", "Mache 7 Tage in Folge NUR schwere Quests", "hard_quest_streak", 7, "🏋️", "Nyakuza", 0xFFA937DA),
+
+            // --- Credits Viewed ---
+            new AchievementDef("credits_1", "Wer steckt dahinter?", "Schau dir die Credits an", "credits_viewed", 1, "🎬", "Huiuiui", 0xFF00E5FF),
+
             // --- All Achievements (Meta) ---
-            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 51, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
+            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 53, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
     };
 
     // =====================================================================
@@ -286,14 +292,16 @@ public class AchievementManager {
      */
     public int getCurrentValue(String category, MainActivity activity) {
         switch (category) {
-            case "pushups":         return activity.getCounter();
-            case "quests":          return activity.getTotalQuestsCompleted();
-            case "streak":          return activity.getStreak();
-            case "bonus":           return activity.getBonusXpCollected();
-            case "level":           return activity.getLevel();
-            case "daily_pushups":   return activity.getDailyPushups();
-            case "weekly_pushups":  return activity.getWeeklyPushups();
-            case "monthly_pushups": return activity.getMonthlyPushups();
+            case "pushups":           return activity.getCounter();
+            case "quests":            return activity.getTotalQuestsCompleted();
+            case "streak":            return activity.getStreak();
+            case "bonus":             return activity.getBonusXpCollected();
+            case "level":             return activity.getLevel();
+            case "daily_pushups":     return activity.getDailyPushups();
+            case "weekly_pushups":    return activity.getWeeklyPushups();
+            case "monthly_pushups":   return activity.getMonthlyPushups();
+            case "hard_quest_streak": return activity.getHardQuestStreak();
+            case "credits_viewed":    return activity.getCreditsViewedCount();
             case "all_achievements": {
                 Set<String> completed = getCompletedIds();
                 int count = 0;

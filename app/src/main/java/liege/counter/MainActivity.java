@@ -57,20 +57,27 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends AppCompatActivity {
 
     // --- SharedPreferences Keys ---
-    private static final String PREFS_NAME       = "AppPrefs";
-    private static final String KEY_COUNTER      = "counter";
-    private static final String KEY_XP           = "xp";
-    private static final String KEY_LEVEL        = "level";
-    private static final String KEY_QUESTS       = "questsCompleted";
-    private static final String KEY_QUEST_COUNTS = "questCompletions";
-    private static final String KEY_BONUS        = "bonusCollected";
-    private static final String KEY_BONUS_COUNT  = "bonusXpCollected";
-    private static final String KEY_LAST_DAY     = "lastKnownDay";
-    private static final String KEY_USERNAME     = "username";
-    private static final String KEY_DAILY_LOG    = "dailyPushupLog";
+    private static final String PREFS_NAME             = "AppPrefs";
+    private static final String KEY_COUNTER            = "counter";
+    private static final String KEY_XP                 = "xp";
+    private static final String KEY_LEVEL              = "level";
+    private static final String KEY_QUESTS             = "questsCompleted";
+    private static final String KEY_QUEST_COUNTS       = "questCompletions";
+    private static final String KEY_BONUS              = "bonusCollected";
+    private static final String KEY_BONUS_COUNT        = "bonusXpCollected";
+    private static final String KEY_LAST_DAY           = "lastKnownDay";
+    private static final String KEY_LAST_ACTIVE_DATE   = "lastActiveDateStr";
+    private static final String KEY_USERNAME           = "username";
+    private static final String KEY_DAILY_LOG          = "dailyPushupLog";
+    private static final String KEY_HARD_QUEST_STREAK  = "hardQuestStreak";
+    private static final String KEY_CREDITS_VIEWED     = "creditsViewedCount";
 
     // Quest targets (shared with QuestsFragment)
     public static final int[] QUEST_TARGETS = {20, 50, 100};
+    // Named indices for quest difficulty (used by hard-quest-streak logic)
+    private static final int QUEST_IDX_EASY   = 0;
+    private static final int QUEST_IDX_MEDIUM = 1;
+    private static final int QUEST_IDX_HARD   = 2;
 
     private static final int    JOB_ID                     = 1;
     private static final String ACTION_UPDATE_LEADERBOARD  = "UPDATE_LEADERBOARD";
@@ -83,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     private int[]     questCompletions = new int[3];
     private boolean   bonusCollected;
     private int       bonusXpCollected;
+    private int       hardQuestStreak;
+    private int       creditsViewedCount;
 
     private final HashMap<String, Integer> dailyPushupLog = new HashMap<>();
 
@@ -132,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
         }
+
+        // Check for app updates in the background
+        UpdateChecker.check(this);
 
         // Fetch leaderboard for trap targeting & check incoming traps
         fetchLeaderboardForItems();
@@ -225,6 +237,8 @@ public class MainActivity extends AppCompatActivity {
         level            = sharedPreferences.getInt(KEY_LEVEL, 1);
         bonusCollected   = sharedPreferences.getBoolean(KEY_BONUS, false);
         bonusXpCollected = sharedPreferences.getInt(KEY_BONUS_COUNT, 0);
+        hardQuestStreak  = sharedPreferences.getInt(KEY_HARD_QUEST_STREAK, 0);
+        creditsViewedCount = sharedPreferences.getInt(KEY_CREDITS_VIEWED, 0);
 
         questsCompleted  = decodeBooleanArray(sharedPreferences.getString(KEY_QUESTS, "000"));
         questCompletions = decodeIntArray(sharedPreferences.getString(KEY_QUEST_COUNTS, "0,0,0"));
@@ -244,9 +258,12 @@ public class MainActivity extends AppCompatActivity {
                 .putInt(KEY_LEVEL, level)
                 .putBoolean(KEY_BONUS, bonusCollected)
                 .putInt(KEY_BONUS_COUNT, bonusXpCollected)
+                .putInt(KEY_HARD_QUEST_STREAK, hardQuestStreak)
+                .putInt(KEY_CREDITS_VIEWED, creditsViewedCount)
                 .putString(KEY_QUESTS, encodeBooleanArray(questsCompleted))
                 .putString(KEY_QUEST_COUNTS, encodeIntArray(questCompletions))
                 .putInt(KEY_LAST_DAY, Calendar.getInstance().get(Calendar.DAY_OF_YEAR))
+                .putString(KEY_LAST_ACTIVE_DATE, todayKey())
                 .putString(KEY_USERNAME, getUsername())
                 .putString(KEY_DAILY_LOG, new Gson().toJson(dailyPushupLog))
                 .apply();
@@ -257,9 +274,29 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================================
 
     private void resetQuestsIfNewDay() {
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-        int lastDay    = sharedPreferences.getInt(KEY_LAST_DAY, -1);
-        if (currentDay != lastDay) {
+        String today = todayKey();
+        String lastActiveDate = sharedPreferences.getString(KEY_LAST_ACTIVE_DATE, "");
+
+        if (!today.equals(lastActiveDate)) {
+            // Before resetting, check if the last active day was a "hard quest only" day.
+            if (!lastActiveDate.isEmpty()) {
+                // Was the last active day exactly yesterday?
+                Calendar yesterdayCal = Calendar.getInstance();
+                yesterdayCal.add(Calendar.DAY_OF_YEAR, -1);
+                String yesterdayKey = keyFor(yesterdayCal);
+                boolean wasYesterday = lastActiveDate.equals(yesterdayKey);
+
+                boolean hardOnly = questsCompleted[QUEST_IDX_HARD]
+                        && !questsCompleted[QUEST_IDX_EASY]
+                        && !questsCompleted[QUEST_IDX_MEDIUM];
+
+                if (wasYesterday && hardOnly) {
+                    hardQuestStreak++;
+                } else {
+                    hardQuestStreak = hardOnly ? 1 : 0;
+                }
+            }
+
             questsCompleted = new boolean[3];
             bonusCollected  = false;
             saveState();
@@ -853,6 +890,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean isBonusCollected()       { return bonusCollected; }
     public int     getBonusXpCollected()    { return bonusXpCollected; }
     public int     getQuestCompletionCount(int index) { return questCompletions[index]; }
+    public int     getHardQuestStreak()     { return hardQuestStreak; }
+    public int     getCreditsViewedCount()  { return creditsViewedCount; }
     public String  getUsername()            {
         return sharedPreferences.getString(KEY_USERNAME, "Unbekannt");
     }
@@ -862,6 +901,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUsername(String name) {
         sharedPreferences.edit().putString(KEY_USERNAME, name).apply();
+    }
+
+    /**
+     * Called when the user views the Credits. Increments the counter and may
+     * award the "Huiuiui" title if this is the first time.
+     */
+    public void onCreditsViewed() {
+        creditsViewedCount++;
+        saveState();
+        notifyListeners();
     }
 
     /** Returns the ItemManager instance for accessing active effects and inventory. */
