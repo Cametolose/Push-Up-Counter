@@ -57,7 +57,6 @@ public class AchievementManager {
             new Title("Unaufhaltsam",  0xFFFF1744),  // red accent
             new Title("Mystisch",      0xFFAD1457),  // dark magenta (mythic pink)
             new Title("Pionier",       0xFF1B5E20),  // dark forest green
-            new Title("Huiuiui",       0xFF00E5FF),  // electric cyan
             new Title("Striker",       0xFF039BE5),  // sky blue
             new Title("Macher",        0xFFBF360C),  // deep red-orange
             new Title("Chiller",       0xFF80D8FF),  // very light blue
@@ -93,9 +92,13 @@ public class AchievementManager {
             new Title("Discord Kitten",0xFFFF80AB),  // light pink (hell)
             new Title("Pushups > Situps",0xFF6CF000), // light green
             new Title("Situps > Pushups",0xFFFF0A1F), // dark red
-            new Title("Nyakuza",0xFFA937DA), // Purple
             new Title("Demon",  0xFF400301), // Dark Red)
+            new Title("Stahlträger", 0xFF696969), // Metal color
+            new Title("Straßendreck", 0xFF423D34), //
+            new Title("Dealer", 0xFF006940), //
 
+            new Title("Huiuiui",       0xFF00E5FF),  // electric cyan - Obtained after clicking on credits
+            new Title("Nyakuza",0xFFA937DA), // Purple - 7d only Hard Quests
             new Title("The Gambler",   0xFFF50057),  // deep pink — rare 1% from lucky wheel
             new Title("Goat",          0xFFFFD600),  // gold — monthly leaderboard #1 reward
             new Title("MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),  // rainbow gradient — all achievements
@@ -132,7 +135,7 @@ public class AchievementManager {
             new AchievementDef("streak_3",   "Drei Tage stark",   "Erreiche einen 3-Tage-Streak",   "streak", 3,   "🔥", "Pionier",      0xFF1B5E20),
             new AchievementDef("streak_7",   "Eine Woche durch",  "Erreiche einen 7-Tage-Streak",   "streak", 7,   "🔥", "Draufgänger",  0xFF7C4DFF),
             new AchievementDef("streak_14",  "Zwei Wochen Feuer", "Erreiche einen 14-Tage-Streak",  "streak", 14,  "🔥", "Striker",      0xFF039BE5),
-            new AchievementDef("streak_30",  "Monatskrieger",     "Erreiche einen 30-Tage-Streak",  "streak", 30,  "🔥", "Nyakuza", 0xFFA937DA),
+            new AchievementDef("streak_30",  "Monatskrieger",     "Erreiche einen 30-Tage-Streak",  "streak", 30,  "🔥", "Discord Kitten", 0xFFFF80AB),
             new AchievementDef("streak_60",  "Zwei Monate Feuer", "Erreiche einen 60-Tage-Streak",  "streak", 60,  "🔥", "Gorilla",      0xFF78909C),
             new AchievementDef("streak_90",  "Drei Monate Meta",  "Erreiche einen 90-Tage-Streak",  "streak", 90,  "🔥", "Sniper",     0xFF0277BD),
             new AchievementDef("streak_180", "Halbe Legende",     "Erreiche einen 180-Tage-Streak", "streak", 180, "🔥", "Mystisch",     0xFFAD1457),
@@ -149,11 +152,14 @@ public class AchievementManager {
 
             // --- Level ---
             // Level milestones. Starts humbling, ends flexing.
-            new AchievementDef("level_5",   "Level 5",            "Erreiche Level 5",   "level", 5,   "📈", "Crook",     0xFF607D8B  ),
-            new AchievementDef("level_10",  "Level 10",           "Erreiche Level 10",  "level", 10,  "📈", "Handlanger", 0xFF8D6E63),
-            new AchievementDef("level_25",  "Level 25",           "Erreiche Level 25",  "level", 25,  "📈", "Bauarbeiter",0xFFF57F17),
-            new AchievementDef("level_50",  "Level 50",           "Erreiche Level 50",  "level", 50,  "📈", "Rüpel",   0xFF827717 ),
-            new AchievementDef("level_100", "Level 100",          "Erreiche Level 100", "level", 100, "📈", "Mafia Boss", 0xFF4A148C),
+            new AchievementDef("level_10",  "Level 10",           "Erreiche Level 10",  "level", 10,  "📈", "Straßendreck", 0xFF423D34),
+            new AchievementDef("level_25",  "Level 25",           "Erreiche Level 25",  "level", 25,  "📈", "Crook",     0xFF607D8B),
+            new AchievementDef("level_50",  "Level 50",           "Erreiche Level 50",  "level", 50,  "📈", "Handlanger", 0xFF8D6E63),
+            new AchievementDef("level_100",  "Level 100",           "Erreiche Level 100",  "level", 100,  "📈", "Bauarbeiter",0xFFF57F17),
+            new AchievementDef("level_250", "Level 250",          "Erreiche Level 250", "level", 250, "📈", "Rüpel",   0xFF827717),
+            new AchievementDef("level_500", "Level 500",          "Erreichen Level 500", "level", 500, "📈", "Gefängniswärter", 0xFF363636),
+            new AchievementDef("level_1000", "Level 1.000",         "Erreichen Level 1.000", "level", 1000, "📈", "Dealer", 0xFF006940),
+            new AchievementDef("level_2500", "Level 2.500",         "Erreichen Level 2.500", "level", 2500, "📈", "Mafia Boss", 0xFF4A148C),
 
             // --- Daily Push-ups ---
             // Starts with mockery, earns respect as numbers get absurd.
@@ -163,6 +169,7 @@ public class AchievementManager {
             new AchievementDef("daily_200",  "Tagesrekord 200",   "Mache 200 Push-Ups an einem Tag",   "daily_pushups", 200,  "📅", "Monke",    0xFF795548),
             new AchievementDef("daily_500",  "Tagesrekord 500",   "Mache 500 Push-Ups an einem Tag",   "daily_pushups", 500,  "📅", "Angeber",  0xFFFFCCBC),
             new AchievementDef("daily_1000", "Tagesrekord 1000",  "Mache 1000 Push-Ups an einem Tag",  "daily_pushups", 1000, "📅", "Cheater",  0xFF7F0000),
+
             // --- Weekly Push-ups ---
             // Funny/quirky titles early; blank for harder milestones.
             new AchievementDef("weekly_100",  "Wochenstart",        "Mache 100 Push-Ups in einer Woche",   "weekly_pushups", 100,  "📊", "Bananenbieger", 0xFFFFEE58),
@@ -177,7 +184,7 @@ public class AchievementManager {
             new AchievementDef("monthly_1000",  "Monatskämpfer",      "Mache 1.000 Push-Ups in einem Monat",  "monthly_pushups", 1000,  "📆", "Regenwurm",      0xFFEC407A),
             new AchievementDef("monthly_3000",  "Monatschampion",     "Mache 3.000 Push-Ups in einem Monat",  "monthly_pushups", 3000,  "📆", "Unaufhaltsam",   0xFFFF1744),
             new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", "Muskelprotz", 0xFFFF8A65),
-            new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Discord Kitten", 0xFFFF80AB),
+            new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Stahlträger", 0xFF696969),
 
             // --- All Achievements (Meta) ---
             new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 51, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
