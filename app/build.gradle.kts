@@ -19,8 +19,8 @@ android {
         applicationId = "liege.counter"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "127.0.0.1"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,8 +29,18 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(project.property("STORE_FILE") as String)
+            storePassword = project.property("PASSWORD") as String
+            keyAlias = project.property("KEY_ALIAS") as String
+            keyPassword = project.property("PASSWORD") as String
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

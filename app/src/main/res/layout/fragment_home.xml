@@ -152,7 +152,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="💡 Täglicher Witz"
+                android:text="💡 Täglicher Witz test"
                 android:textColor="#9E9E9E"
                 android:textSize="11sp"
                 android:layout_marginBottom="4dp"/>
