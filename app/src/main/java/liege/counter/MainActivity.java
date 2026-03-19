@@ -156,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(leaderboardReceiver);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UpdateChecker.checkPendingInstall(this);
+    }
+
     // =========================================================================
     // Initialization
     // =========================================================================
@@ -292,6 +298,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (wasYesterday && hardOnly) {
                     hardQuestStreak++;
+                    if (hardQuestStreak >= 7) {
+                        AchievementManager am = AchievementManager.getInstance(this);
+                        if (!am.isNyakuzaTitleEarned()) {
+                            am.earnNyakuzaTitle();
+                            new Handler(Looper.getMainLooper()).post(() ->
+                                    showSecretTitlePopup("Nyakuza", AchievementManager.getTitleColor("Nyakuza")));
+                        }
+                    }
                 } else {
                     hardQuestStreak = hardOnly ? 1 : 0;
                 }
@@ -905,10 +919,15 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called when the user views the Credits. Increments the counter and may
-     * award the "Huiuiui" title if this is the first time.
+     * award the secret "Huiuiui" title if this is the first time.
      */
     public void onCreditsViewed() {
         creditsViewedCount++;
+        AchievementManager am = AchievementManager.getInstance(this);
+        if (!am.isHuiuiuiTitleEarned()) {
+            am.earnHuiuiuiTitle();
+            showSecretTitlePopup("Huiuiui", AchievementManager.getTitleColor("Huiuiui"));
+        }
         saveState();
         notifyListeners();
     }
@@ -937,6 +956,43 @@ public class MainActivity extends AppCompatActivity {
                 showAchievementPopup(ach);
             }
         }
+    }
+
+    private void showSecretTitlePopup(String title, int titleColor) {
+        if (isFinishing() || isDestroyed()) return;
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar);
+        View popupView = getLayoutInflater().inflate(R.layout.dialog_achievement_popup, null);
+
+        TextView nameView  = popupView.findViewById(R.id.popupAchievementName);
+        TextView descView  = popupView.findViewById(R.id.popupAchievementDesc);
+        TextView titleView = popupView.findViewById(R.id.popupAchievementTitle);
+        android.widget.Button shareBtn   = popupView.findViewById(R.id.popupShareButton);
+        android.widget.Button dismissBtn = popupView.findViewById(R.id.popupDismissButton);
+
+        nameView.setText("Geheimer Titel freigeschaltet!");
+        descView.setVisibility(View.GONE);
+        titleView.setText(title);
+        titleView.setTextColor(titleColor);
+        titleView.setVisibility(View.VISIBLE);
+        shareBtn.setVisibility(View.GONE);
+
+        builder.setView(popupView);
+        android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dismissBtn.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+
+        popupView.setScaleX(0.5f);
+        popupView.setScaleY(0.5f);
+        popupView.setAlpha(0f);
+        popupView.animate()
+                .scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new android.view.animation.OvershootInterpolator(1.2f))
+                .start();
     }
 
     private void showAchievementPopup(AchievementManager.AchievementDef ach) {
