@@ -174,23 +174,31 @@ public class UpdateChecker {
 
         // Use the app's private external directory so other apps cannot tamper with the APK.
         // Android still verifies the signature before installing.
-        java.io.File destDir = activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        if (destDir == null) {
-            destDir = activity.getFilesDir(); // fallback to internal storage
+        // setDestinationInExternalFilesDir is the correct API; it creates the directory if
+        // needed and the DownloadManager service has permission to write there.
+        java.io.File externalFilesDir =
+                activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        if (externalFilesDir == null) {
+            Log.e(TAG, "Externer Speicher nicht verfügbar — Update abgebrochen.");
+            return;
         }
-        java.io.File destFile = new java.io.File(destDir, fileName);
-        Uri destUri = Uri.fromFile(destFile);
+        final java.io.File destFile = new java.io.File(externalFilesDir, fileName);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(apkUrl))
                 .setTitle("Push-Up Counter Update")
                 .setDescription("Version " + versionName + " wird heruntergeladen…")
-                .setDestinationUri(destUri)
                 .setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setMimeType("application/vnd.android.package-archive");
+        try {
+            request.setDestinationInExternalFilesDir(
+                    activity, Environment.DIRECTORY_DOWNLOADS, fileName);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Zielverzeichnis konnte nicht erstellt werden", e);
+            return;
+        }
 
         final long downloadId = dm.enqueue(request);
-        final java.io.File finalDestFile = destFile;
 
         // Listen for download completion.
         // Store the receiver reference so it can be unregistered on failure/cancellation.
@@ -203,7 +211,34 @@ public class UpdateChecker {
                 try {
                     activity.unregisterReceiver(this);
                 } catch (Exception ignored) { }
-                triggerInstall(activity, finalDestFile);
+
+                // Query the actual download outcome before attempting install.
+                DownloadManager.Query query =
+                        new DownloadManager.Query().setFilterById(downloadId);
+                try (android.database.Cursor cursor = dm.query(query)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int statusIdx = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                        int reasonIdx = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
+                        int status = statusIdx >= 0 ? cursor.getInt(statusIdx) : -1;
+                        int reason = reasonIdx >= 0 ? cursor.getInt(reasonIdx) : -1;
+                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            triggerInstall(activity, destFile);
+                        } else {
+                            Log.e(TAG, "Download fehlgeschlagen. Status: " + status
+                                    + ", Grund: " + reason);
+                            activity.runOnUiThread(() -> {
+                                if (!activity.isFinishing() && !activity.isDestroyed()) {
+                                    android.widget.Toast.makeText(activity,
+                                            "Update-Download fehlgeschlagen. "
+                                                    + "Bitte versuche es später erneut.",
+                                            android.widget.Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Fehler beim Prüfen des Download-Status", e);
+                }
             }
         };
 
