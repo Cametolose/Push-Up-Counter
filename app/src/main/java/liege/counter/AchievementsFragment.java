@@ -126,6 +126,14 @@ public class AchievementsFragment extends Fragment implements MainActivity.OnSta
             unlockedTitles.add("Goat");
         }
 
+        // Also include secret titles if earned
+        if (achievementManager.isNyakuzaTitleEarned() && !unlockedTitles.contains("Nyakuza")) {
+            unlockedTitles.add("Nyakuza");
+        }
+        if (achievementManager.isHuiuiuiTitleEarned() && !unlockedTitles.contains("Huiuiui")) {
+            unlockedTitles.add("Huiuiui");
+        }
+
         if (unlockedTitles.size() <= 1) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Titel w\u00e4hlen")
