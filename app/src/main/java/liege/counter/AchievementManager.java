@@ -186,14 +186,8 @@ public class AchievementManager {
             new AchievementDef("monthly_5000",  "Monatslegende",      "Mache 5.000 Push-Ups in einem Monat",  "monthly_pushups", 5000,  "📆", "Muskelprotz", 0xFFFF8A65),
             new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Stahlträger", 0xFF696969),
 
-            // --- Hard Quest Streak (7 consecutive hard-quest-only days) ---
-            new AchievementDef("hard_quest_7", "Nur das Schwerste", "Mache 7 Tage in Folge NUR schwere Quests", "hard_quest_streak", 7, "🏋️", "Nyakuza", 0xFFA937DA),
-
-            // --- Credits Viewed ---
-            new AchievementDef("credits_1", "Wer steckt dahinter?", "Schau dir die Credits an", "credits_viewed", 1, "🎬", "Huiuiui", 0xFF00E5FF),
-
             // --- All Achievements (Meta) ---
-            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 53, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
+            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 51, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
     };
 
     // =====================================================================
@@ -356,6 +350,13 @@ public class AchievementManager {
             if ("Goat".equals(selected) && prefs.getBoolean("goat_title_earned", false)) {
                 return selected;
             }
+            // Check secret titles
+            if ("Nyakuza".equals(selected) && prefs.getBoolean("nyakuza_title_earned", false)) {
+                return selected;
+            }
+            if ("Huiuiui".equals(selected) && prefs.getBoolean("huiuiui_title_earned", false)) {
+                return selected;
+            }
         }
 
         // Fall back to highest-prestige earned title
@@ -380,6 +381,14 @@ public class AchievementManager {
             if (goatEarned) {
                 bestTitle = "Goat";
             }
+        }
+
+        // Also check for secret titles
+        if (bestTitle == null && prefs.getBoolean("nyakuza_title_earned", false)) {
+            bestTitle = "Nyakuza";
+        }
+        if (bestTitle == null && prefs.getBoolean("huiuiui_title_earned", false)) {
+            bestTitle = "Huiuiui";
         }
 
         return bestTitle;
@@ -430,5 +439,33 @@ public class AchievementManager {
      */
     public boolean isGoatTitleEarned() {
         return prefs.getBoolean("goat_title_earned", false);
+    }
+
+    /**
+     * Marks the secret "Nyakuza" title as earned (7 consecutive hard-quest-only days).
+     */
+    public void earnNyakuzaTitle() {
+        prefs.edit().putBoolean("nyakuza_title_earned", true).apply();
+    }
+
+    /**
+     * Checks if the secret "Nyakuza" title has been earned.
+     */
+    public boolean isNyakuzaTitleEarned() {
+        return prefs.getBoolean("nyakuza_title_earned", false);
+    }
+
+    /**
+     * Marks the secret "Huiuiui" title as earned (viewed credits).
+     */
+    public void earnHuiuiuiTitle() {
+        prefs.edit().putBoolean("huiuiui_title_earned", true).apply();
+    }
+
+    /**
+     * Checks if the secret "Huiuiui" title has been earned.
+     */
+    public boolean isHuiuiuiTitleEarned() {
+        return prefs.getBoolean("huiuiui_title_earned", false);
     }
 }

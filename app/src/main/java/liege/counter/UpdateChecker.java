@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -40,6 +41,10 @@ public class UpdateChecker {
 
     private static final String TAG = "UpdateChecker";
 
+    // Pending install info — stored when the user still needs to grant install permission.
+    private static volatile String pendingApkUrl;
+    private static volatile String pendingVersionName;
+
     /** Call this from MainActivity.onCreate() to perform a background update check. */
     public static void check(Activity activity) {
         String url = BuildConfig.VERSION_JSON_URL;
@@ -64,6 +69,24 @@ public class UpdateChecker {
                 Log.w(TAG, "Update-Prüfung fehlgeschlagen", e);
             }
         }, "UpdateChecker").start();
+    }
+
+    /**
+     * Call this from MainActivity.onResume() to resume a pending install after the user
+     * has returned from the system settings where they granted install permission.
+     */
+    public static void checkPendingInstall(Activity activity) {
+        String url = pendingApkUrl;
+        String version = pendingVersionName;
+        if (url == null || url.isEmpty()) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !activity.getPackageManager().canRequestPackageInstalls()) {
+            return; // permission still not granted
+        }
+        // Clear before starting so a second onResume call won't re-trigger the download.
+        pendingApkUrl = null;
+        pendingVersionName = null;
+        downloadAndInstall(activity, url, version);
     }
 
     // -------------------------------------------------------------------------
@@ -108,6 +131,39 @@ public class UpdateChecker {
     private static void downloadAndInstall(Activity activity, String apkUrl, String versionName) {
         if (apkUrl == null || apkUrl.isEmpty()) {
             Log.e(TAG, "APK-URL fehlt in version.json");
+            return;
+        }
+
+        // On Android 8+, the app needs explicit permission to install packages.
+        // If not yet granted, send the user to settings and store the pending install.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !activity.getPackageManager().canRequestPackageInstalls()) {
+            pendingApkUrl = apkUrl;
+            pendingVersionName = versionName;
+            activity.runOnUiThread(() -> {
+                if (activity.isFinishing() || activity.isDestroyed()) return;
+                try {
+                    new AlertDialog.Builder(activity,
+                            android.R.style.Theme_DeviceDefault_Dialog_NoActionBar)
+                            .setTitle("Berechtigung erforderlich")
+                            .setMessage("Um Updates zu installieren, benötigt die App die Erlaubnis, "
+                                    + "Pakete aus unbekannten Quellen zu installieren. "
+                                    + "Bitte erlaube dies in den Einstellungen und kehre dann zurück.")
+                            .setPositiveButton("Einstellungen öffnen", (d, w) -> {
+                                Intent intent = new Intent(
+                                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                                        Uri.parse("package:" + activity.getPackageName()));
+                                activity.startActivity(intent);
+                            })
+                            .setNegativeButton("Abbrechen", (d, w) -> {
+                                pendingApkUrl = null;
+                                pendingVersionName = null;
+                            })
+                            .show();
+                } catch (Exception e) {
+                    Log.w(TAG, "Konnte Berechtigungs-Dialog nicht anzeigen", e);
+                }
+            });
             return;
         }
 
