@@ -152,14 +152,14 @@ public class AchievementManager {
 
             // --- Level ---
             // Level milestones. Starts humbling, ends flexing.
-            new AchievementDef("level_10",  "Level 10",           "Erreiche Level 10",  "level", 10,  "📈", "Straßendreck", 0xFF423D34),
-            new AchievementDef("level_25",  "Level 25",           "Erreiche Level 25",  "level", 25,  "📈", "Crook",     0xFF607D8B),
-            new AchievementDef("level_50",  "Level 50",           "Erreiche Level 50",  "level", 50,  "📈", "Handlanger", 0xFF8D6E63),
-            new AchievementDef("level_100",  "Level 100",           "Erreiche Level 100",  "level", 100,  "📈", "Bauarbeiter",0xFFF57F17),
-            new AchievementDef("level_250", "Level 250",          "Erreiche Level 250", "level", 250, "📈", "Rüpel",   0xFF827717),
-            new AchievementDef("level_500", "Level 500",          "Erreichen Level 500", "level", 500, "📈", "Gefängniswärter", 0xFF363636),
-            new AchievementDef("level_1000", "Level 1.000",         "Erreichen Level 1.000", "level", 1000, "📈", "Dealer", 0xFF006940),
-            new AchievementDef("level_2500", "Level 2.500",         "Erreichen Level 2.500", "level", 2500, "📈", "Mafia Boss", 0xFF4A148C),
+            new AchievementDef("level_5",    "Level 5",      "Erreiche Level 5",      "level", 5,    "📈", "Straßendreck",     0xFF423D34),
+            new AchievementDef("level_10",   "Level 10",     "Erreiche Level 10",     "level", 10,   "📈", "Crook",            0xFF607D8B),
+            new AchievementDef("level_25",   "Level 25",     "Erreiche Level 25",     "level", 25,   "📈", "Handlanger",       0xFF8D6E63),
+            new AchievementDef("level_50",   "Level 50",     "Erreiche Level 50",     "level", 50,   "📈", "Bauarbeiter",      0xFFF57F17),
+            new AchievementDef("level_75",   "Level 75",     "Erreiche Level 75",     "level", 75,   "📈", "Rüpel",            0xFF827717),
+            new AchievementDef("level_100",  "Level 100",    "Erreiche Level 100",    "level", 100,  "📈", "Gefängniswärter",  0xFF363636),
+            new AchievementDef("level_150",  "Level 150",    "Erreiche Level 150",    "level", 150,  "📈", "Dealer",           0xFF006940),
+            new AchievementDef("level_250",  "Level 250",    "Erreiche Level 250",    "level", 250,  "📈", "Mafia Boss",       0xFF4A148C),
 
             // --- Daily Push-ups ---
             // Starts with mockery, earns respect as numbers get absurd.
@@ -187,7 +187,7 @@ public class AchievementManager {
             new AchievementDef("monthly_10000", "Monats-Titan",       "Mache 10.000 Push-Ups in einem Monat", "monthly_pushups", 10000, "📆", "Stahlträger", 0xFF696969),
 
             // --- All Achievements (Meta) ---
-            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 51, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
+            new AchievementDef("all_achievements", "Der Ultimative Grinder", "Schließe alle anderen Errungenschaften ab", "all_achievements", 54, "🌟", "MegaGigachadUltraGodBossGrinder", 0xFFFF00FF),
     };
 
     // =====================================================================

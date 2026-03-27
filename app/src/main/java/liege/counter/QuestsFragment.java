@@ -33,41 +33,41 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
      * Format: {howToText, guideUrl}
      */
     private static final String[][][] QUEST_INFO = {
-        { // Sonntag
-            {"Mache genau 1 Push-Up in voller Bewegungsbreite – nur zum Aufwärmen!", "https://youtu.be/IODxDxX7oi4"},
-            {"Steh gerade, Füße schulterbreit. Dehne Nacken, Schultern und Rücken je 20 Sekunden.", "https://youtu.be/L_xrDAtykMI"},
-            {"Mache einen großen Schritt nach vorne, Knie fast auf dem Boden, wieder hoch. Wechsel Seiten.", "https://youtu.be/wrwwXE_x-pQ"}
-        },
-        { // Montag
-            {"Dehne alle großen Muskelgruppen: Brust, Schultern, Rücken, Hüfte – je mindestens 20 Sek.", "https://youtu.be/L_xrDAtykMI"},
-            {"Hände weiter als schulterbreit, Körper gerade halten. Brust zur Boden, zurück drücken.", "https://youtu.be/IODxDxX7oi4"},
-            {"Unterarme oder Hände auf dem Boden, Körper wie ein Brett, Bauch anspannen.", "https://youtu.be/pSHjTRCQxIw"}
-        },
-        { // Dienstag
-            {"Steh aufrecht, Füße schulterbreit. Knie beugen, Oberschenkel parallel zum Boden, wieder hoch.", "https://youtu.be/aclHkVaku9U"},
-            {"Dehne Oberkörper und Hüfte gründlich, halte jede Position mindestens 20–30 Sekunden.", "https://youtu.be/L_xrDAtykMI"},
-            {"Hände bilden Diamant (Zeigefinger + Daumen zusammen). Push-Up ausführen – Trizeps arbeitet!", "https://youtu.be/J0DXGHoB31g"}
-        },
-        { // Mittwoch
-            {"Hände flach an die Wand, leicht schräg stehen. Brust zur Wand, dann wegdrücken.", "https://youtu.be/IODxDxX7oi4"},
-            {"Rücken flach an die Wand, Knie 90° beugen. Halten so lange wie möglich.", "https://youtu.be/y-wV4Venusw"},
-            {"Dehne alle Muskelgruppen: Oberschenkel, Rücken, Schultern – je 30–60 Sek. halten.", "https://youtu.be/L_xrDAtykMI"}
-        },
-        { // Donnerstag
-            {"Dehne Hüftbeuger, Oberschenkel und Schultern. Je Position 20–30 Sekunden halten.", "https://youtu.be/L_xrDAtykMI"},
-            {"Knie auf dem Boden, Hände schulterbreit. Push-Up ausführen – ideal für Einsteiger.", "https://youtu.be/IODxDxX7oi4"},
-            {"Auf dem Bauch liegen, Arme und Beine gleichzeitig anheben und halten.", "https://youtu.be/cc3ZpvwnwKo"}
-        },
-        { // Freitag
-            {"Abwechselnd Sprünge mit Armkreisen – Ganzkörperaufwärmen. Locker bleiben!", "https://youtu.be/UpH7rm0cYbM"},
-            {"Dehne intensiv Brust, Schultern, Hüfte und Oberschenkel, je 30 Sek.", "https://youtu.be/L_xrDAtykMI"},
-            {"Füße auf einer Erhöhung (Stuhl/Treppe), Hände auf dem Boden. Push-Up ausführen.", "https://youtu.be/IODxDxX7oi4"}
-        },
-        { // Samstag
-            {"Hände auf Kniehöhe auf eine Erhöhung (Stuhl/Treppe). Push-Up – erleichterte Variante.", "https://youtu.be/IODxDxX7oi4"},
-            {"In Plank-Position, abwechselnd Knie schnell zur Brust ziehen – Cardio & Core!", "https://youtu.be/nmwgirgXLYM"},
-            {"Intensives Dehnen aller Muskelgruppen, 30–60 Sek. je Position. Ruhig atmen.", "https://youtu.be/L_xrDAtykMI"}
-        }
+            { // Sonntag (leicht + Einstieg)
+                    {"Mach einen entspannten Push-Up und schau dir dabei die richtige Technik an:", "https://youtu.be/IODxDxX7oi4"},
+                    {"Dehne dich insgesamt etwa 60 Sekunden. Wenn du nicht weißt wie, nimm dieses Beispiel:", "https://youtu.be/QDia3e12czc"},
+                    {"Mach einen großen Schritt nach vorne (Ausfallschritt), geh tief runter und wieder hoch. Danach Seite wechseln.", "https://youtu.be/QOVaHwm-Q6U"}
+            },
+            { // Montag (Grundlagen Oberkörper)
+                    {"Dehne Brust, Schultern, Rücken und Hüfte – jede Position mindestens 20 Sekunden halten.", "https://youtu.be/sTxC3J3gQEU"},
+                    {"Mach Push-Ups mit breiteren Händen als schulterbreit. Geh kontrolliert runter und drück dich wieder hoch.", "https://youtu.be/0pkjOk0EiAk"},
+                    {"Halte eine Plank: Körper gerade wie ein Brett, Bauch fest anspannen und nicht durchhängen.", "https://youtu.be/pSHjTRCQxIw"}
+            },
+            { // Dienstag (Beine + Trizeps)
+                    {"Mach saubere Kniebeugen: Rücken gerade, geh runter bis die Oberschenkel etwa parallel sind, dann wieder hoch.", "https://youtu.be/aclHkVaku9U"},
+                    {"Dehne deinen Oberkörper und die Hüfte gründlich, jede Position ca. 20–30 Sekunden halten.", "https://youtu.be/L_xrDAtykMI"},
+                    {"Mach Diamond Push-Ups (Hände eng zusammen). Die gehen mehr auf den Trizeps – langsam und kontrolliert!", "https://youtu.be/J0DXGHoB31g"}
+            },
+            { // Mittwoch (leichter Tag + Haltung)
+                    {"Mach Push-Ups an der Wand – perfekt wenn du es etwas entspannter angehen willst.", "https://youtu.be/0pkjOk0EiAk"},
+                    {"Wall Sit: Rücken an die Wand, Knie 90°. Halte so lange du kannst.", "https://youtu.be/y-wV4Venusw"},
+                    {"Dehne deinen ganzen Körper in Ruhe – besonders Beine, Rücken und Schultern.", "https://youtu.be/sTxC3J3gQEU"}
+            },
+            { // Donnerstag (Core + Technik)
+                    {"Dehne Hüfte, Beine und Schultern – ruhig und kontrolliert, je 20–30 Sekunden.", "https://youtu.be/L_xrDAtykMI"},
+                    {"Mach Push-Ups auf den Knien – perfekt um sauber an der Technik zu arbeiten.", "https://youtu.be/jWxvty2KROs"},
+                    {"Superman-Hold: Heb Arme und Beine gleichzeitig an und halte die Spannung.", "https://youtu.be/cc3ZpvwnwKo"}
+            },
+            { // Freitag (intensiver)
+                    {"Starte mit lockerem Aufwärmen: kleine Sprünge + Armkreisen.", "https://youtu.be/c4DAnQ6DtF8"},
+                    {"Dehne Brust, Schultern, Hüfte und Beine intensiv, jeweils ca. 30 Sekunden.", "https://youtu.be/sTxC3J3gQEU"},
+                    {"Mach erhöhte Push-Ups (Füße auf Stuhl oder Treppe) – deutlich schwerer!", "https://youtu.be/dQqApCGd5Ss"}
+            },
+            { // Samstag (Mix + Core)
+                    {"Mach erleichterte Push-Ups mit erhöhten Händen (z.B. auf Stuhl oder Treppe).", "https://youtu.be/8bbE64NuDTU"},
+                    {"Mountain Climbers: In Plank-Position, zieh abwechselnd die Knie schnell zur Brust.", "https://youtu.be/nmwgirgXLYM"},
+                    {"Dehne deinen ganzen Körper intensiv und ruhig, jede Position 30–60 Sekunden halten.", "https://youtu.be/L_xrDAtykMI"}
+            }
     };
 
     /**
