@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import retrofit2.Call;
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int    JOB_ID                     = 1;
     private static final String ACTION_UPDATE_LEADERBOARD  = "UPDATE_LEADERBOARD";
+    private static final TimeZone BERLIN_TIME_ZONE         = TimeZone.getTimeZone("Europe/Berlin");
 
     // --- App State ---
     private int       counter;
@@ -268,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 .putInt(KEY_CREDITS_VIEWED, creditsViewedCount)
                 .putString(KEY_QUESTS, encodeBooleanArray(questsCompleted))
                 .putString(KEY_QUEST_COUNTS, encodeIntArray(questCompletions))
-                .putInt(KEY_LAST_DAY, Calendar.getInstance().get(Calendar.DAY_OF_YEAR))
+                .putInt(KEY_LAST_DAY, berlinCalendar().get(Calendar.DAY_OF_YEAR))
                 .putString(KEY_LAST_ACTIVE_DATE, todayKey())
                 .putString(KEY_USERNAME, getUsername())
                 .putString(KEY_DAILY_LOG, new Gson().toJson(dailyPushupLog))
@@ -287,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
             // Before resetting, check if the last active day was a "hard quest only" day.
             if (!lastActiveDate.isEmpty()) {
                 // Was the last active day exactly yesterday?
-                Calendar yesterdayCal = Calendar.getInstance();
+                Calendar yesterdayCal = berlinCalendar();
                 yesterdayCal.add(Calendar.DAY_OF_YEAR, -1);
                 String yesterdayKey = keyFor(yesterdayCal);
                 boolean wasYesterday = lastActiveDate.equals(yesterdayKey);
@@ -809,7 +812,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int getWeeklyPushups() {
         int total = 0;
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = berlinCalendar();
         for (int i = 0; i < 7; i++) {
             total += dailyPushupLog.getOrDefault(keyFor(cal), 0);
             cal.add(Calendar.DAY_OF_YEAR, -1);
@@ -825,20 +828,25 @@ public class MainActivity extends AppCompatActivity {
 
     public int getMonthlyPushups() {
         int total = 0;
-        Calendar cal = Calendar.getInstance();
-        for (int i = 0; i < 30; i++) {
-            total += dailyPushupLog.getOrDefault(keyFor(cal), 0);
-            cal.add(Calendar.DAY_OF_YEAR, -1);
+        Calendar now = berlinCalendar();
+        String monthPrefix = String.format(Locale.US, "%04d-%02d-",
+                now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1);
+        for (Map.Entry<String, Integer> e : dailyPushupLog.entrySet()) {
+            if (e.getKey().startsWith(monthPrefix)) {
+                total += e.getValue();
+            }
         }
         return total;
     }
 
     public int getYearlyPushups() {
         int total = 0;
-        Calendar cal = Calendar.getInstance();
-        for (int i = 0; i < 365; i++) {
-            total += dailyPushupLog.getOrDefault(keyFor(cal), 0);
-            cal.add(Calendar.DAY_OF_YEAR, -1);
+        Calendar now = berlinCalendar();
+        String yearPrefix = String.format(Locale.US, "%04d-", now.get(Calendar.YEAR));
+        for (Map.Entry<String, Integer> e : dailyPushupLog.entrySet()) {
+            if (e.getKey().startsWith(yearPrefix)) {
+                total += e.getValue();
+            }
         }
         return total;
     }
@@ -849,7 +857,7 @@ public class MainActivity extends AppCompatActivity {
      * had at least 10 push-ups. Streak-Rettung items are considered.
      */
     public int getStreak() {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = berlinCalendar();
         ItemManager itemManager = ItemManager.getInstance(this);
 
         // If today has fewer than 10 pushups, check if we can use a streak save
@@ -881,7 +889,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String todayKey() {
-        return keyFor(Calendar.getInstance());
+        return keyFor(berlinCalendar());
     }
 
     private String keyFor(Calendar cal) {
@@ -889,6 +897,10 @@ public class MainActivity extends AppCompatActivity {
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH) + 1,
                 cal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private Calendar berlinCalendar() {
+        return Calendar.getInstance(BERLIN_TIME_ZONE);
     }
 
     // =========================================================================
