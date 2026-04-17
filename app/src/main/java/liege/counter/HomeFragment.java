@@ -3,7 +3,6 @@ package liege.counter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,21 +17,50 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Calendar;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.TimeZone;
 
 public class HomeFragment extends Fragment implements MainActivity.OnStateChangedListener {
 
     private static final String JOKE_PREFS   = "JokePrefs";
     private static final String KEY_JOKE     = "cachedJoke";
     private static final String KEY_JOKE_DAY = "jokeDay";
+    private static final TimeZone BERLIN_TIME_ZONE = TimeZone.getTimeZone("Europe/Berlin");
+    private static final String[] DAILY_JOKES = {
+            "Warum tragen Programmierer immer eine Brille? Weil sie C# nicht sehen. 👓",
+            "Ich mache keine Pausen, ich cache nur kurz. 💾",
+            "Warum sind Bugs so sportlich? Weil sie ständig in Loops rennen. 🐞",
+            "Mein Code funktioniert nicht? Dann ist es wohl ein Feature. ✨",
+            "Was sagt der Fitness-Coach zum Dev? Mehr Push-Ups, weniger Push-Force! 💪",
+            "Warum ging der Code ins Gym? Für bessere Performance. 🚀",
+            "Ich wollte heute refactoren, aber der Legacy-Code hat Nein gesagt. 🧱",
+            "Warum mag Java Kaffee? Wegen den Beans. ☕",
+            "Ein guter Commit am Tag hält den Hotfix fern. ✅",
+            "Warum war der Server traurig? Zu viele Requests ohne Liebe. 🌐",
+            "NullPointerException: Gefühle wurden nicht initialisiert. 💔",
+            "Ich trainiere wie ich code: erst testen, dann pushen. 📦",
+            "Warum sind Arrays fit? Sie haben immer eine feste Größe. 📏",
+            "Der Unterschied zwischen mir und meinem Code? Ich kann schlafen. 😴",
+            "Was ist der Lieblingssport von Entwicklern? Sprint Planning. 🏃",
+            "Warum war der SQL-Query müde? Zu viele Joins. 🔗",
+            "Heute nur ein kurzer Workout-Loop: do pushup while(alive). 🔁",
+            "Mein Körper sagt Pause, mein Streak sagt nein. 🔥",
+            "Warum hat der Dev Muskelkater? Zu viel Overengineering im Gym. 🏋️",
+            "404 Motivation not found? Einfach einen Push-Up machen. 🙌",
+            "Ich mache Push-Ups, damit mein Code leichter trägt. 🧠",
+            "Warum hat Git gewonnen? Es konnte besser committen. 🏆",
+            "Der beste Bugfix: erst atmen, dann loggen. 🧘",
+            "Warum ist Debuggen wie Sport? Man schwitzt für kleine Fortschritte. 😅",
+            "Mein Lieblingskommando: git push und dann echte Push-Ups. 💥",
+            "Wenn's brennt: Wasser trinken und Stacktrace lesen. 🚒",
+            "Warum feiern Devs Streaks? Weil Konsistenz mehr zählt als Motivation. 📈",
+            "Ich bin nicht langsam, ich kompiliere nur innerlich. 🐢",
+            "Wer täglich pusht, braucht keinen Montag-Motivationstalk. 📅",
+            "Warum war der Workout-Plan stabil? Er hatte gute Abhängigkeiten. 🧩",
+            "Ein Push-Up mehr ist besser als ein Excuse mehr. 🫡"
+    };
 
     private TextView counterTextView;
     private TextView levelTextView;
@@ -216,7 +244,8 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     // =========================================================================
 
     private void loadDailyJoke() {
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        Calendar berlinNow = Calendar.getInstance(BERLIN_TIME_ZONE);
+        String today = getBerlinDayKey(berlinNow);
         SharedPreferences prefs = requireContext()
                 .getSharedPreferences(JOKE_PREFS, Context.MODE_PRIVATE);
 
@@ -228,43 +257,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
             return;
         }
 
-        // Fetch a fresh joke for today
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://v2.jokeapi.dev/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        JokeApiService service = retrofit.create(JokeApiService.class);
-
-        service.getGermanJoke("de", "single", "nsfw,racist,sexist")
-                .enqueue(new Callback<JokeResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JokeResponse> call,
-                                           @NonNull Response<JokeResponse> response) {
-                        if (!isAdded()) return;
-                        JokeResponse body = response.body();
-                        if (response.isSuccessful() && body != null && !body.isError()) {
-                            String joke;
-                            if ("twopart".equals(body.getType())
-                                    && body.getSetup() != null && body.getDelivery() != null) {
-                                joke = body.getSetup() + "\n— " + body.getDelivery();
-                            } else {
-                                joke = body.getJoke();
-                            }
-                            if (joke == null || joke.isEmpty()) joke = buildFallbackJoke();
-                            showAndCacheJoke(joke, today, prefs);
-                        } else {
-                            showAndCacheJoke(buildFallbackJoke(), today, prefs);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<JokeResponse> call,
-                                          @NonNull Throwable t) {
-                        if (!isAdded()) return;
-                        Log.w("HomeFragment", "Witz konnte nicht geladen werden", t);
-                        showAndCacheJoke(buildFallbackJoke(), today, prefs);
-                    }
-                });
+        showAndCacheJoke(getDeterministicJokeForDay(berlinNow), today, prefs);
     }
 
     private void showAndCacheJoke(String joke, String day, SharedPreferences prefs) {
@@ -272,8 +265,16 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         prefs.edit().putString(KEY_JOKE, joke).putString(KEY_JOKE_DAY, day).apply();
     }
 
-    private String buildFallbackJoke() {
-        return "Warum machen Programmierer keine Push-Ups? " +
-               "Weil sie schon genug Push-Requests haben! 💪";
+    private String getBerlinDayKey(Calendar calendar) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        format.setTimeZone(BERLIN_TIME_ZONE);
+        return format.format(calendar.getTime());
+    }
+
+    private String getDeterministicJokeForDay(Calendar berlinCalendar) {
+        int absoluteDay = berlinCalendar.get(Calendar.YEAR) * 366
+                + berlinCalendar.get(Calendar.DAY_OF_YEAR);
+        int index = Math.floorMod(absoluteDay, DAILY_JOKES.length);
+        return DAILY_JOKES[index];
     }
 }

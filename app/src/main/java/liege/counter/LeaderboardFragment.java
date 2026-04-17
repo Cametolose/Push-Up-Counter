@@ -22,9 +22,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +39,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LeaderboardFragment extends Fragment {
 
     private static final String ACTION_UPDATE_LEADERBOARD = "UPDATE_LEADERBOARD";
+    private static final String LEADERBOARD_PREFS = "LeaderboardPrefs";
+    private static final String KEY_LAST_SEEN_MONTH = "lastSeenMonthlyLeaderboardPeriod";
+    private static final String KEY_LAST_GOAT_REWARD_MONTH = "lastGoatRewardMonth";
+    private static final TimeZone BERLIN_TIME_ZONE = TimeZone.getTimeZone("Europe/Berlin");
 
     private ListView    listView;
     private ProgressBar loadingBar;
@@ -193,14 +201,7 @@ public class LeaderboardFragment extends Fragment {
             rankPrefs.edit().putInt("lastLeaderboardRank_" + myName, currentRank).apply();
         }
 
-        // Check if current user is #1 monthly and award Goat title
-        List<LeaderboardEntry> monthlyFiltered = getMonthlyFiltered(filtered);
-        if (!monthlyFiltered.isEmpty()) {
-            LeaderboardEntry monthlyLeader = monthlyFiltered.get(0);
-            if (monthlyLeader.getName() != null && monthlyLeader.getName().equalsIgnoreCase(myName)) {
-                AchievementManager.getInstance(requireContext()).earnGoatTitle();
-            }
-        }
+        processMonthlyGoatRewardIfMonthFinished(filtered);
 
         allEntries = filtered;
         updateLeaderboardView();
@@ -222,6 +223,7 @@ public class LeaderboardFragment extends Fragment {
         if (showMonthly) {
             toShow = getMonthlyFiltered(allEntries);
             monthlyInfo.setVisibility(View.VISIBLE);
+            monthlyInfo.setText(buildMonthlyInfoText());
             btnMonthly.setAlpha(1.0f);
             btnNormal.setAlpha(0.5f);
         } else {
@@ -244,5 +246,66 @@ public class LeaderboardFragment extends Fragment {
         listView.setVisibility(View.GONE);
         emptyText.setVisibility(View.VISIBLE);
     }
-}
 
+    private void processMonthlyGoatRewardIfMonthFinished(List<LeaderboardEntry> base) {
+        if (!isAdded()) return;
+
+        android.content.SharedPreferences prefs = requireContext()
+                .getSharedPreferences(LEADERBOARD_PREFS, Context.MODE_PRIVATE);
+
+        String currentMonth = getCurrentMonthKey();
+        String lastSeenMonth = prefs.getString(KEY_LAST_SEEN_MONTH, "");
+
+        // First run after update/install: initialize only, do not retro-award.
+        if (lastSeenMonth.isEmpty()) {
+            prefs.edit().putString(KEY_LAST_SEEN_MONTH, currentMonth).apply();
+            return;
+        }
+
+        // Reward only once after month rollover.
+        if (currentMonth.equals(lastSeenMonth)) {
+            return;
+        }
+
+        String rewardMonth = lastSeenMonth;
+        String alreadyRewardedMonth = prefs.getString(KEY_LAST_GOAT_REWARD_MONTH, "");
+        if (rewardMonth.equals(alreadyRewardedMonth)) {
+            prefs.edit().putString(KEY_LAST_SEEN_MONTH, currentMonth).apply();
+            return;
+        }
+
+        List<LeaderboardEntry> monthlyFiltered = getMonthlyFiltered(base);
+        if (!monthlyFiltered.isEmpty()) {
+            LeaderboardEntry monthlyLeader = monthlyFiltered.get(0);
+            String myName = ((MainActivity) requireActivity()).getUsername();
+            if (monthlyLeader.getName() != null && monthlyLeader.getName().equalsIgnoreCase(myName)) {
+                AchievementManager.getInstance(requireContext()).earnGoatTitle();
+            }
+        }
+
+        prefs.edit()
+                .putString(KEY_LAST_GOAT_REWARD_MONTH, rewardMonth)
+                .putString(KEY_LAST_SEEN_MONTH, currentMonth)
+                .apply();
+    }
+
+    private String buildMonthlyInfoText() {
+        Calendar end = Calendar.getInstance(BERLIN_TIME_ZONE);
+        end.set(Calendar.DAY_OF_MONTH, end.getActualMaximum(Calendar.DAY_OF_MONTH));
+        end.set(Calendar.HOUR_OF_DAY, 23);
+        end.set(Calendar.MINUTE, 59);
+        end.set(Calendar.SECOND, 59);
+        end.set(Calendar.MILLISECOND, 0);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy 'um' HH:mm 'Uhr'", Locale.GERMANY);
+        formatter.setTimeZone(BERLIN_TIME_ZONE);
+        return "🐐 Platz 1 am Monatsende erhält den Titel: \"Goat\"\n"
+                + "⏳ Diese Monatsrangliste endet am " + formatter.format(end.getTime())
+                + " (deutsche Zeit).";
+    }
+
+    private String getCurrentMonthKey() {
+        Calendar now = Calendar.getInstance(BERLIN_TIME_ZONE);
+        return String.format(Locale.US, "%04d-%02d", now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1);
+    }
+}
