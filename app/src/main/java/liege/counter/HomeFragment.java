@@ -3,7 +3,6 @@ package liege.counter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -245,7 +244,8 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     // =========================================================================
 
     private void loadDailyJoke() {
-        String today = getBerlinDayKey();
+        Calendar berlinNow = Calendar.getInstance(BERLIN_TIME_ZONE);
+        String today = getBerlinDayKey(berlinNow);
         SharedPreferences prefs = requireContext()
                 .getSharedPreferences(JOKE_PREFS, Context.MODE_PRIVATE);
 
@@ -257,7 +257,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
             return;
         }
 
-        showAndCacheJoke(getDeterministicJokeForDay(today), today, prefs);
+        showAndCacheJoke(getDeterministicJokeForDay(berlinNow), today, prefs);
     }
 
     private void showAndCacheJoke(String joke, String day, SharedPreferences prefs) {
@@ -265,26 +265,17 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
         prefs.edit().putString(KEY_JOKE, joke).putString(KEY_JOKE_DAY, day).apply();
     }
 
-    private String getBerlinDayKey() {
-        Calendar calendar = Calendar.getInstance(BERLIN_TIME_ZONE);
+    private String getBerlinDayKey(Calendar calendar) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         format.setTimeZone(BERLIN_TIME_ZONE);
         return format.format(calendar.getTime());
     }
 
-    private String getDeterministicJokeForDay(String dayKey) {
+    private String getDeterministicJokeForDay(Calendar berlinCalendar) {
         if (DAILY_JOKES.length == 0) {
             return "Warum machen Programmierer keine Push-Ups? Weil sie schon genug Push-Requests haben! 💪";
         }
-
-        int dayOfMonth = 1;
-        if (dayKey != null && dayKey.length() >= 10) {
-            try {
-                dayOfMonth = Integer.parseInt(dayKey.substring(8, 10));
-            } catch (NumberFormatException ignored) {
-                dayOfMonth = 1;
-            }
-        }
+        int dayOfMonth = berlinCalendar.get(Calendar.DAY_OF_MONTH);
         int index = Math.floorMod(dayOfMonth - 1, DAILY_JOKES.length);
         return DAILY_JOKES[index];
     }
