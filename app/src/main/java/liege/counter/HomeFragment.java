@@ -272,11 +272,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnStateChange
     }
 
     private String getDeterministicJokeForDay(Calendar berlinCalendar) {
-        if (DAILY_JOKES.length == 0) {
-            return "Warum machen Programmierer keine Push-Ups? Weil sie schon genug Push-Requests haben! 💪";
-        }
-        int dayOfMonth = berlinCalendar.get(Calendar.DAY_OF_MONTH);
-        int index = Math.floorMod(dayOfMonth - 1, DAILY_JOKES.length);
+        int absoluteDay = berlinCalendar.get(Calendar.YEAR) * 366
+                + berlinCalendar.get(Calendar.DAY_OF_YEAR);
+        int index = Math.floorMod(absoluteDay, DAILY_JOKES.length);
         return DAILY_JOKES[index];
     }
 }
