@@ -78,37 +78,37 @@ public class QuestsFragment extends Fragment implements MainActivity.OnStateChan
         { // Sonntag — Erholung & Stretching
             {"Free Sonntag", "1x Pushup"},
             {"Sonntags-Nacken", "1min Dehnen"},
-            {"Sonntags-Sale", "1x Ausfallschritt"}
+            {"Sonntags-Sale", "10x Ausfallschritt"}
         },
         { // Montag — Wochenstart
-            {"Wochenstart-Power", "2min Dehnen"},
+            {"Wochenstart-Power", "1min Dehnen"},
             {"Montags-Schub", "10x Breitarm Push-Ups"},
             {"Mister Monday", "60s Plank"}
         },
         { // Dienstag — Oberkörper
             {"Meta-Aktivierung", "20x Squats"},
-            {"Dehnen-Dienstag", "3min Dehnen"},
+            {"Dehnen-Dienstag", "2min Dehnen"},
             {"Dienstags-Dilemma", "10x Diamond Push-Ups"}
         },
         { // Mittwoch — Core & Stabilität
             {"Die Wand Challenge", "25x Wand Push-Ups"},
             {"Wochenmitte-Wandsitzen", "30s Wandsitzen"},
-            {"Mittwochs-Meister", "5min Dehnen"}
+            {"Mittwochs-Meister", "3min Dehnen"}
         },
         { // Donnerstag — Ausdauer
-            {"Ausdauer-Basis", "2min Dehnen"},
+            {"Ausdauer-Basis", "1min Dehnen"},
             {"Donnerstags-Kraft", "25x Knie Push-Ups"},
             {"Donner-Donnerstag", "60s Superman"}
         },
         { // Freitag — Power & Explosivität
             {"Feierabend-Starter", "15x Hampelmänner"},
-            {"Freitags-Feuer", "3min Dehnen"},
+            {"Freitags-Feuer", "2min Dehnen"},
             {"Wochenend-Countdown", "15x Decline Push-Ups (Füße erhöht)"}
         },
         { // Samstag — Wochenend-Warrior
             {"Wochenend-Warmup", "10x Incline Push-Ups"},
             {"Samstags-Booster", "30x Bergsteiger"},
-            {"Wochenend-Warrior", "5min Dehnen"}
+            {"Wochenend-Warrior", "3min Dehnen"}
         }
     };
 

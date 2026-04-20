@@ -298,7 +298,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="\ud83d\udd25 Aktueller Streak"
+                    android:text="\ud83d\udd25 Aktuelle Streak"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 
@@ -352,7 +352,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  \u2022 Leicht (20er) \u00d7"
+                    android:text="  \u2022 Leicht"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -376,7 +376,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  \u2022 Mittel (50er) \u00d7"
+                    android:text="  \u2022 Mittel"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -400,7 +400,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="  \u2022 Schwer (100er) \u00d7"
+                    android:text="  \u2022 Schwer"
                     android:textColor="#9E9E9E"
                     android:textSize="13sp"/>
 
@@ -423,7 +423,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Glücksrad gedreht \u00d7"
+                    android:text="Glücksrad gedreht"
                     android:textColor="#BBBBBB"
                     android:textSize="14sp"/>
 

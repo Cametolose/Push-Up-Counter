@@ -300,8 +300,7 @@ public class LeaderboardFragment extends Fragment {
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy 'um' HH:mm 'Uhr'", Locale.GERMANY);
         formatter.setTimeZone(BERLIN_TIME_ZONE);
         return "🐐 Platz 1 am Monatsende erhält den Titel: \"Goat\"\n"
-                + "⏳ Diese Monatsrangliste endet am " + formatter.format(end.getTime())
-                + " (deutsche Zeit).";
+                + "⏳ Rangliste endet am " + formatter.format(end.getTime());
     }
 
     private String getCurrentMonthKey() {
